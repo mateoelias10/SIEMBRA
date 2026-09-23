@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2F5E36">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Campo">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Cuentas de campo — Siembra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dust:#2F5E36;
+  --onbg:#FFFFFF;
+  --onbg2:#D5E7CC;
+  --tint:#E6F0DE;
+  --paper:#FAF9F5;
+  --ink:#1A211B;
+  --muted:#56604F;
+  --line:#B5CCA6;
+  --seed:#B81E55;
+  --teal:#0F6B68;
+  --warn:#B06510;
+  --ok:#2F6B2A;
+  --bg:var(--dust);
+  --panel:var(--paper);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --dust:#0D1B10; --tint:#0D1B10; --paper:#16241A; --onbg:#E9ECE3; --onbg2:#9BA394; --ink:#E9ECE3; --muted:#9BA394;
+    --line:#2A3D2E; --seed:#F2679B; --teal:#5FC8B6; --warn:#E5A356; --ok:#8CC97F;
+  }
+}
+:root[data-theme="dark"]{
+  --dust:#0D1B10; --tint:#0D1B10; --paper:#16241A; --onbg:#E9ECE3; --onbg2:#9BA394; --ink:#E9ECE3; --muted:#9BA394;
+  --line:#2A3D2E; --seed:#F2679B; --teal:#5FC8B6; --warn:#E5A356; --ok:#8CC97F;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:Archivo,"Segoe UI",system-ui,-apple-system,sans-serif;
+  font-size:15px;line-height:1.45;
+}
+.wrap{max-width:620px;margin:0 auto;padding:0 14px 96px}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-0.01em}
+
+/* ---- barra de lote ---- */
+.topbar{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+  background:var(--bg);border-bottom:1px solid rgba(0,0,0,.28);
+  margin:0 -14px;padding:10px 14px 9px;
+}
+.topbar .row{display:flex;gap:8px;align-items:center}
+.topbar input,.topbar select{margin:0}
+.lote-nombre{flex:1 1 auto;min-width:0}
+.lote-ha{width:92px;flex:0 0 auto}
+.suffix{font-size:13px;color:var(--muted);flex:0 0 auto}
+.maq-line{display:flex;gap:8px;align-items:center;margin-top:7px}
+.maq-line select{flex:1 1 auto;min-width:0}
+.maq-meta{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12.5px;color:var(--muted);white-space:nowrap}
+
+/* ---- campos ---- */
+label{display:block;font-size:13px;color:var(--muted);margin:0 0 4px}
+input,select,textarea{
+  width:100%;font:inherit;font-size:16px;color:var(--ink);
+  background:var(--panel);border:1px solid var(--line);border-radius:6px;
+  padding:10px 11px;appearance:none;
+}
+input:focus-visible,select:focus-visible,button:focus-visible{
+  outline:2px solid var(--seed);outline-offset:1px
+}
+.field{margin:0 0 12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 10px}
+
+.seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--panel)}
+.seg button{
+  flex:1;border:0;background:transparent;color:var(--muted);
+  font:inherit;font-size:13.5px;padding:9px 4px;cursor:pointer;
+}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);font-weight:600}
+
+/* ---- bloques ---- */
+.block{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:14px 0}
+.block > h2{font-size:15px;margin-bottom:12px}
+.note{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+
+/* ---- lectura de resultados ---- */
+.readout{border-top:2px solid var(--ink);padding-top:12px;margin-top:4px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.hero div{background:var(--tint);border-radius:8px;padding:10px 11px}
+.hero .v{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:600;font-size:27px;line-height:1.05;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;color:var(--seed)}
+.hero .k{font-size:12px;color:var(--muted);margin-top:3px}
+.lines{display:grid;gap:0}
+.ln{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dotted var(--line);font-size:14px}
+.ln:last-child{border-bottom:0}
+.ln span:first-child{color:var(--muted)}
+.ln b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.flag{margin-top:10px;border-left:3px solid var(--warn);background:var(--tint);padding:8px 10px;font-size:13px;border-radius:0 6px 6px 0}
+.flag.ok{border-color:var(--ok)}
+.flag.bad{border-color:var(--seed)}
+
+details{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+summary{font-size:13px;color:var(--teal);cursor:pointer}
+details p{font-size:13px;color:var(--muted);margin:8px 0 0}
+details code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12.5px;color:var(--ink)}
+
+/* ---- botones ---- */
+button.act{
+  font:inherit;font-size:14px;font-weight:600;cursor:pointer;
+  background:var(--ink);color:var(--paper);border:0;border-radius:6px;padding:11px 14px;width:100%;
+}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button.mini{width:auto;padding:7px 10px;font-size:13px;font-weight:500}
+.btnrow{display:flex;gap:8px;margin-top:10px}
+
+/* ---- máquinas ---- */
+.maq{border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:10px;background:var(--tint)}
+.maq.sel{border-color:var(--seed);border-width:2px;padding:11px}
+.maq .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.maq .nm{font-weight:600}
+.maq .dt{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12.5px;color:var(--muted);margin-top:3px}
+.conteo{display:grid;grid-template-columns:76px 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+.conteo span{font-size:13px;color:var(--muted)}
+.del{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:6px;width:38px;height:38px;font-size:17px;cursor:pointer;line-height:1}
+
+/* ---- diálogo propio (las ventanitas del navegador se bloquean dentro de visores) ---- */
+.dlg{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px}
+.dlg[hidden]{display:none}
+.dlg-box{background:var(--panel);color:var(--ink);border-radius:12px;padding:18px;max-width:420px;width:100%;box-shadow:0 12px 32px rgba(0,0,0,.28)}
+.dlg-box p{margin:0 0 16px;font-size:15px;line-height:1.45}
+.dlg-box .btnrow{margin-top:0}
+/* ---- nav ---- */
+nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:30;
+  display:flex;background:var(--panel);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+nav button{
+  flex:1;border:0;background:transparent;font:inherit;font-size:11.5px;
+  color:var(--muted);padding:11px 2px 12px;cursor:pointer;
+  border-top:2px solid transparent;margin-top:-1px;
+}
+nav button[aria-current="true"]{color:var(--ink);font-weight:600;border-top-color:var(--seed)}
+.tab{display:none}
+.tab.on{display:block}
+@media (prefers-reduced-motion:no-preference){.hero .v{transition:color .15s ease}}
+.hd-title{font-size:19px;font-weight:700;letter-spacing:-0.02em;margin:16px 0 2px;color:var(--onbg)}
+.hd-sub{font-size:13px;color:var(--onbg2);margin:0 0 4px}
+.topbar .suffix,.topbar .maq-meta{color:var(--onbg2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="topbar">
+    <div class="row">
+      <input class="lote-nombre" id="loteNombre" placeholder="Lote" autocomplete="off">
+      <input class="lote-ha" id="loteHa" inputmode="decimal" placeholder="ha">
+      <span class="suffix">ha</span>
+    </div>
+    <div class="maq-line">
+      <select id="maqSel"></select>
+      <span class="maq-meta" id="maqMeta"></span>
+    </div>
+  </header>
+
+  <div class="flag bad" id="avisoStorage" style="display:none;margin:12px 0">
+    Este navegador no está guardando los datos. Abrí la app directamente en Safari, fuera del chat, y vas a poder guardar las máquinas.
+  </div>
+
+  <!-- ============ SIEMBRA ============ -->
+  <section class="tab on" id="tab-siembra">
+    <h1 class="hd-title">Dosis de siembra</h1>
+    <p class="hd-sub">Cargá el objetivo y te devuelve lo que hay que ver en la máquina.</p>
+
+    <div class="block">
+      <div class="field">
+        <label for="cultivo">Cultivo</label>
+        <select id="cultivo"></select>
+      </div>
+      <div class="field">
+        <label>Objetivo de plantas logradas</label>
+        <div class="seg" id="segObj">
+          <button data-v="ha" aria-pressed="true">plantas/ha</button>
+          <button data-v="m2" aria-pressed="false">plantas/m²</button>
+        </div>
+      </div>
+      <div class="field">
+        <input id="objetivo" inputmode="decimal">
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="pg">Poder germinativo %</label><input id="pg" inputmode="decimal"></div>
+        <div class="field"><label for="pureza">Pureza %</label><input id="pureza" inputmode="decimal"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="logro">Logro a campo %</label><input id="logro" inputmode="decimal"></div>
+        <div class="field"><label for="pms">PMS (g)</label><input id="pms" inputmode="decimal"></div>
+      </div>
+      <div class="field">
+        <label>Cómo viene la bolsa</label>
+        <div class="seg" id="segBolsa">
+          <button data-v="unidades" aria-pressed="true">por semillas</button>
+          <button data-v="kilos" aria-pressed="false">por kilos</button>
+        </div>
+      </div>
+      <div class="field" id="wrapSemBolsa"><label for="semBolsa">Semillas por bolsa</label><input id="semBolsa" inputmode="decimal"></div>
+      <div class="field" id="wrapKgBolsa" style="display:none"><label for="kgBolsa">Kg por bolsa</label><input id="kgBolsa" inputmode="decimal"></div>
+      <button class="act" id="btnCalcular">Calcular</button>
+      <p class="note" id="calcStamp"></p>
+    </div>
+
+    <div class="block" id="resultadoSiembra">
+      <div class="readout">
+        <div class="hero">
+          <div><div class="v" id="oSemMetro">—</div><div class="k">semillas por metro de surco</div></div>
+          <div><div class="v" id="oDistSem">—</div><div class="k">cm entre semillas</div></div>
+        </div>
+        <div class="lines">
+          <div class="ln"><span>Semillas a sembrar</span><b id="oSemHa">—</b></div>
+          <div class="ln"><span>Semillas por m²</span><b id="oSemM2">—</b></div>
+          <div class="ln"><span>Valor cultural (PG × pureza)</span><b id="oVC">—</b></div>
+          <div class="ln"><span>Kg de semilla por ha</span><b id="oKgHa">—</b></div>
+          <div class="ln"><span>Gramos de semilla por metro de surco</span><b id="oGmSem">—</b></div>
+          <div class="ln"><span>Semillas para el lote</span><b id="oSemTot">—</b></div>
+          <div class="ln"><span>Kg totales</span><b id="oKgTot">—</b></div>
+          <div class="ln"><span>Bolsas para el lote</span><b id="oBolsas">—</b></div>
+          <div class="ln"><span>Ancho de labor</span><b id="oAncho">—</b></div>
+          <div class="ln"><span>Metros de surco por ha</span><b id="oMetrosHa">—</b></div>
+          <div class="ln"><span>Semillas por segundo y cuerpo</span><b id="oSemSeg">—</b></div>
+        </div>
+        <div id="flagsSiembra"></div>
+        <div class="btnrow">
+          <button class="act ghost" id="btnCopiar">Copiar resumen</button>
+        </div>
+      </div>
+      <details>
+        <summary>Cómo se calcula</summary>
+        <p><code>semillas/ha = plantas objetivo ÷ (PG × logro)</code></p>
+        <p><code>semillas por metro = semillas/ha × distancia entre hileras ÷ 10.000</code></p>
+        <p><code>cm entre semillas = 100 ÷ semillas por metro</code></p>
+        <p><code>kg/ha = semillas/ha × PMS ÷ 1.000.000 ÷ pureza</code></p>
+        <p>La pureza solo cambia los kilos, no la cantidad de semillas: lo que no es semilla pesa pero no se cuenta en el suelo.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ PRUEBA ============ -->
+  <section class="tab" id="tab-prueba">
+    <h1 class="hd-title">Prueba a campo</h1>
+    <p class="hd-sub">Todo lo que se mide en el lote: antes, durante y después de sembrar.</p>
+
+    <div class="block">
+      <h2>Temperatura del suelo, antes de sembrar</h2>
+      <p class="note" style="margin:0 0 12px">Medí a la profundidad de siembra, a primera hora de la mañana, que es cuando el suelo está más frío. Cargá una lectura por día, de la más vieja a la más nueva, separadas por espacios.</p>
+      <div class="field"><label for="tpLecturas">Lecturas en °C, una por día</label><textarea id="tpLecturas" rows="2" placeholder="9 10,5 11 12"></textarea></div>
+      <p class="note" id="tpUmbral" style="margin:-4px 0 12px"></p>
+      <div class="readout">
+        <div class="hero">
+          <div><div class="v" id="tpUlt">—</div><div class="k">última lectura (°C)</div></div>
+          <div><div class="v" id="tpSeguidos">—</div><div class="k">días seguidos en lo recomendado</div></div>
+        </div>
+        <div class="lines">
+          <div class="ln"><span>Promedio de los últimos 3 días</span><b id="tpProm3">—</b></div>
+          <div class="ln"><span>Mínima de los últimos 3 días</span><b id="tpMin3">—</b></div>
+        </div>
+        <div id="flagsTemp"></div>
+      </div>
+      <details>
+        <summary>De dónde salen los umbrales</summary>
+        <p>Maíz: 8 a 10 °C a profundidad de siembra, sostenidos tres días seguidos. Sorgo: 18 °C a 5 cm durante tres días seguidos, con 15 °C como mínimo. Soja, girasol, cereales de invierno y pasturas: valores de referencia generales.</p>
+        <p>Son orientativos. El rastrojo, la labranza y la textura pueden mover la temperatura del suelo 2 a 4 °C. La fecha de siembra la decide el ingeniero.</p>
+      </details>
+    </div>
+
+    <div class="block">
+      <div class="field">
+        <label>Método</label>
+        <div class="seg" id="segPrueba">
+          <button data-v="conteo" aria-pressed="true">contar</button>
+          <button data-v="peso" aria-pressed="false">pesar</button>
+          <button data-v="dist" aria-pressed="false">distancia</button>
+        </div>
+      </div>
+
+      <div id="modoConteo">
+        <div class="field">
+          <label>Largo de la tirada</label>
+          <div class="seg" id="segLargo">
+            <button data-v="10" aria-pressed="true">10 m</button>
+            <button data-v="50" aria-pressed="false">50 m</button>
+            <button data-v="100" aria-pressed="false">100 m</button>
+          </div>
+        </div>
+        <div class="field"><label for="largo">Metros medidos</label><input id="largo" inputmode="decimal"></div>
+        <div class="hero" style="grid-template-columns:1fr">
+          <div><div class="v" id="oEsperado">—</div><div class="k" id="kEsperado">semillas que tienen que estar en esa tirada, por surco</div></div>
+        </div>
+        <label id="lblConteos">Conteo real por cuerpo</label>
+        <div id="listaConteos"></div>
+        <button class="act ghost mini" id="btnAddConteo">Agregar cuerpo</button>
+      </div>
+
+      <div id="modoDist" style="display:none">
+        <div class="field"><label for="espacios">Cantidad de espacios medidos</label><input id="espacios" inputmode="decimal" placeholder="10"></div>
+        <div class="field"><label for="largoDist">Largo total de esos espacios (cm)</label><input id="largoDist" inputmode="decimal"></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="readout">
+        <div class="hero">
+          <div><div class="v" id="pSemMetro">—</div><div class="k">semillas por metro reales</div></div>
+          <div><div class="v" id="pDesvio">—</div><div class="k">desvío contra el objetivo</div></div>
+        </div>
+        <div class="lines">
+          <div class="ln"><span>Promedio del conteo</span><b id="pProm">—</b></div>
+          <div class="ln"><span>Mínimo / máximo entre cuerpos</span><b id="pMinMax">—</b></div>
+          <div class="ln"><span>Desuniformidad entre cuerpos (CV)</span><b id="pCV">—</b></div>
+          <div class="ln"><span>cm entre semillas reales</span><b id="pDist">—</b></div>
+          <div class="ln"><span>Plantas logradas estimadas</span><b id="pPlantas">—</b></div>
+          <div class="ln"><span>Semillas reales para el lote</span><b id="pSemLote">—</b></div>
+        </div>
+        <div id="flagsPrueba"></div>
+      </div>
+      <details>
+        <summary>Cómo se calcula</summary>
+        <p><code>esperado = semillas por metro × metros de la tirada</code></p>
+        <p><code>desvío % = (real − esperado) ÷ esperado × 100</code></p>
+        <p><code>CV % = desvío estándar entre cuerpos ÷ promedio × 100</code></p>
+        <p>Plantas logradas estimadas = semillas reales por metro × PG × logro, llevado a hectárea.</p>
+        <p><code>corrección % = (objetivo ÷ real − 1) × 100</code>. No es el mismo número que el desvío: si tira 20 % de más, hay que bajar 16,7 %, porque de 120 a 100 se baja 20 sobre 120.</p>
+      </details>
+      <details>
+        <summary>Qué hacer si tira de más o de menos</summary>
+        <p><b>1. Primero, descartá un error de medición.</b> Medí bien los metros de la tirada, hacé la prueba a la velocidad real de trabajo, juntá todas las semillas (con bandeja o levantando el cuerpo) y probá más de un cuerpo.</p>
+        <p><b>2. Rueda motriz.</b> Presión de inflado correcta y que no patine. Una rueda baja de aire tiene menos perímetro y tira de más; si patina, tira de menos.</p>
+        <p><b>3. Placa mecánica.</b> Corregí con la caja o los piñones según la tabla del fabricante. Placa del calibre correcto para esa semilla, enrasador y expulsor bien regulados, cadenas sanas.</p>
+        <p><b>4. Neumática.</b> Vacío bajo da fallas, vacío alto da duplicados. Disco correcto para la semilla y singulador bien ajustado.</p>
+        <p><b>5. Chorrillo.</b> Corregí la apertura del rodillo o la caja. Con semilla curada, usá grafito o talco para que corra pareja.</p>
+        <p><b>6. Siempre</b> repetí la prueba después de corregir. La tabla de la sembradora es orientativa: el dato que vale es el que medís.</p>
+      </details>
+    </div>
+    <div class="block">
+      <h2>Distribución en la línea</h2>
+      <p class="note" style="margin:0 0 12px">Para monograno. Destapá unos metros de surco y medí la distancia entre semillas consecutivas, en cm. Cargalas separadas por espacios.</p>
+      <div class="field">
+        <textarea id="espaciamientos" rows="3" placeholder="16 17,5 15 32 8 16 18"></textarea>
+      </div>
+      <div class="readout">
+        <div class="hero">
+          <div><div class="v" id="sAcept">—</div><div class="k">% aceptables</div></div>
+          <div><div class="v" id="sPrec">—</div><div class="k">precisión (CV %)</div></div>
+        </div>
+        <div class="lines">
+          <div class="ln"><span>Espaciamiento teórico</span><b id="sTeorico">—</b></div>
+          <div class="ln"><span>Espaciamiento medio real</span><b id="sMedio">—</b></div>
+          <div class="ln"><span>Fallas (saltos)</span><b id="sFallas">—</b></div>
+          <div class="ln"><span>Duplicados</span><b id="sDup">—</b></div>
+          <div class="ln"><span>Espaciamientos medidos</span><b id="sN">—</b></div>
+          <div class="ln"><span>Plantas/ha según lo medido</span><b id="sPlantas">—</b></div>
+        </div>
+        <div id="flagsSing"></div>
+      </div>
+      <details>
+        <summary>Cómo se clasifica</summary>
+        <p>Cada espaciamiento se compara con el teórico: menos de 0,5 veces es duplicado, entre 0,5 y 1,5 es aceptable, más de 1,5 es falla.</p>
+        <p>La precisión es el desvío estándar de los aceptables dividido el espaciamiento teórico. Por debajo de 15 % es muy buena, arriba de 29 % es mala.</p>
+      </details>
+    </div>
+
+    <div class="block">
+      <h2>Profundidad de siembra</h2>
+      <p class="note" style="margin:0 0 12px">Destapá semillas en varios cuerpos y medí desde la superficie hasta la semilla, en cm. Cargalas separadas por espacios.</p>
+      <div class="grid2">
+        <div class="field"><label for="prObj">Profundidad objetivo (cm)</label><input id="prObj" inputmode="decimal"></div>
+        <div class="field"><label>Rango habitual del cultivo</label><div style="padding:11px 0;font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600" id="prRango">—</div></div>
+      </div>
+      <div class="field"><label for="prLecturas">Profundidades medidas (cm)</label><textarea id="prLecturas" rows="2" placeholder="5 4,5 5,5 5 4"></textarea></div>
+      <div class="readout">
+        <div class="hero">
+          <div><div class="v" id="prProm">—</div><div class="k">profundidad promedio (cm)</div></div>
+          <div><div class="v" id="prDentro">—</div><div class="k" id="prDentroK">dentro de ±1 cm del objetivo</div></div>
+        </div>
+        <div class="lines">
+          <div class="ln"><span>Diferencia con el objetivo</span><b id="prDif">—</b></div>
+          <div class="ln"><span>Mínima / máxima</span><b id="prMinMax">—</b></div>
+          <div class="ln"><span>Desuniformidad (CV)</span><b id="prCV">—</b></div>
+          <div class="ln"><span>Semillas medidas</span><b id="prN">—</b></div>
+        </div>
+        <div id="flagsProf"></div>
+      </div>
+      <details>
+        <summary>Qué hacer si está muy playa, muy honda o despareja</summary>
+        <p><b>Muy superficial:</b> la semilla queda expuesta a secarse y ancla mal. Bajá las ruedas limitadoras de profundidad y fijate que el cuerpo tenga presión suficiente para cortar el rastrojo.</p>
+        <p><b>Muy profunda:</b> tarda en emerger, gasta reservas y nace despareja. Subí las ruedas limitadoras.</p>
+        <p><b>Despareja entre cuerpos:</b> revisá que todos los resortes de presión estén en la misma posición, que las ruedas limitadoras estén iguales, que no haya rastrojo metido en el surco y que la velocidad no haga rebotar los cuerpos.</p>
+        <p>El rango habitual es orientativo. En ambientes secos a veces se siembra más hondo a propósito para buscar la humedad: eso lo define el ingeniero.</p>
+      </details>
+    </div>
+
+    <div class="block">
+      <h2>Recuento de plantas nacidas</h2>
+      <p class="note" style="margin:0 0 12px">Después de la emergencia. Contá las plantas en los mismos metros de surco, en varios lugares del lote, y cargalas separadas por espacios.</p>
+      <div class="field"><label for="rcLargo">Metros contados en cada lugar</label><input id="rcLargo" inputmode="decimal"></div>
+      <div class="field"><label for="rcPlantas">Plantas contadas en cada lugar</label><textarea id="rcPlantas" rows="2" placeholder="28 30 27 31 29"></textarea></div>
+      <div class="readout">
+        <div class="hero">
+          <div><div class="v" id="rcPlHa">—</div><div class="k">plantas por hectárea</div></div>
+          <div><div class="v" id="rcLogro">—</div><div class="k">logro real</div></div>
+        </div>
+        <div class="lines">
+          <div class="ln"><span>Plantas por metro</span><b id="rcPlM">—</b></div>
+          <div class="ln"><span>Contra el objetivo</span><b id="rcVsObj">—</b></div>
+          <div class="ln"><span>Diferencia entre lugares (CV)</span><b id="rcCV">—</b></div>
+          <div class="ln"><span>Semillas/ha usadas para el logro</span><b id="rcBase">—</b></div>
+        </div>
+        <div id="flagsRecuento"></div>
+      </div>
+      <details>
+        <summary>Cómo se calcula</summary>
+        <p><code>plantas/ha = plantas por metro × metros de surco por ha</code></p>
+        <p><code>logro real = plantas/ha ÷ (semillas sembradas/ha × PG)</code></p>
+        <p>Si cargaste la prueba de siembra, usa las semillas que midió la prueba. Si no, usa las de la dosis calculada.</p>
+      </details>
+    </div>
+
+  </section>
+  <section class="tab" id="tab-fert">
+    <h1 class="hd-title">Fertilizante</h1>
+    <p class="hd-sub">De kilos por hectárea a toneladas, bolsones y gramos por metro.</p>
+
+    <div class="block">
+      <div class="field">
+        <label for="producto">Producto</label>
+        <select id="producto"></select>
+      </div>
+      <div class="grid3" id="wrapCustom" style="display:none">
+        <div class="field"><label for="cN">% N</label><input id="cN" inputmode="decimal"></div>
+        <div class="field"><label for="cP">% P₂O₅</label><input id="cP" inputmode="decimal"></div>
+        <div class="field"><label for="cS">% S</label><input id="cS" inputmode="decimal"></div>
+      </div>
+      <div class="field">
+        <label>Arranco desde</label>
+        <div class="seg" id="segFert">
+          <button data-v="producto" aria-pressed="true">kg de producto</button>
+          <button data-v="nutriente" aria-pressed="false">unidades</button>
+        </div>
+      </div>
+      <div class="field" id="wrapKgFert"><label for="kgFert">Kg de producto por ha</label><input id="kgFert" inputmode="decimal"></div>
+      <div id="wrapNut" style="display:none">
+        <div class="field">
+          <label>Nutriente objetivo</label>
+          <div class="seg" id="segNut">
+            <button data-v="N" aria-pressed="true">N</button>
+            <button data-v="P" aria-pressed="false">P₂O₅</button>
+            <button data-v="S" aria-pressed="false">S</button>
+          </div>
+        </div>
+        <div class="field"><label for="unidades">Unidades por ha (kg)</label><input id="unidades" inputmode="decimal"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="bolson">Kg por bolsón</label><input id="bolson" inputmode="decimal"></div>
+        <div class="field"><label>Dónde va</label>
+          <div class="seg" id="segLinea">
+            <button data-v="1" aria-pressed="true">línea</button>
+            <button data-v="2" aria-pressed="false">costado</button>
+            <button data-v="0" aria-pressed="false">voleo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="readout">
+        <div class="hero">
+          <div><div class="v" id="fTn">—</div><div class="k">toneladas para el lote</div></div>
+          <div><div class="v" id="fGm">—</div><div class="k">gramos por metro de surco</div></div>
+        </div>
+        <div class="lines">
+          <div class="ln"><span>Kg de producto por ha</span><b id="fKgHa">—</b></div>
+          <div class="ln"><span>Kg totales</span><b id="fKgTot">—</b></div>
+          <div class="ln"><span>Bolsones</span><b id="fBolsones">—</b></div>
+          <div class="ln"><span>Litros (si es líquido)</span><b id="fLitros">—</b></div>
+          <div class="ln"><span>Unidades por ha</span><b id="fUnid">—</b></div>
+          <div class="ln"><span>Unidades totales del lote</span><b id="fUnidTot">—</b></div>
+          <div class="ln"><span>Ha por tolva de fertilizante</span><b id="fHaTolva">—</b></div>
+          <div class="ln"><span>Metros de surco por tolva</span><b id="fMetrosTolva">—</b></div>
+        </div>
+        <div id="flagsFert"></div>
+      </div>
+      <details>
+        <summary>Cómo se calcula</summary>
+        <p><code>kg de producto = unidades ÷ (% del nutriente ÷ 100)</code></p>
+        <p><code>g por metro de surco = kg/ha × distancia entre hileras × 0,1</code></p>
+        <p><code>bolsones = kg totales ÷ kg por bolsón</code></p>
+        <p>Los líquidos se pasan a litros con la densidad del producto.</p>
+      </details>
+    </div>
+
+    <div class="block">
+      <h2>Segundo fertilizante</h2>
+      <div class="field"><div class="seg" id="segF2"><button data-v="0" aria-pressed="true">no uso</button><button data-v="1" aria-pressed="false">agregar otro</button></div></div>
+      <div id="wrapF2" style="display:none">
+        <div class="field"><label for="gProducto">Producto</label><select id="gProducto"></select></div>
+        <div class="grid3" id="wrapGCustom" style="display:none">
+          <div class="field"><label for="gN">% N</label><input id="gN" inputmode="decimal"></div>
+          <div class="field"><label for="gP">% P₂O₅</label><input id="gP" inputmode="decimal"></div>
+          <div class="field"><label for="gS">% S</label><input id="gS" inputmode="decimal"></div>
+        </div>
+        <div class="field"><label>Arranco desde</label>
+          <div class="seg" id="segFert2"><button data-v="producto" aria-pressed="true">kg de producto</button><button data-v="nutriente" aria-pressed="false">unidades</button></div>
+        </div>
+        <div class="field" id="wrapGKg"><label for="gKgFert">Kg de producto por ha</label><input id="gKgFert" inputmode="decimal"></div>
+        <div id="wrapGNut" style="display:none">
+          <div class="field"><label>Nutriente objetivo</label>
+            <div class="seg" id="segNut2"><button data-v="N" aria-pressed="true">N</button><button data-v="P" aria-pressed="false">P₂O₅</button><button data-v="S" aria-pressed="false">S</button></div>
+          </div>
+          <div class="field"><label for="gUnidades">Unidades por ha (kg)</label><input id="gUnidades" inputmode="decimal"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="gBolson">Kg por bolsón</label><input id="gBolson" inputmode="decimal"></div>
+          <div class="field"><label>Dónde va</label>
+            <div class="seg" id="segLinea2"><button data-v="1" aria-pressed="false">línea</button><button data-v="2" aria-pressed="true">costado</button><button data-v="0" aria-pressed="false">voleo</button></div>
+          </div>
+        </div>
+        <div class="readout">
+          <div class="hero">
+            <div><div class="v" id="gTn">—</div><div class="k">toneladas para el lote</div></div>
+            <div><div class="v" id="gGm">—</div><div class="k">gramos por metro de surco</div></div>
+          </div>
+          <div class="lines">
+            <div class="ln"><span>Kg de producto por ha</span><b id="gKgHa">—</b></div>
+            <div class="ln"><span>Kg totales</span><b id="gKgTot">—</b></div>
+            <div class="ln"><span>Bolsones</span><b id="gBolsones">—</b></div>
+            <div class="ln"><span>Litros (si es líquido)</span><b id="gLitros">—</b></div>
+            <div class="ln"><span>Unidades por ha</span><b id="gUnid">—</b></div>
+            <div class="ln"><span>Ha por segunda tolva</span><b id="gHaTolva">—</b></div>
+          </div>
+          <div id="flagsFert2"></div>
+        </div>
+        <div class="readout" style="margin-top:14px">
+          <h2 style="font-size:14px;margin-bottom:4px">Los dos productos juntos</h2>
+          <div class="lines">
+            <div class="ln"><span>Unidades por ha</span><b id="totUnid">—</b></div>
+            <div class="ln"><span>Unidades totales del lote</span><b id="totUnidTot">—</b></div>
+            <div class="ln"><span>En contacto con la semilla</span><b id="totLinea">—</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h2>Prueba de fertilizante</h2>
+      <div class="field" id="wrapFpProd" style="display:none"><label>Qué producto estás probando</label>
+        <div class="seg" id="segFpProd"><button data-v="1" aria-pressed="true">el primero</button><button data-v="2" aria-pressed="false">el segundo</button></div>
+      </div>
+      <p class="note" style="margin:0 0 12px">Para fertilizante en la línea. Poné una bolsa en cada bajada, recorré los metros a velocidad de trabajo y pesá lo juntado en cada bajada, en gramos, separado por espacios.</p>
+      <div class="grid2">
+        <div class="field"><label for="fpLargo">Metros recorridos</label><input id="fpLargo" inputmode="decimal"></div>
+        <div class="field"><label>Tienen que juntarse</label><div class="hero" style="grid-template-columns:1fr;margin:0"><div style="padding:6px 10px"><div class="v" id="fpEsperado" style="font-size:22px">—</div><div class="k">gramos por bajada</div></div></div></div>
+      </div>
+      <div class="field"><label for="fpGramos">Gramos juntados por bajada</label><textarea id="fpGramos" rows="2" placeholder="52 49 55 50"></textarea></div>
+      <div class="readout">
+        <div class="hero">
+          <div><div class="v" id="fpKgHa">—</div><div class="k">kg/ha reales</div></div>
+          <div><div class="v" id="fpDesvio">—</div><div class="k">desvío contra la dosis</div></div>
+        </div>
+        <div class="lines">
+          <div class="ln"><span>Promedio por bajada</span><b id="fpProm">—</b></div>
+          <div class="ln"><span>Gramos por metro reales</span><b id="fpGm">—</b></div>
+          <div class="ln"><span>Diferencia entre bajadas (CV)</span><b id="fpCV">—</b></div>
+          <div class="ln"><span>Mínimo / máximo</span><b id="fpMinMax">—</b></div>
+        </div>
+        <div id="flagsFertPrueba"></div>
+      </div>
+      <details>
+        <summary>Cómo se calcula</summary>
+        <p><code>g/m real = promedio por bajada ÷ metros</code></p>
+        <p><code>kg/ha real = g/m ÷ (distancia entre hileras en m × 0,1)</code></p>
+        <p>Supone que cada bajada fertiliza una hilera a la misma distancia que la siembra.</p>
+      </details>
+      <details>
+        <summary>Qué hacer si tira de más o de menos</summary>
+        <p><b>1. Descartá un error de medición</b>: metros bien medidos, velocidad de trabajo real, balanza que pese en gramos.</p>
+        <p><b>2. Dosificador.</b> Corregí con el piñón o el variador según la tabla, y repetí. La tabla viene calibrada para un producto: otro fertilizante, con otra densidad o granulometría, tira distinto.</p>
+        <p><b>3. Humedad.</b> Fertilizante húmedo o apelmazado fluye menos. Tolva tapada si llueve, y no dejarlo cargado de un día para otro.</p>
+        <p><b>4. Si una bajada tira distinto de las demás:</b> manguera tapada, doblada o suelta, o chevrón gastado o trabado.</p>
+        <p><b>5. Rueda motriz</b> inflada y sin patinar, igual que con la semilla.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ TRABAJO ============ -->
+  <section class="tab" id="tab-trabajo">
+    <h1 class="hd-title">Capacidad de trabajo</h1>
+    <p class="hd-sub">Cuánto rinde cada equipo y cuándo terminás el lote.</p>
+
+    <div class="block">
+      <div class="grid2">
+        <div class="field"><label for="hechas">Ha ya sembradas</label><input id="hechas" inputmode="decimal"></div>
+        <div class="field"><label for="jornada">Horas por día</label><input id="jornada" inputmode="decimal"></div>
+      </div>
+      <label>Equipos en el lote</label>
+      <div id="listaEquipos"></div>
+      <p class="note">La velocidad y la eficiencia de cada equipo se editan en la pestaña Máquina.</p>
+    </div>
+
+    <div class="block">
+      <div class="readout">
+        <div class="hero">
+          <div><div class="v" id="tHaDia">—</div><div class="k">ha por día entre todos</div></div>
+          <div><div class="v" id="tDias">—</div><div class="k">días para terminar</div></div>
+        </div>
+        <div class="lines">
+          <div class="ln"><span>Ha por hora efectivas</span><b id="tHaHora">—</b></div>
+          <div class="ln"><span>Ha por hora teóricas</span><b id="tHaHoraT">—</b></div>
+          <div class="ln"><span>Ha que faltan</span><b id="tFaltan">—</b></div>
+          <div class="ln"><span>Horas de trabajo que faltan</span><b id="tHoras">—</b></div>
+          <div class="ln"><span>Ha por tolva de semilla</span><b id="tHaSem">—</b></div>
+          <div class="ln"><span>Tiempo entre recargas de semilla</span><b id="tRecarga">—</b></div>
+          <div class="ln"><span>Llenados de tolva de semilla para lo que falta</span><b id="tRecargas">—</b></div>
+        </div>
+        <div id="detalleEquipos" class="lines" style="margin-top:12px"></div>
+        <div id="flagsTrabajo"></div>
+      </div>
+      <details>
+        <summary>Cómo se calcula</summary>
+        <p><code>ha/h teóricas = ancho de labor × velocidad ÷ 10</code></p>
+        <p><code>ha/h efectivas = teóricas × eficiencia</code></p>
+        <p>La eficiencia descuenta cabeceras, recargas, paradas y traslados. En siembra suele estar entre 65 % y 80 %.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ MAQUINA ============ -->
+  <section class="tab" id="tab-maquina">
+    <h1 class="hd-title">Máquinas</h1>
+    <p class="hd-sub">Todo lo demás sale de acá: cuerpos, distancia y tolvas.</p>
+    <div class="block">
+      <p class="note" id="maqStamp" style="margin:0 0 8px"></p>
+      <div id="listaMaquinas"></div>
+      <button class="act" id="btnNuevaMaq">Agregar máquina</button>
+      <button class="act ghost" id="btnReset" style="margin-top:8px">Restablecer valores de fábrica</button>
+      <p class="note">Usalo si algo quedó raro o en blanco y la app dejó de calcular.</p>
+    </div>
+    <div class="block" id="editorMaq" style="display:none">
+      <h2 id="tituloMaq">Editar máquina</h2>
+      <div class="field"><label for="mNombre">Nombre</label><input id="mNombre" autocomplete="off"></div>
+      <div class="grid2">
+        <div class="field"><label for="mCuerpos">Cuerpos o surcos</label><input id="mCuerpos" inputmode="decimal"></div>
+        <div class="field"><label for="mDist">Entre hileras (cm)</label><input id="mDist" inputmode="decimal"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="mTolvaSem">Tolva semilla (litros)</label><input id="mTolvaSem" inputmode="decimal"></div>
+        <div class="field"><label for="mTolvaFert">Tolva fertilizante (litros)</label><input id="mTolvaFert" inputmode="decimal"></div>
+      </div>
+      <div class="field"><label for="mTolvaFert2">Segunda tolva de fertilizante (litros), si tiene</label><input id="mTolvaFert2" inputmode="decimal"></div>
+      <div class="grid2">
+        <div class="field"><label for="mVel">Velocidad de trabajo km/h</label><input id="mVel" inputmode="decimal"></div>
+        <div class="field"><label for="mEf">Eficiencia %</label><input id="mEf" inputmode="decimal"></div>
+      </div>
+      <p class="note" style="margin-top:0">Las horas por día se cargan en la pestaña Trabajo.</p>
+      <div class="lines">
+        <div class="ln"><span>Ancho de labor</span><b id="mAncho">—</b></div>
+        <div class="ln"><span>Metros de surco por ha</span><b id="mMetros">—</b></div>
+        <div class="ln"><span>Tolva de semilla, en kilos</span><b id="mKgSem">—</b></div>
+        <div class="ln"><span>Tolva de fertilizante, en kilos</span><b id="mKgFert">—</b></div>
+      </div>
+      <div class="btnrow">
+        <button class="act" id="btnGuardarMaq">Guardar</button>
+        <button class="act ghost" id="btnCerrarMaq">Cerrar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LOTES ============ -->
+  <section class="tab" id="tab-lotes">
+    <h1 class="hd-title">Lotes</h1>
+    <p class="hd-sub">Guardá lo calculado y lo medido en cada lote, y pasalo a Excel.</p>
+    <div class="block">
+      <div class="lines" id="resumenActual"></div>
+      <button class="act" id="btnGuardarReg" style="margin-top:12px">Guardar registro de este lote</button>
+      <p class="note" id="regStamp"></p>
+    </div>
+    <div class="block">
+      <button class="act ghost" id="btnExcelTodos">Excel de todos los lotes</button>
+      <p class="note" id="notaDescarga"></p>
+      <div id="listaLotes" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+</div>
+
+<div class="dlg" id="dlg" hidden role="dialog" aria-modal="true" aria-labelledby="dlgTxt">
+  <div class="dlg-box">
+    <p id="dlgTxt"></p>
+    <div class="btnrow"><button class="act ghost" id="dlgNo">Cancelar</button><button class="act ghost" id="dlgOtro" style="display:none"></button><button class="act" id="dlgSi">Aceptar</button></div>
+  </div>
+</div>
+
+<nav>
+  <button data-tab="siembra" aria-current="true">Siembra</button>
+  <button data-tab="prueba">Prueba</button>
+  <button data-tab="fert">Fert.</button>
+  <button data-tab="trabajo">Trabajo</button>
+  <button data-tab="maquina">Máquina</button>
+  <button data-tab="lotes">Lotes</button>
+</nav>
+
+<script>
+"use strict";
+
+/* ---------------- utilidades ---------------- */
+const $ = s => document.querySelector(s);
+const nf = (d=0) => new Intl.NumberFormat('es-AR',{minimumFractionDigits:d,maximumFractionDigits:d});
+function n(v){
+  /* Acepta formato argentino: 55.000 · 52,5 · 1.500,75 · y también 52.5 */
+  if(v===null||v===undefined) return NaN;
+  if(typeof v==='number') return isFinite(v)?v:NaN;
+  let s=String(v).trim().replace(/\s/g,'');
+  if(s==='') return NaN;
+  if(s.indexOf(',')>=0){ s=s.replace(/\./g,'').replace(',','.'); }
+  else if(/^-?[1-9]\d{0,2}(\.\d{3})+$/.test(s)){ s=s.replace(/\./g,''); }
+  if(!/^-?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+  const x=parseFloat(s); return isFinite(x)?x:NaN;
+}
+function f(v,d=0){ return (isFinite(v)&&!isNaN(v)) ? nf(d).format(v) : '—'; }
+function setT(id,txt){ const e=document.getElementById(id); if(e) e.textContent=txt; }
+function flags(id,list){
+  const box=document.getElementById(id); if(!box) return;
+  box.innerHTML = list.map(x=>`<div class="flag ${x.t||''}">${x.m}</div>`).join('');
+}
+
+function dialogo(texto, op){
+  op = op || {};
+  return new Promise(res=>{
+    const box=$('#dlg'), bs=$('#dlgSi'), bn=$('#dlgNo');
+    setT('dlgTxt', texto);
+    bs.textContent = op.si || 'Aceptar';
+    bn.textContent = op.no || 'Cancelar';
+    bn.style.display = op.no===null ? 'none' : '';
+    const bo = $('#dlgOtro'); bo.style.display = op.otro ? '' : 'none'; bo.textContent = op.otro || '';
+    bs.style.background = op.peligro ? 'var(--seed)' : '';
+    box.hidden = false; bs.focus();
+    const fin = v=>{ box.hidden = true; bs.onclick = bn.onclick = $('#dlgOtro').onclick = null; res(v); };
+    bs.onclick = ()=>fin(true); bn.onclick = ()=>fin(false); $('#dlgOtro').onclick = ()=>fin('otro');
+  });
+}
+function preguntar(texto, si){ return dialogo(texto, {si: si||'Borrar', no:'Cancelar', peligro:true}); }
+function avisar(texto){ return dialogo(texto, {si:'Entendido', no:null}); }
+
+/* ---------------- datos de referencia ---------------- */
+/* Valores orientativos para zona semiárida. Ajustalos con el asesor del campo. */
+const CULTIVOS = {
+  /* tipo: mono = monograno (placa o neumática) · chorrillo = a chorrillo
+     dens: densidad aparente de la semilla en kg por litro, para pasar la tolva de litros a kilos */
+  maiz:       {fam:'Maíz',    tipo:'mono',      nombre:'Maíz temprano',             obj:55000,  modo:'ha', pg:95, pu:99, logro:90, pms:320, pres:'unidades', semBolsa:80000,  kgBolsa:20, dist:52.5, dens:0.74, kgMin:12,  kgMax:35,  distSemMin:12,  distSemMax:45},
+  maiz2:      {fam:'Maíz',    tipo:'mono',      nombre:'Maíz tardío',               obj:45000,  modo:'ha', pg:95, pu:99, logro:88, pms:320, pres:'unidades', semBolsa:80000,  kgBolsa:20, dist:52.5, dens:0.74, kgMin:10,  kgMax:30,  distSemMin:14,  distSemMax:55},
+  maiz3:      {fam:'Maíz',    tipo:'mono',      nombre:'Maíz de segunda',           obj:45000,  modo:'ha', pg:95, pu:99, logro:85, pms:320, pres:'unidades', semBolsa:80000,  kgBolsa:20, dist:52.5, dens:0.74, kgMin:10,  kgMax:30,  distSemMin:14,  distSemMax:55},
+  maizsilo:   {fam:'Maíz',    tipo:'mono',      nombre:'Maíz para silo',            obj:65000,  modo:'ha', pg:95, pu:99, logro:90, pms:320, pres:'unidades', semBolsa:80000,  kgBolsa:20, dist:52.5, dens:0.74, kgMin:15,  kgMax:40,  distSemMin:10,  distSemMax:40},
+  pisingallo: {fam:'Maíz',    tipo:'mono',      nombre:'Maíz pisingallo',           obj:60000,  modo:'ha', pg:92, pu:99, logro:88, pms:150, pres:'unidades', semBolsa:80000,  kgBolsa:20, dist:52.5, dens:0.78, kgMin:6,   kgMax:20,  distSemMin:10,  distSemMax:45},
+  soja:       {fam:'Soja',    tipo:'chorrillo', nombre:'Soja de primera',           obj:280000, modo:'ha', pg:85, pu:98, logro:85, pms:160, pres:'kilos',    semBolsa:0,      kgBolsa:40, dist:52.5, dens:0.74, kgMin:40,  kgMax:110, distSemMin:2,   distSemMax:15},
+  soja2:      {fam:'Soja',    tipo:'chorrillo', nombre:'Soja de segunda',           obj:350000, modo:'ha', pg:85, pu:98, logro:80, pms:150, pres:'kilos',    semBolsa:0,      kgBolsa:40, dist:52.5, dens:0.74, kgMin:50,  kgMax:130, distSemMin:1.5, distSemMax:12},
+  girasol:    {fam:'Girasol', tipo:'mono',      nombre:'Girasol aceitero',          obj:45000,  modo:'ha', pg:92, pu:99, logro:85, pms:62,  pres:'unidades', semBolsa:150000, kgBolsa:10, dist:52.5, dens:0.42, kgMin:2,   kgMax:8,   distSemMin:15,  distSemMax:50},
+  confitero:  {fam:'Girasol', tipo:'mono',      nombre:'Girasol confitero',         obj:38000,  modo:'ha', pg:90, pu:99, logro:85, pms:130, pres:'unidades', semBolsa:150000, kgBolsa:10, dist:70,   dens:0.35, kgMin:4,   kgMax:12,  distSemMin:20,  distSemMax:55},
+  sorgo:      {fam:'Sorgo',   tipo:'chorrillo', nombre:'Sorgo granífero',           obj:180000, modo:'ha', pg:88, pu:98, logro:75, pms:28,  pres:'kilos',    semBolsa:0,      kgBolsa:20, dist:52.5, dens:0.72, kgMin:4,   kgMax:14,  distSemMin:2.5, distSemMax:15},
+  sorgofor:   {fam:'Sorgo',   tipo:'chorrillo', nombre:'Sorgo forrajero o silero',  obj:200000, modo:'ha', pg:88, pu:98, logro:75, pms:32,  pres:'kilos',    semBolsa:0,      kgBolsa:20, dist:52.5, dens:0.72, kgMin:5,   kgMax:18,  distSemMin:2,   distSemMax:12},
+  sudan:      {fam:'Sorgo',   tipo:'chorrillo', nombre:'Sorgo sudan (pastoreo)',    obj:80,     modo:'m2', pg:85, pu:97, logro:65, pms:12,  pres:'kilos',    semBolsa:0,      kgBolsa:20, dist:17.5, dens:0.70, kgMin:10,  kgMax:30,  distSemMin:0.3, distSemMax:6},
+  trigo:      {fam:'Trigo',   tipo:'chorrillo', nombre:'Trigo pan',                 obj:220,    modo:'m2', pg:90, pu:98, logro:80, pms:38,  pres:'kilos',    semBolsa:0,      kgBolsa:40, dist:17.5, dens:0.78, kgMin:70,  kgMax:180, distSemMin:0.3, distSemMax:8},
+  candeal:    {fam:'Trigo',   tipo:'chorrillo', nombre:'Trigo candeal',             obj:250,    modo:'m2', pg:90, pu:98, logro:80, pms:48,  pres:'kilos',    semBolsa:0,      kgBolsa:40, dist:17.5, dens:0.80, kgMin:100, kgMax:200, distSemMin:0.3, distSemMax:8},
+  cebada:     {fam:'Cebada',  tipo:'chorrillo', nombre:'Cebada cervecera',          obj:250,    modo:'m2', pg:92, pu:98, logro:80, pms:45,  pres:'kilos',    semBolsa:0,      kgBolsa:40, dist:17.5, dens:0.66, kgMin:80,  kgMax:190, distSemMin:0.3, distSemMax:8},
+  cebadafor:  {fam:'Cebada',  tipo:'chorrillo', nombre:'Cebada forrajera',          obj:250,    modo:'m2', pg:90, pu:97, logro:75, pms:42,  pres:'kilos',    semBolsa:0,      kgBolsa:40, dist:17.5, dens:0.64, kgMin:80,  kgMax:190, distSemMin:0.3, distSemMax:8},
+  centeno:    {fam:'Verdeos y coberturas', tipo:'chorrillo', nombre:'Centeno',                   obj:200, modo:'m2', pg:88, pu:97, logro:75, pms:28,  pres:'kilos', semBolsa:0, kgBolsa:40, dist:17.5, dens:0.72, kgMin:40, kgMax:110, distSemMin:0.3, distSemMax:10},
+  avena:      {fam:'Verdeos y coberturas', tipo:'chorrillo', nombre:'Avena para grano',          obj:250, modo:'m2', pg:90, pu:97, logro:78, pms:32,  pres:'kilos', semBolsa:0, kgBolsa:40, dist:17.5, dens:0.50, kgMin:50, kgMax:150, distSemMin:0.3, distSemMax:10},
+  avenafor:   {fam:'Verdeos y coberturas', tipo:'chorrillo', nombre:'Avena forrajera (verdeo)',  obj:300, modo:'m2', pg:88, pu:97, logro:75, pms:30,  pres:'kilos', semBolsa:0, kgBolsa:40, dist:17.5, dens:0.48, kgMin:60, kgMax:160, distSemMin:0.3, distSemMax:10},
+  triticale:  {fam:'Verdeos y coberturas', tipo:'chorrillo', nombre:'Triticale',                 obj:250, modo:'m2', pg:88, pu:97, logro:78, pms:44,  pres:'kilos', semBolsa:0, kgBolsa:40, dist:17.5, dens:0.70, kgMin:80, kgMax:180, distSemMin:0.3, distSemMax:10},
+  vicia:      {fam:'Verdeos y coberturas', tipo:'chorrillo', nombre:'Vicia (cobertura)',         obj:60,  modo:'m2', pg:80, pu:96, logro:70, pms:30,  pres:'kilos', semBolsa:0, kgBolsa:25, dist:17.5, dens:0.78, kgMin:12, kgMax:40,  distSemMin:0.3, distSemMax:12},
+  alfalfa:    {fam:'Pasturas', tipo:'chorrillo', nombre:'Alfalfa',                  obj:220, modo:'m2', pg:85, pu:98, logro:50, pms:2.1, pres:'kilos', semBolsa:0, kgBolsa:25, dist:17.5, dens:0.77, kgMin:5,  kgMax:20,  distSemMin:0.1, distSemMax:6},
+  moha:       {fam:'Pasturas', tipo:'chorrillo', nombre:'Moha',                     obj:300, modo:'m2', pg:85, pu:95, logro:50, pms:2.5, pres:'kilos', semBolsa:0, kgBolsa:25, dist:17.5, dens:0.65, kgMin:8,  kgMax:25,  distSemMin:0.1, distSemMax:6},
+  otro:       {fam:'Otro',     tipo:'chorrillo', nombre:'Otro cultivo',             obj:250000, modo:'ha', pg:90, pu:98, logro:85, pms:100, pres:'kilos', semBolsa:0, kgBolsa:40, dist:52.5, dens:0.75, kgMin:0, kgMax:9999, distSemMin:0.1, distSemMax:200}
+};
+
+const PRODUCTOS = {
+  /* da: densidad aparente en kg por litro (en líquidos, la densidad del producto) */
+  urea:     {nombre:'Urea 46-0-0',                    N:46, P:0,  S:0,  K:0, da:0.75},
+  uan:      {nombre:'UAN 32 (líquido)',               N:32, P:0,  S:0,  K:0, da:1.28, dens:1.28},
+  map:      {nombre:'MAP 11-52-0',                    N:11, P:52, S:0,  K:0, da:0.95},
+  dap:      {nombre:'DAP 18-46-0',                    N:18, P:46, S:0,  K:0, da:0.95},
+  spt:      {nombre:'Superfosfato triple 0-46-0',     N:0,  P:46, S:0,  K:0, da:1.05},
+  sps:      {nombre:'Superfosfato simple 0-21-0',     N:0,  P:21, S:12, K:0, da:1.10},
+  sa:       {nombre:'Sulfato de amonio 21-0-0-24S',   N:21, P:0,  S:24, K:0, da:1.00},
+  sulfonit: {nombre:'Sulfonitrato 27-0-0-6S',         N:27, P:0,  S:6,  K:0, da:1.00},
+  tiosulf:  {nombre:'Tiosulfato de amonio (líquido)', N:12, P:0,  S:26, K:0, da:1.33, dens:1.33},
+  yeso:     {nombre:'Yeso agrícola 0-0-0-18S',        N:0,  P:0,  S:18, K:0, da:1.10},
+  kcl:      {nombre:'Cloruro de potasio 0-0-60',      N:0,  P:0,  S:0,  K:60, da:1.00},
+  custom:   {nombre:'Personalizado',                  N:0,  P:0,  S:0,  K:0, da:1.00}
+};
+
+
+/* Profundidad (cm) y temperatura de suelo (°C) por cultivo: [objetivo, mín, máx, T mínima, T recomendada]
+   Orientativos. Maíz y sorgo según guías técnicas; el resto, referencias generales. */
+const PROF_TEMP = {
+  maiz:[5,4,6,8,10], maiz2:[5,4,6,8,10], maiz3:[5,4,6,8,10], maizsilo:[5,4,6,8,10], pisingallo:[4,3,5,8,10],
+  soja:[3,2,4,10,15], soja2:[3,2,4,10,15],
+  girasol:[4,3,6,8,10], confitero:[4,3,6,8,10],
+  sorgo:[3,2,4,15,18], sorgofor:[3,2,4,15,18], sudan:[2.5,2,3,15,18],
+  trigo:[3,2,4,4,6], candeal:[3,2,4,4,6], cebada:[3,2,4,4,6], cebadafor:[3,2,4,4,6],
+  centeno:[2.5,2,3,4,6], avena:[3,2,4,4,6], avenafor:[3,2,4,4,6], triticale:[3,2,4,4,6], vicia:[3,2,4,4,6],
+  alfalfa:[1,0.5,1.5,5,10], moha:[1.5,1,2,12,15], otro:[3,2,4,5,10]
+};
+function ptCultivo(){ return PROF_TEMP[S.siembra.cultivo] || PROF_TEMP.otro; }
+
+/* ---------------- estado ---------------- */
+const LS = 'campo.siembra.v1';
+const uid = () => Math.random().toString(36).slice(2,9);
+
+const DEFECTO = {
+  lote:{nombre:'', ha:100},
+  maquinas:[
+    {id:'m1', tipo:'gruesa', fija:true, nombre:'Sembradora de gruesa', cuerpos:'', dist:'', tolvaSemL:'', tolvaFertL:'', tolvaFert2L:'', vel:7, ef:75},
+    {id:'m2', tipo:'fina',   fija:true, nombre:'Sembradora de fina',   cuerpos:'', dist:'', tolvaSemL:'', tolvaFertL:'', tolvaFert2L:'', vel:8, ef:75}
+  ],
+  maqId:'m1',
+  siembra:{cultivo:'maiz', modoObj:'ha', objetivo:55000, pg:95, pureza:99, logro:90, pms:320, pres:'unidades', semBolsa:80000, kgBolsa:40},
+  prueba:{modo:'conteo', largo:10, conteos:['','','',''], espacios:10, largoDist:'', espaciamientos:''},
+  fert:{producto:'map', modo:'producto', kgFert:80, nutriente:'N', unidades:40, bolson:1000, linea:1, cN:0, cP:0, cS:0, fpLargo:50, fpGramos:'', fpProd:1},
+  fert2:{activo:0, producto:'urea', modo:'producto', kgFert:50, nutriente:'N', unidades:23, bolson:1000, linea:2, cN:0, cP:0, cS:0},
+  recuento:{largo:10, plantas:''},
+  prof:{obj:5, lecturas:''},
+  temp:{lecturas:''},
+  registros:[],
+  trabajo:{hechas:0, jornada:10, equipos:['m1']}
+};
+
+let S = JSON.parse(JSON.stringify(DEFECTO));
+try{ const raw = localStorage.getItem(LS); if(raw){ S = Object.assign(S, JSON.parse(raw)); } }catch(e){}
+/* máquinas guardadas con la versión anterior: tolva en kg -> litros */
+(S.maquinas||[]).forEach(m=>{
+  if(m.tolvaSemL===undefined)  m.tolvaSemL  = isFinite(n(m.tolvaSem))  ? Math.round(n(m.tolvaSem)/0.75)  : '';
+  if(m.tolvaFertL===undefined) m.tolvaFertL = isFinite(n(m.tolvaFert)) ? Math.round(n(m.tolvaFert)/0.95) : '';
+});
+/* Siempre hay una sembradora de gruesa y una de fina: no se borran, solo se vacían */
+(S.maquinas||[]).forEach(m=>{
+  if(!m.tipo){
+    const nm = String(m.nombre||'').toLowerCase();
+    m.tipo = (m.id==='m2' || nm.includes('fina')) ? 'fina'
+           : (m.id==='m1' || nm.includes('gruesa')) ? 'gruesa'
+           : (isFinite(n(m.dist)) && n(m.dist)<30 ? 'fina' : 'gruesa');
+  }
+});
+function maqVacia(id, tipo){ return {id, tipo, fija:true, nombre:'Sembradora de '+tipo, cuerpos:'', dist:'', tolvaSemL:'', tolvaFertL:'', tolvaFert2L:'', vel: tipo==='gruesa'?7:8, ef:75}; }
+function asegurarBase(){
+  S.maquinas = S.maquinas || [];
+  ['gruesa','fina'].forEach(t=>{
+    if(S.maquinas.some(m=>m.fija && m.tipo===t)) return;
+    const idBase = t==='gruesa' ? 'm1' : 'm2';
+    const adoptable = S.maquinas.find(m=>m.id===idBase && m.tipo===t) ||
+                      S.maquinas.find(m=>m.tipo===t && /sembradora de (gruesa|fina)/i.test(m.nombre||''));
+    if(adoptable){ adoptable.fija = true; return; }
+    const id = S.maquinas.some(m=>m.id===idBase) ? uid() : idBase;
+    S.maquinas.push(maqVacia(id, t));
+  });
+  const orden = m => m.fija ? (m.tipo==='gruesa'?0:1) : (m.tipo==='gruesa'?2:3);
+  S.maquinas.sort((a,b)=>orden(a)-orden(b));
+  if(!S.maquinas.some(m=>m.id===S.maqId)) S.maqId = S.maquinas[0].id;
+  S.trabajo.equipos = (S.trabajo.equipos||[]).filter(id=>S.maquinas.some(m=>m.id===id));
+  if(!S.trabajo.equipos.length) S.trabajo.equipos = [S.maqId];
+}
+asegurarBase();
+if(!CULTIVOS[S.siembra.cultivo]) S.siembra.cultivo = 'maiz';
+if(S.siembra.pureza===undefined) S.siembra.pureza = CULTIVOS[S.siembra.cultivo].pu;
+function kgTolvaSem(m){ const c = CULTIVOS[S.siembra.cultivo] || CULTIVOS.otro; return n(m&&m.tolvaSemL) * c.dens; }
+function kgTolvaFert(m){ const p = prodActual(); return n(m&&m.tolvaFertL) * (p.da||1); }
+
+let hayStorage = true;
+try{ localStorage.setItem(LS+'.test','1'); localStorage.removeItem(LS+'.test'); }catch(e){ hayStorage = false; }
+
+function guardar(){
+  if(!hayStorage) return;
+  try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){ hayStorage = false; avisoStorage(); }
+}
+function avisoStorage(){
+  const b = document.getElementById('avisoStorage');
+  if(b) b.style.display = hayStorage ? 'none' : 'block';
+}
+
+/* ---------------- helpers de máquina ---------------- */
+function maq(){ return S.maquinas.find(m=>m.id===S.maqId) || S.maquinas[0] || null; }
+function distM(m){ const x=n(m&&m.dist); return (isFinite(x)&&x>0) ? x/100 : NaN; }
+function ancho(m){ const c=n(m&&m.cuerpos); return (isFinite(c)&&c>0) ? c*distM(m) : NaN; }
+function metrosPorHa(m){ const d=distM(m); return d>0 ? 10000/d : NaN; }
+
+/* ---------------- cálculo de siembra ---------------- */
+function calcSiembra(){
+  const m = maq(), s = S.siembra, cul = CULTIVOS[s.cultivo] || CULTIVOS.otro;
+  const d = distM(m);
+  const pg = n(s.pg)/100, lo = n(s.logro)/100, pu = n(s.pureza)/100;
+  const vc = pg*pu;
+  let objHa = n(s.objetivo);
+  if(s.modoObj === 'm2') objHa = objHa * 10000;
+  /* semillas que se cuentan en el suelo: la pureza NO interviene (es un concepto de peso) */
+  const semHa = objHa / (pg*lo);
+  const semM  = semHa * d / 10000;
+  const distSem = 100 / semM;
+  const semM2 = semHa / 10000;
+  /* kilos de lo que sale de la bolsa: acá sí va la pureza */
+  const kgHa = semHa * n(s.pms) / 1e6 / pu;
+  const ha = n(S.lote.ha);
+  const semTot = semHa * ha;
+  const kgTot = kgHa * ha;
+  let bolsas = NaN, bolsasTxt = '—';
+  if(s.pres === 'unidades'){
+    bolsas = semTot / n(s.semBolsa);
+    if(isFinite(bolsas)) bolsasTxt = f(Math.ceil(bolsas),0) + ' bolsas (' + f(bolsas,1) + ')';
+  }else{
+    bolsas = kgTot / n(s.kgBolsa);
+    if(isFinite(bolsas)) bolsasTxt = f(Math.ceil(bolsas),0) + ' bolsas (' + f(bolsas,1) + ')';
+  }
+  const vel = n(m&&m.vel);
+  const semSeg = semM * (vel/3.6);
+  const gMetro = kgHa * d * 0.1;
+  return {m,cul,d,semHa,semM,distSem,semM2,kgHa,semTot,kgTot,bolsas,bolsasTxt,semSeg,gMetro,ha,pg,lo,pu,vc};
+}
+
+const R = {};
+function pintarSiembra(){
+  const r = calcSiembra(), s = S.siembra;
+  R.siembra = r;
+  setT('oSemMetro', isFinite(r.semM) ? f(r.semM,1) : '—');
+  setT('oDistSem',  isFinite(r.distSem) ? f(r.distSem,1) : '—');
+  setT('oSemHa',    isFinite(r.semHa) ? f(r.semHa,0)+' sem/ha' : '—');
+  setT('oSemM2',    isFinite(r.semM2) ? f(r.semM2,1) : '—');
+  setT('oVC',       isFinite(r.vc) ? f(r.vc*100,1)+' %' : '—');
+  setT('oKgHa',     isFinite(r.kgHa) ? f(r.kgHa,1)+' kg/ha' : '—');
+  setT('oGmSem',    isFinite(r.gMetro) ? f(r.gMetro,2)+' g/m' : '—');
+  setT('oSemTot',   isFinite(r.semTot) ? f(r.semTot,0) : '—');
+  setT('oKgTot',    isFinite(r.kgTot) ? f(r.kgTot,0)+' kg' : '—');
+  setT('oBolsas',   r.bolsasTxt);
+  setT('oAncho',    isFinite(ancho(r.m)) ? f(ancho(r.m),2)+' m' : '—');
+  setT('oMetrosHa', isFinite(metrosPorHa(r.m)) ? f(metrosPorHa(r.m),0)+' m' : '—');
+  setT('oSemSeg',   isFinite(r.semSeg) ? f(r.semSeg,1)+' sem/s' : '—');
+
+  const av=[];
+  const faltan=[];
+  if(!isFinite(n(s.objetivo))) faltan.push('objetivo de plantas');
+  if(!isFinite(n(s.pg))) faltan.push('poder germinativo');
+  if(!isFinite(n(s.pureza))) faltan.push('pureza');
+  if(!isFinite(n(s.logro))) faltan.push('logro a campo');
+  if(!isFinite(n(s.pms))) faltan.push('PMS');
+  if(!isFinite(n(S.lote.ha))) faltan.push('hectáreas del lote');
+  if(s.pres==='unidades' && !isFinite(n(s.semBolsa))) faltan.push('semillas por bolsa');
+  if(s.pres==='kilos' && !isFinite(n(s.kgBolsa))) faltan.push('kg por bolsa');
+  if(r.m && !isFinite(n(r.m.cuerpos))) faltan.push('cuerpos de la máquina');
+  if(r.m && !isFinite(n(r.m.dist))) faltan.push('distancia entre hileras');
+  if(faltan.length) av.push({t:'bad', m:'Falta cargar: '+faltan.join(', ')+'.'});
+  if(!r.m) av.push({t:'bad', m:'No hay ninguna máquina cargada. Andá a la pestaña Máquina.'});
+  if(isFinite(r.distSem) && r.distSem < r.cul.distSemMin) av.push({t:'bad', m:'Las semillas quedan a '+f(r.distSem,1)+' cm, muy juntas para '+r.cul.nombre.toLowerCase()+'. Revisá el objetivo o la distancia entre hileras.'});
+  if(isFinite(r.distSem) && r.distSem > r.cul.distSemMax) av.push({t:'bad', m:'Las semillas quedan a '+f(r.distSem,1)+' cm, muy separadas para '+r.cul.nombre.toLowerCase()+'. Revisá el objetivo.'});
+  if(isFinite(r.kgHa) && (r.kgHa < r.cul.kgMin || r.kgHa > r.cul.kgMax)) av.push({t:'', m:'Te da '+f(r.kgHa,1)+' kg/ha. Lo habitual en '+r.cul.nombre.toLowerCase()+' es entre '+r.cul.kgMin+' y '+r.cul.kgMax+' kg/ha: revisá el PMS.'});
+  if(n(s.pg)>100 || n(s.logro)>100 || n(s.pureza)>100) av.push({t:'bad', m:'El poder germinativo, la pureza y el logro no pueden pasar de 100 %.'});
+  if(r.cul.tipo==='mono' && isFinite(r.semSeg) && r.semSeg > 25) av.push({t:'', m:'A '+f(n(r.m&&r.m.vel),1)+' km/h cada cuerpo tira '+f(r.semSeg,1)+' semillas por segundo. Con placa mecánica es mucho: bajá la velocidad o verificá el dosificador.'});
+  if(r.m && Math.abs(n(r.m.dist) - r.cul.dist) > 5) av.push({t:'', m:'La máquina está a '+f(n(r.m.dist),1)+' cm y para '+r.cul.nombre.toLowerCase()+' lo habitual es '+r.cul.dist+' cm. Si está bien, ignoralo.'});
+  if(!av.length && isFinite(r.semM)) av.push({t:'ok', m:'Para verificar en el lote: '+f(r.semM,1)+' semillas por metro, una semilla cada '+f(r.distSem,1)+' cm, '+f(r.semM*10,0)+' semillas en 10 m.'});
+  flags('flagsSiembra', av);
+
+  pintarPrueba();
+  pintarFert();
+  pintarTrabajo();
+}
+
+/* ---------------- prueba ---------------- */
+function pintarListaConteos(){
+  const cont = $('#listaConteos');
+  cont.innerHTML = S.prueba.conteos.map((v,i)=>
+    `<div class="conteo"><span>Cuerpo ${i+1}</span><input inputmode="decimal" data-ci="${i}" value="${v===''?'':v}"><button class="del" data-dc="${i}" aria-label="Quitar">×</button></div>`
+  ).join('');
+  cont.querySelectorAll('input[data-ci]').forEach(inp=>{
+    inp.addEventListener('input', e=>{ S.prueba.conteos[+e.target.dataset.ci]=e.target.value; guardar(); pintarPrueba(); });
+  });
+  cont.querySelectorAll('button[data-dc]').forEach(b=>{
+    b.addEventListener('click', e=>{ S.prueba.conteos.splice(+e.currentTarget.dataset.dc,1); guardar(); pintarListaConteos(); pintarPrueba(); });
+  });
+}
+
+function pintarPrueba(){
+  const r = calcSiembra(), p = S.prueba;
+  const largo = n(p.largo);
+  const porPeso = (p.modo === 'peso');
+  const esperado = porPeso ? r.gMetro*largo : r.semM*largo;
+  setT('oEsperado', isFinite(esperado) ? f(esperado, porPeso?1:0) : '—');
+  setT('kEsperado', porPeso
+    ? 'gramos de semilla que tienen que juntarse en esa tirada, por surco'
+    : 'semillas que tienen que estar en esa tirada, por surco');
+  setT('lblConteos', porPeso ? 'Gramos juntados por cuerpo' : 'Conteo real por cuerpo');
+
+  let semMReal = NaN, prom = NaN, cv = NaN, mn = NaN, mx = NaN;
+  if(p.modo === 'conteo' || porPeso){
+    const vals = p.conteos.map(n).filter(v=>isFinite(v) && v>0);
+    if(vals.length){
+      prom = vals.reduce((a,b)=>a+b,0)/vals.length;
+      mn = Math.min(...vals); mx = Math.max(...vals);
+      if(vals.length>1){
+        const va = vals.reduce((a,b)=>a+Math.pow(b-prom,2),0)/(vals.length-1);
+        cv = Math.sqrt(va)/prom*100;
+      }
+      semMReal = porPeso
+        ? (prom/largo) * (n(S.siembra.pureza)/100) * 1000 / n(S.siembra.pms)
+        : prom / largo;
+    }
+  }else{
+    const esp = n(p.espacios), lar = n(p.largoDist);
+    if(isFinite(esp) && isFinite(lar) && esp>0 && lar>0) semMReal = 100 / (lar/esp);
+  }
+
+  const desvio = (isFinite(semMReal) && isFinite(r.semM) && r.semM>0) ? (semMReal - r.semM)/r.semM*100 : NaN;
+  const distReal = isFinite(semMReal) && semMReal>0 ? 100/semMReal : NaN;
+  const plantas = isFinite(semMReal) ? semMReal * metrosPorHa(r.m) * r.pg * r.lo : NaN;
+  const semLote = isFinite(semMReal) ? semMReal * metrosPorHa(r.m) * n(S.lote.ha) : NaN;
+
+  setT('pSemMetro', isFinite(semMReal) ? f(semMReal,1) : '—');
+  setT('pDesvio', isFinite(desvio) ? (desvio>0?'+':'')+f(desvio,1)+' %' : '—');
+  setT('pProm', isFinite(prom) ? f(prom,1)+(S.prueba.modo==='peso'?' g':' semillas') : '—');
+  setT('pMinMax', (isFinite(mn)&&isFinite(mx)) ? f(mn,0)+' / '+f(mx,0) : '—');
+  setT('pCV', isFinite(cv) ? f(cv,1)+' %' : '—');
+  setT('pDist', isFinite(distReal) ? f(distReal,1)+' cm' : '—');
+  setT('pPlantas', isFinite(plantas) ? f(plantas,0)+' pl/ha' : '—');
+  setT('pSemLote', isFinite(semLote) ? f(semLote,0) : '—');
+
+  const av=[];
+  if(isFinite(desvio)){
+    const ad = Math.abs(desvio);
+    const factor = r.semM/semMReal;
+    const corr = Math.abs(factor-1)*100;
+    const txt = 'La máquina tira '+(desvio<0?'de menos':'de más')+' ('+(desvio>0?'+':'')+f(desvio,1)+' %). '+
+      'Hay que '+(desvio<0?'subir':'bajar')+' la entrega un '+f(corr,1)+' % para llegar al objetivo. '+
+      'Revisá la lista de abajo, corregí y repetí la prueba.';
+    if(ad <= 5) av.push({t:'ok', m:'Está dentro del 5 % ('+(desvio>0?'+':'')+f(desvio,1)+' %). Podés seguir.'});
+    else if(ad <= 10) av.push({t:'', m:txt});
+    else av.push({t:'bad', m:'No siembres así. '+txt});
+  }
+  if(isFinite(cv) && cv > 10) av.push({t:'bad', m:'Los cuerpos tiran muy distinto (CV '+f(cv,1)+' %). Revisá placas, vacío, mangueras y cadenas antes de seguir.'});
+  else if(isFinite(cv) && cv > 5) av.push({t:'', m:'Diferencia entre cuerpos del '+f(cv,1)+' %. Aceptable, pero mirá el cuerpo que se va.'});
+  if(!isFinite(semMReal)) av.push({t:'', m:'Cargá el dato de al menos un cuerpo para comparar.'});
+  R.prueba = {modo:p.modo, largo, semMReal, desvio, cv, prom};
+  flags('flagsPrueba', av);
+  pintarSingulacion();
+  pintarProfundidad();
+  pintarTemperatura();
+  pintarRecuento();
+}
+
+/* ---------------- profundidad ---------------- */
+function pintarProfundidad(){
+  const PT = ptCultivo();
+  const obj = isFinite(n(S.prof.obj)) ? n(S.prof.obj) : PT[0];
+  const tol = obj>=2 ? 1 : 0.5;
+  setT('prRango', f(PT[1],1)+' a '+f(PT[2],1)+' cm');
+  setT('prDentroK', 'dentro de ±'+f(tol,1)+' cm del objetivo');
+  const vals = numList(S.prof.lecturas).filter(v=>v>=0);
+  let prom=NaN, cv=NaN, mn=NaN, mx=NaN, dentro=NaN, dif=NaN;
+  if(vals.length){
+    prom = vals.reduce((a,b)=>a+b,0)/vals.length;
+    mn = Math.min(...vals); mx = Math.max(...vals);
+    if(vals.length>1 && prom>0){ const va=vals.reduce((a,b)=>a+Math.pow(b-prom,2),0)/(vals.length-1); cv=Math.sqrt(va)/prom*100; }
+    dentro = vals.filter(v=>Math.abs(v-obj)<=tol+1e-9).length/vals.length*100;
+    dif = prom-obj;
+  }
+  setT('prProm', isFinite(prom)?f(prom,1):'—');
+  setT('prDentro', isFinite(dentro)?f(dentro,0)+' %':'—');
+  setT('prDif', isFinite(dif)?(dif>0?'+':'')+f(dif,1)+' cm':'—');
+  setT('prMinMax', isFinite(mn)?f(mn,1)+' / '+f(mx,1)+' cm':'—');
+  setT('prCV', isFinite(cv)?f(cv,1)+' %':'—');
+  setT('prN', vals.length?f(vals.length,0):'—');
+
+  const av=[];
+  if(vals.length && vals.length<5) av.push({t:'', m:'Medí al menos 5 semillas, en cuerpos distintos, para que el dato sirva.'});
+  if(isFinite(dif)){
+    if(dif < -tol) av.push({t:'bad', m:'Muy playa: '+f(prom,1)+' cm contra '+f(obj,1)+' de objetivo. La semilla puede secarse y anclar mal. Bajá las ruedas limitadoras.'});
+    else if(dif > tol) av.push({t:'bad', m:'Muy honda: '+f(prom,1)+' cm contra '+f(obj,1)+' de objetivo. Va a tardar en emerger. Subí las ruedas limitadoras.'});
+    if(prom < PT[1]-1e-9 || prom > PT[2]+1e-9) av.push({t:'', m:'El promedio está fuera del rango habitual para el cultivo ('+f(PT[1],1)+' a '+f(PT[2],1)+' cm). Si es a propósito para buscar humedad, ignoralo.'});
+  }
+  if(isFinite(cv) && cv>15) av.push({t:'bad', m:'Profundidad despareja (CV '+f(cv,0)+' %). Revisá resortes de presión, ruedas limitadoras, rastrojo en el surco y velocidad.'});
+  else if(isFinite(dentro) && dentro<80) av.push({t:'', m:'Solo el '+f(dentro,0)+' % de las semillas quedó dentro de ±'+f(tol,1)+' cm. Mirá qué cuerpo se va.'});
+  if(isFinite(dif) && Math.abs(dif)<=tol && (!isFinite(cv)||cv<=15) && dentro>=80) av.push({t:'ok', m:'Profundidad pareja y en el objetivo: '+f(prom,1)+' cm.'});
+  R.prof = {obj, prom, cv, dentro, dif, N:vals.length};
+  flags('flagsProf', av);
+}
+
+/* ---------------- temperatura del suelo ---------------- */
+function pintarTemperatura(){
+  const PT = ptCultivo(), tMin = PT[3], tRec = PT[4];
+  const nom = ((CULTIVOS[S.siembra.cultivo]||{}).nombre||'el cultivo').toLowerCase();
+  setT('tpUmbral', 'Para '+nom+': mínimo '+f(tMin,0)+' °C, recomendado '+f(tRec,0)+' °C sostenido 3 días seguidos.');
+  const vals = numList(S.temp.lecturas);
+  let ult=NaN, prom3=NaN, min3=NaN, seguidos=0;
+  if(vals.length){
+    ult = vals[vals.length-1];
+    const u3 = vals.slice(-3);
+    prom3 = u3.reduce((a,b)=>a+b,0)/u3.length; min3 = Math.min(...u3);
+    for(let i=vals.length-1; i>=0 && vals[i]>=tRec; i--) seguidos++;
+  }
+  setT('tpUlt', isFinite(ult)?f(ult,1):'—');
+  setT('tpSeguidos', vals.length?f(seguidos,0):'—');
+  setT('tpProm3', isFinite(prom3)?f(prom3,1)+' °C':'—');
+  setT('tpMin3', isFinite(min3)?f(min3,1)+' °C':'—');
+
+  const av=[];
+  if(vals.length){
+    if(seguidos>=3) av.push({t:'ok', m:'Condición cumplida: '+seguidos+' días seguidos a '+f(tRec,0)+' °C o más.'});
+    else if(ult < tMin) av.push({t:'bad', m:'Suelo frío: '+f(ult,1)+' °C, por debajo del mínimo de '+f(tMin,0)+' °C. Conviene esperar: la semilla tarda en nacer y aumentan las fallas.'});
+    else if(ult < tRec) av.push({t:'', m:'Entre el mínimo y lo recomendado. Se puede sembrar, pero la emergencia va a ser más lenta y despareja.'});
+    else av.push({t:'', m:'Ya está en '+f(ult,1)+' °C, pero van '+seguidos+' de 3 días seguidos en lo recomendado.'});
+    if(vals.length<3) av.push({t:'', m:'Hacen falta al menos 3 días de lecturas para decidir.'});
+    if(vals.length>=3){ const a=vals.slice(-3); if(a[0]>a[1] && a[1]>a[2]) av.push({t:'', m:'La temperatura viene bajando en los últimos 3 días. Mirá el pronóstico antes de decidir.'}); }
+  }
+  R.temp = {ult, prom3, min3, seguidos, tMin, tRec, N:vals.length};
+  flags('flagsTemp', av);
+}
+
+/* ---------------- distribución en la línea ---------------- */
+function pintarSingulacion(){
+  const r = calcSiembra();
+  const teor = r.distSem;
+  const vals = String(S.prueba.espaciamientos||'').split(/[\s;]+/).map(n).filter(v=>isFinite(v)&&v>0);
+  const N = vals.length;
+
+  let pA=NaN, pF=NaN, pD=NaN, prec=NaN, medio=NaN, plantas=NaN, faltantes=NaN;
+  if(N && isFinite(teor) && teor>0){
+    const acept = vals.filter(v=> v>=0.5*teor && v<=1.5*teor);
+    const dup   = vals.filter(v=> v<0.5*teor);
+    const fall  = vals.filter(v=> v>1.5*teor);
+    pA = acept.length/N*100; pD = dup.length/N*100; pF = fall.length/N*100;
+    faltantes = fall.reduce((a,v)=>a+(Math.round(v/teor)-1),0);
+    if(acept.length>1){
+      const ma = acept.reduce((a,b)=>a+b,0)/acept.length;
+      const va = acept.reduce((a,b)=>a+Math.pow(b-ma,2),0)/(acept.length-1);
+      prec = Math.sqrt(va)/teor*100;
+    }
+    medio = vals.reduce((a,b)=>a+b,0)/N;
+    plantas = (100/medio) * metrosPorHa(r.m) * r.pg * r.lo;
+  }
+
+  setT('sAcept', isFinite(pA)?f(pA,0)+' %':'—');
+  setT('sPrec', isFinite(prec)?f(prec,0)+' %':'—');
+  setT('sTeorico', isFinite(teor)?f(teor,1)+' cm':'—');
+  setT('sMedio', isFinite(medio)?f(medio,1)+' cm':'—');
+  setT('sFallas', isFinite(pF)?f(pF,0)+' %'+(faltantes>0?' ('+f(faltantes,0)+' semillas)':''):'—');
+  setT('sDup', isFinite(pD)?f(pD,0)+' %':'—');
+  setT('sN', N?f(N,0):'—');
+  setT('sPlantas', isFinite(plantas)?f(plantas,0)+' pl/ha':'—');
+
+  const av=[];
+  if(N && N<20) av.push({t:'', m:'Con '+N+' espaciamientos el dato es flojo. Medí al menos 20 o 25 para que sirva.'});
+  if(isFinite(pA)){
+    if(pA>=90) av.push({t:'ok', m:'Distribución muy buena: '+f(pA,0)+' % de aceptables.'});
+    else if(pA>=80) av.push({t:'', m:'Aceptables '+f(pA,0)+' %. Pasable, pero hay margen para mejorar.'});
+    else av.push({t:'bad', m:'Solo '+f(pA,0)+' % de aceptables. La máquina no está singularizando bien.'});
+  }
+  if(isFinite(pD) && pD>10) av.push({t:'bad', m:f(pD,0)+' % de duplicados: sobra semilla en la placa. Revisá el expulsor, el vacío o el tamaño de la placa contra el calibre de la semilla.'});
+  if(isFinite(pF) && pF>10) av.push({t:'bad', m:f(pF,0)+' % de fallas: faltan semillas. Fijate vacío bajo, placa tapada o velocidad excesiva.'});
+  if(isFinite(prec)){
+    if(prec>29) av.push({t:'bad', m:'Precisión '+f(prec,0)+' %: mala. Suele ser tubo de bajada, rebote en el surco o velocidad de más.'});
+    else if(prec>20) av.push({t:'', m:'Precisión '+f(prec,0)+' %: regular.'});
+    else if(prec<15) av.push({t:'ok', m:'Precisión '+f(prec,0)+' %: muy buena.'});
+  }
+  R.sing = {pA, pF, pD, prec, N};
+  flags('flagsSing', av);
+}
+
+/* ---------------- fertilizante ---------------- */
+function prodDe(ft){
+  const p = PRODUCTOS[ft.producto] || PRODUCTOS.custom;
+  if(ft.producto === 'custom') return {nombre:'Personalizado', N:n(ft.cN)||0, P:n(ft.cP)||0, S:n(ft.cS)||0, K:0, da:1};
+  return p;
+}
+function prodActual(){ return prodDe(S.fert); }
+function kgHaFert(ft){
+  const prod = prodDe(ft);
+  if(ft.modo === 'producto') return n(ft.kgFert);
+  const pct = ft.nutriente==='N' ? prod.N : (ft.nutriente==='P' ? prod.P : prod.S);
+  return pct>0 ? n(ft.unidades)/(pct/100) : NaN;
+}
+function pintarFert(){
+  const r = calcSiembra(), ft = S.fert, prod = prodActual(), m = r.m;
+  const kgHa = kgHaFertObjetivo();
+  const ha = n(S.lote.ha);
+  const kgTot = kgHa*ha, tn = kgTot/1000;
+  const bolsones = kgTot / n(ft.bolson);
+  const gm = n(ft.linea)>=1 ? kgHa * distM(m) * 0.1 : NaN;
+  const litros = prod.dens ? kgTot/prod.dens : NaN;
+  const uN = kgHa*prod.N/100, uP = kgHa*prod.P/100, uS = kgHa*prod.S/100;
+  const haTolva = (kgHa>0) ? kgTolvaFert(m)/kgHa : NaN;
+  const mTolva = haTolva * (metrosPorHa(m));
+
+  setT('fTn', isFinite(tn)?f(tn,2):'—');
+  setT('fGm', isFinite(gm)?f(gm,1):(n(ft.linea)>=1?'—':'voleo'));
+  setT('fKgHa', isFinite(kgHa)?f(kgHa,1)+' kg/ha':'—');
+  setT('fKgTot', isFinite(kgTot)?f(kgTot,0)+' kg':'—');
+  setT('fBolsones', isFinite(bolsones)?f(Math.ceil(bolsones),0)+' ('+f(bolsones,2)+')':'—');
+  setT('fLitros', isFinite(litros)?f(litros,0)+' l':'—');
+  const un=[]; if(uN>0)un.push(f(uN,1)+' N'); if(uP>0)un.push(f(uP,1)+' P₂O₅'); if(uS>0)un.push(f(uS,1)+' S');
+  setT('fUnid', un.length?un.join(' · '):'—');
+  const unT=[]; if(uN>0)unT.push(f(uN*ha,0)+' N'); if(uP>0)unT.push(f(uP*ha,0)+' P₂O₅'); if(uS>0)unT.push(f(uS*ha,0)+' S');
+  setT('fUnidTot', unT.length?unT.join(' · ')+' kg':'—');
+  setT('fHaTolva', isFinite(haTolva)?f(haTolva,1)+' ha':'—');
+  setT('fMetrosTolva', isFinite(mTolva)?f(mTolva,0)+' m':'—');
+
+  const av=[];
+  if(ft.modo==='nutriente'){
+    const pct = ft.nutriente==='N'?prod.N:(ft.nutriente==='P'?prod.P:prod.S);
+    if(!pct) av.push({t:'bad', m:'Ese producto no aporta el nutriente elegido. Cambiá el producto o el nutriente.'});
+  }
+  if(n(ft.linea)===1 && isFinite(kgHa) && kgHa > 80) av.push({t:'', m:'Son '+f(kgHa,0)+' kg/ha en la línea. Fijate el límite de fertilizante en contacto con la semilla, sobre todo con suelo seco.'});
+  if(isFinite(haTolva) && isFinite(n(S.lote.ha)) && haTolva>0 && haTolva < 10) av.push({t:'', m:'Con esa dosis la tolva te dura '+f(haTolva,1)+' ha. Vas a parar seguido a recargar.'});
+  if(isFinite(bolsones)) av.push({t:'ok', m:'Para el lote: '+f(tn,2)+' t, o sea '+f(Math.ceil(bolsones),0)+' bolsones de '+f(n(ft.bolson),0)+' kg.'});
+  R.fert1 = {producto:prod.nombre, kgHa, kgTot, tn, bolsones, gm, uN, uP, uS, linea:n(ft.linea)};
+  flags('flagsFert', av);
+  pintarFert2();
+  pintarPruebaFert();
+}
+
+function kgHaFertObjetivo(){ return kgHaFert(S.fert); }
+
+/* ---------------- segundo fertilizante ---------------- */
+function pintarFert2(){
+  const ft = S.fert2, m = maq();
+  if(!ft.activo){ R.fert2 = null; return; }
+  const prod = prodDe(ft), kgHa = kgHaFert(ft), ha = n(S.lote.ha);
+  const kgTot = kgHa*ha, tn = kgTot/1000, bolsones = kgTot/n(ft.bolson);
+  const gm = n(ft.linea)>=1 ? kgHa*distM(m)*0.1 : NaN;
+  const litros = prod.dens ? kgTot/prod.dens : NaN;
+  const uN = kgHa*prod.N/100, uP = kgHa*prod.P/100, uS = kgHa*prod.S/100;
+  const haTolva = kgHa>0 ? n(m&&m.tolvaFert2L)*(prod.da||1)/kgHa : NaN;
+  setT('gTn', isFinite(tn)?f(tn,2):'—');
+  setT('gGm', isFinite(gm)?f(gm,1):(n(ft.linea)>=1?'—':'voleo'));
+  setT('gKgHa', isFinite(kgHa)?f(kgHa,1)+' kg/ha':'—');
+  setT('gKgTot', isFinite(kgTot)?f(kgTot,0)+' kg':'—');
+  setT('gBolsones', isFinite(bolsones)?f(Math.ceil(bolsones),0)+' ('+f(bolsones,2)+')':'—');
+  setT('gLitros', isFinite(litros)?f(litros,0)+' l':'—');
+  const un=[]; if(uN>0)un.push(f(uN,1)+' N'); if(uP>0)un.push(f(uP,1)+' P₂O₅'); if(uS>0)un.push(f(uS,1)+' S');
+  setT('gUnid', un.length?un.join(' · '):'—');
+  setT('gHaTolva', isFinite(haTolva)?f(haTolva,1)+' ha':'cargá la 2.ª tolva en Máquina');
+  R.fert2 = {producto:prod.nombre, kgHa, kgTot, tn, bolsones, gm, uN, uP, uS, linea:n(ft.linea)};
+
+  /* totales de los dos productos */
+  const a = R.fert1 || {}, t = {uN:(a.uN||0)+uN, uP:(a.uP||0)+uP, uS:(a.uS||0)+uS};
+  const tu=[]; if(t.uN>0)tu.push(f(t.uN,1)+' N'); if(t.uP>0)tu.push(f(t.uP,1)+' P₂O₅'); if(t.uS>0)tu.push(f(t.uS,1)+' S');
+  setT('totUnid', tu.length?tu.join(' · '):'—');
+  const tt=[]; if(t.uN>0)tt.push(f(t.uN*ha,0)+' N'); if(t.uP>0)tt.push(f(t.uP*ha,0)+' P₂O₅'); if(t.uS>0)tt.push(f(t.uS*ha,0)+' S');
+  setT('totUnidTot', tt.length?tt.join(' · ')+' kg':'—');
+  const enLinea = (a.linea===1 && isFinite(a.kgHa) ? a.kgHa : 0) + (n(ft.linea)===1 && isFinite(kgHa) ? kgHa : 0);
+  setT('totLinea', f(enLinea,1)+' kg/ha');
+
+  const av=[];
+  if(ft.modo==='nutriente'){
+    const pct = ft.nutriente==='N'?prod.N:(ft.nutriente==='P'?prod.P:prod.S);
+    if(!pct) av.push({t:'bad', m:'Ese producto no aporta el nutriente elegido.'});
+  }
+  if(enLinea > 80) av.push({t:'', m:'Entre los dos van '+f(enLinea,0)+' kg/ha en contacto con la semilla. Fijate el límite, sobre todo con suelo seco.'});
+  if(isFinite(bolsones)) av.push({t:'ok', m:'Para el lote: '+f(tn,2)+' t, o sea '+f(Math.ceil(bolsones),0)+' bolsones de '+f(n(ft.bolson),0)+' kg.'});
+  flags('flagsFert2', av);
+}
+
+function pintarPruebaFert(){
+  const m = maq(), d = distM(m), fp = S.fert;
+  const usa2 = !!(S.fert2.activo && n(fp.fpProd)===2);
+  const ft = usa2 ? S.fert2 : S.fert;
+  const kgHa = kgHaFert(ft);
+  $('#wrapFpProd').style.display = S.fert2.activo ? 'block' : 'none';
+  const gmObj = kgHa * d * 0.1;
+  const largo = n(fp.fpLargo);
+  const esperado = gmObj * largo;
+  setT('fpEsperado', (n(ft.linea)>=1 && isFinite(esperado)) ? f(esperado,1) : '—');
+
+  const vals = String(fp.fpGramos||'').split(/[\s;]+/).map(n).filter(v=>isFinite(v)&&v>0);
+  let prom=NaN, cv=NaN, mn=NaN, mx=NaN, gmReal=NaN, kgHaReal=NaN, desvio=NaN;
+  if(vals.length && largo>0 && d>0){
+    prom = vals.reduce((a,b)=>a+b,0)/vals.length;
+    mn = Math.min(...vals); mx = Math.max(...vals);
+    if(vals.length>1){ const va = vals.reduce((a,b)=>a+Math.pow(b-prom,2),0)/(vals.length-1); cv = Math.sqrt(va)/prom*100; }
+    gmReal = prom/largo;
+    kgHaReal = gmReal/(d*0.1);
+    desvio = (kgHaReal-kgHa)/kgHa*100;
+  }
+  setT('fpKgHa', isFinite(kgHaReal)?f(kgHaReal,1):'—');
+  setT('fpDesvio', isFinite(desvio)?(desvio>0?'+':'')+f(desvio,1)+' %':'—');
+  setT('fpProm', isFinite(prom)?f(prom,1)+' g':'—');
+  setT('fpGm', isFinite(gmReal)?f(gmReal,2)+' g/m':'—');
+  setT('fpCV', isFinite(cv)?f(cv,1)+' %':'—');
+  setT('fpMinMax', isFinite(mn)?f(mn,0)+' / '+f(mx,0)+' g':'—');
+
+  const av=[];
+  if(!(n(ft.linea)>=1)) av.push({t:'', m:'Esta prueba es para fertilizante en la línea o al costado. Para voleo se regula con bandejas y el perfil de distribución.'});
+  if(isFinite(desvio)){
+    const ad=Math.abs(desvio), corr=Math.abs(kgHa/kgHaReal-1)*100;
+    const txt='Tira '+(desvio<0?'de menos':'de más')+' ('+(desvio>0?'+':'')+f(desvio,1)+' %): está entregando '+f(kgHaReal,1)+' kg/ha contra '+f(kgHa,1)+'. Hay que '+(desvio<0?'subir':'bajar')+' la entrega un '+f(corr,1)+' %.';
+    if(ad<=5) av.push({t:'ok', m:'Dentro del 5 %: '+f(kgHaReal,1)+' kg/ha contra '+f(kgHa,1)+'. Podés seguir.'});
+    else if(ad<=10) av.push({t:'', m:txt+' Corregí y repetí.'});
+    else av.push({t:'bad', m:'No fertilices así. '+txt});
+  }
+  if(isFinite(cv) && cv>10) av.push({t:'bad', m:'Las bajadas tiran muy distinto (CV '+f(cv,1)+' %). Buscá la manguera o el dosificador que se va.'});
+  R.fertPrueba = {producto: usa2?2:1, kgHaReal, desvio, largo};
+  flags('flagsFertPrueba', av);
+}
+
+/* ---------------- trabajo ---------------- */
+function pintarListaEquipos(){
+  const cont = $('#listaEquipos');
+  cont.innerHTML = S.maquinas.map(m=>{
+    const on = S.trabajo.equipos.includes(m.id);
+    return `<div class="maq ${on?'sel':''}" data-eq="${m.id}">
+      <div class="hd"><span class="nm">${m.nombre}</span><span class="maq-meta">${on?'en el lote':'fuera'}</span></div>
+      <div class="dt">${f(ancho(m),2)} m · ${f(n(m.vel),1)} km/h · ef ${f(n(m.ef),0)} % · ${f(ancho(m)*n(m.vel)/10*n(m.ef)/100,2)} ha/h</div>
+    </div>`;
+  }).join('');
+  cont.querySelectorAll('[data-eq]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const id = el.dataset.eq;
+      const i = S.trabajo.equipos.indexOf(id);
+      if(i>=0) S.trabajo.equipos.splice(i,1); else S.trabajo.equipos.push(id);
+      guardar(); pintarListaEquipos(); pintarTrabajo();
+    });
+  });
+}
+
+function pintarTrabajo(){
+  const r = calcSiembra();
+  const ha = n(S.lote.ha), hechas = n(S.trabajo.hechas)||0;
+  const faltan = Math.max(ha - hechas, 0);
+  const jornada = n(S.trabajo.jornada);
+  const eqs = S.maquinas.filter(m=>S.trabajo.equipos.includes(m.id));
+  let haHoraT=0, haHora=0;
+  const detalle = eqs.map(m=>{
+    const t = ancho(m)*n(m.vel)/10;
+    const e = t*n(m.ef)/100;
+    haHoraT += t; haHora += e;
+    return `<div class="ln"><span>${m.nombre}</span><b>${f(e,2)} ha/h · ${f(e*jornada,1)} ha/día</b></div>`;
+  }).join('');
+  const haDia = haHora*jornada;
+  const dias = haDia>0 ? faltan/haDia : NaN;
+  const horas = haHora>0 ? faltan/haHora : NaN;
+
+  const m = r.m;
+  const haSem = (r.kgHa>0) ? kgTolvaSem(m)/r.kgHa : NaN;
+  const eEq = m ? ancho(m)*n(m.vel)/10*n(m.ef)/100 : NaN;
+  const recarga = (isFinite(haSem)&&eEq>0) ? haSem/eEq : NaN;
+  const recargas = isFinite(haSem)&&haSem>0 ? faltan/haSem : NaN;
+
+  setT('tHaDia', isFinite(haDia)&&haDia>0?f(haDia,0):'—');
+  setT('tDias', isFinite(dias)?f(dias,1):'—');
+  setT('tHaHora', haHora>0?f(haHora,2)+' ha/h':'—');
+  setT('tHaHoraT', haHoraT>0?f(haHoraT,2)+' ha/h':'—');
+  setT('tFaltan', isFinite(faltan)?f(faltan,1)+' ha':'—');
+  setT('tHoras', isFinite(horas)?f(horas,1)+' h':'—');
+  setT('tHaSem', isFinite(haSem)?f(haSem,1)+' ha':'—');
+  setT('tRecarga', isFinite(recarga)?f(recarga,1)+' h':'—');
+  setT('tRecargas', isFinite(recargas)?f(Math.ceil(recargas),0):'—');
+  $('#detalleEquipos').innerHTML = detalle;
+
+  const av=[];
+  if(!eqs.length) av.push({t:'bad', m:'Elegí al menos un equipo para el lote.'});
+  if(isFinite(dias) && dias>0) av.push({t:'ok', m:'Con '+eqs.length+' equipo'+(eqs.length>1?'s':'')+' y '+f(jornada,0)+' h por día, el lote sale en '+f(dias,1)+' días ('+f(Math.ceil(dias),0)+' jornadas).'});
+  eqs.forEach(m2=>{ if(n(m2.ef)>90) av.push({t:'', m:m2.nombre+': una eficiencia del '+f(n(m2.ef),0)+' % es muy optimista. En siembra suele ser 65-80 %.'}); });
+  R.trabajo = {haHora, haDia, dias};
+  flags('flagsTrabajo', av);
+}
+
+/* ---------------- máquinas ---------------- */
+let editId = null;
+function pintarMaquinas(){
+  const cont = $('#listaMaquinas');
+  cont.innerHTML = S.maquinas.map(m=>{
+    const cargada = isFinite(n(m.cuerpos)) && isFinite(n(m.dist));
+    return `
+    <div class="maq ${m.id===S.maqId?'sel':''}">
+      <div class="hd"><span class="nm">${xmlEsc(m.nombre)}</span><span class="maq-meta">${m.tipo==='fina'?'fina':'gruesa'}${m.id===S.maqId?' · activa':''}</span></div>
+      <div class="dt">${cargada ? f(n(m.cuerpos),0)+' cuerpos × '+f(n(m.dist),1)+' cm = '+f(ancho(m),2)+' m · semilla '+f(n(m.tolvaSemL),0)+' l · fert. '+f(n(m.tolvaFertL),0)+' l' : 'Sin cargar: tocá Editar y completá los datos.'}</div>
+      <div class="btnrow">
+        <button class="act ghost mini" data-usar="${m.id}">Usar</button>
+        <button class="act ghost mini" data-edit="${m.id}">Editar</button>
+        ${m.fija ? `<button class="act ghost mini" data-vaciar="${m.id}">Vaciar</button>` : `<button class="act ghost mini" data-borrar="${m.id}">Borrar</button>`}
+      </div>
+    </div>`; }).join('');
+  cont.querySelectorAll('[data-usar]').forEach(b=>b.addEventListener('click',e=>{ S.maqId=e.target.dataset.usar; guardar(); pintarTodo(); }));
+  cont.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',e=>abrirEditor(e.target.dataset.edit)));
+  cont.querySelectorAll('[data-vaciar]').forEach(b=>b.addEventListener('click',async e=>{
+    const id=e.currentTarget.dataset.vaciar, mq=S.maquinas.find(x=>x.id===id);
+    if(!mq) return;
+    if(!(await preguntar('¿Vaciar los datos de "'+mq.nombre+'"? La sembradora de '+mq.tipo+' queda en la lista, en blanco. Los registros ya guardados no se tocan.','Vaciar'))) return;
+    Object.assign(mq, maqVacia(mq.id, mq.tipo));
+    $('#editorMaq').style.display='none';
+    guardar(); pintarTodo();
+  }));
+  cont.querySelectorAll('[data-borrar]').forEach(b=>b.addEventListener('click',async e=>{
+    const id=e.currentTarget.dataset.borrar;
+    if((S.maquinas.find(x=>x.id===id)||{}).fija){ avisar('La sembradora de gruesa y la de fina no se borran. Podés vaciarlas.'); return; }
+    const mq = S.maquinas.find(x=>x.id===id);
+    if(!(await preguntar('¿Borrar la máquina "'+(mq?mq.nombre:'')+'"? Los registros ya guardados no se tocan.'))) return;
+    S.maquinas = S.maquinas.filter(x=>x.id!==id);
+    S.trabajo.equipos = S.trabajo.equipos.filter(x=>x!==id);
+    if(S.maqId===id) S.maqId = S.maquinas[0].id;
+    guardar(); pintarTodo();
+  }));
+
+  const sel = $('#maqSel');
+  const opt = m=>`<option value="${m.id}" ${m.id===S.maqId?'selected':''}>${xmlEsc(m.nombre)}</option>`;
+  sel.innerHTML = `<optgroup label="Gruesa">${S.maquinas.filter(m=>m.tipo!=='fina').map(opt).join('')}</optgroup>`+
+                  `<optgroup label="Fina">${S.maquinas.filter(m=>m.tipo==='fina').map(opt).join('')}</optgroup>`;
+  const m = maq();
+  $('#maqMeta').textContent = m ? f(n(m.cuerpos),0)+' × '+f(n(m.dist),1)+' cm · '+f(ancho(m),2)+' m' : '';
+}
+
+function abrirEditor(id){
+  editId = id;
+  const m = S.maquinas.find(x=>x.id===id); if(!m) return;
+  $('#editorMaq').style.display='block';
+  $('#tituloMaq').textContent = 'Editar sembradora de '+(m.tipo==='fina'?'fina':'gruesa');
+  $('#mNombre').value=m.nombre; $('#mCuerpos').value=m.cuerpos; $('#mDist').value=m.dist;
+  $('#mTolvaSem').value=(m.tolvaSemL===undefined||m.tolvaSemL===null)?'':m.tolvaSemL;
+  $('#mTolvaFert').value=(m.tolvaFertL===undefined||m.tolvaFertL===null)?'':m.tolvaFertL;
+  $('#mTolvaFert2').value=(m.tolvaFert2L===undefined||m.tolvaFert2L===null||(typeof m.tolvaFert2L==='number'&&!isFinite(m.tolvaFert2L)))?'':m.tolvaFert2L;
+  $('#mVel').value=m.vel; $('#mEf').value=m.ef;
+  actualizarDerivadosMaq();
+  if($('#editorMaq').scrollIntoView) $('#editorMaq').scrollIntoView({block:'start'});
+}
+function actualizarDerivadosMaq(){
+  const tmp = {cuerpos:n($('#mCuerpos').value), dist:n($('#mDist').value)};
+  setT('mAncho', isFinite(ancho(tmp))&&ancho(tmp)>0?f(ancho(tmp),2)+' m':'—');
+  setT('mMetros', isFinite(metrosPorHa(tmp))?f(metrosPorHa(tmp),0)+' m':'—');
+  const c = CULTIVOS[S.siembra.cultivo]||CULTIVOS.otro, p = prodActual();
+  const ls = n($('#mTolvaSem').value), lf = n($('#mTolvaFert').value);
+  setT('mKgSem',  isFinite(ls) ? '≈ '+f(ls*c.dens,0)+' kg de '+c.nombre.toLowerCase() : '—');
+  setT('mKgFert', isFinite(lf) ? '≈ '+f(lf*(p.da||1),0)+' kg de '+p.nombre.split(' (')[0] : '—');
+}
+['#mCuerpos','#mDist','#mTolvaSem','#mTolvaFert'].forEach(s=>$(s).addEventListener('input',actualizarDerivadosMaq));
+
+
+$('#btnGuardarMaq').addEventListener('click', ()=>{
+  const m = S.maquinas.find(x=>x.id===editId); if(!m) return;
+  m.nombre = $('#mNombre').value || 'Sin nombre';
+  m.cuerpos = n($('#mCuerpos').value); m.dist = n($('#mDist').value);
+  m.tolvaSemL = n($('#mTolvaSem').value); m.tolvaFertL = n($('#mTolvaFert').value); m.tolvaFert2L = n($('#mTolvaFert2').value);
+  m.vel = n($('#mVel').value); m.ef = n($('#mEf').value);
+  guardar(); $('#editorMaq').style.display='none'; pintarTodo();
+  setT('maqStamp', 'Máquina guardada: '+m.nombre);
+  setTimeout(()=>setT('maqStamp',''), 4000);
+});
+$('#btnCerrarMaq').addEventListener('click', ()=>{ $('#editorMaq').style.display='none'; });
+$('#btnNuevaMaq').addEventListener('click', async ()=>{
+  const r = await dialogo('¿Qué sembradora agregás?', {si:'De gruesa', otro:'De fina', no:'Cancelar'});
+  if(r===false) return;
+  const tipo = r===true ? 'gruesa' : 'fina';
+  const cuantas = S.maquinas.filter(m=>m.tipo===tipo).length;
+  const id = uid();
+  S.maquinas.push({id, tipo, fija:false, nombre:'Sembradora de '+tipo+' '+(cuantas+1), cuerpos:'', dist:'', tolvaSemL:'', tolvaFertL:'', tolvaFert2L:'', vel: tipo==='gruesa'?7:8, ef:75});
+  asegurarBase(); guardar(); pintarMaquinas(); abrirEditor(id);
+});
+
+$('#btnCalcular').addEventListener('click', ()=>{
+  pintarSiembra();
+  const h = new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false});
+  setT('calcStamp', 'Calculado '+h+' — resultados abajo');
+  const box = $('#resultadoSiembra');
+  if(box && box.scrollIntoView) box.scrollIntoView({block:'start', behavior:'smooth'});
+});
+
+$('#btnReset').addEventListener('click', async ()=>{
+  if(!(await preguntar('¿Volver a los valores de fábrica? Se pierden las máquinas, los datos cargados y los registros de lotes.', 'Restablecer'))) return;
+  S = JSON.parse(JSON.stringify(DEFECTO));
+  asegurarBase();
+  guardar();
+  $('#editorMaq').style.display='none';
+  pintarTodo();
+});
+
+/* ---------------- binding de inputs ---------------- */
+function seg(sel, _unused, set){
+  const box = $(sel);
+  box.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{ set(b.dataset.v); guardar(); pintarTodo(); });
+  });
+}
+function pintarSeg(sel, val){
+  $(sel).querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.v===String(val))));
+}
+
+(function(){
+  const fams = {};
+  Object.entries(CULTIVOS).forEach(([k,v])=>{ (fams[v.fam]=fams[v.fam]||[]).push(`<option value="${k}">${v.nombre}</option>`); });
+  $('#cultivo').innerHTML = Object.entries(fams).map(([fam,o])=>`<optgroup label="${fam}">${o.join('')}</optgroup>`).join('');
+})();
+$('#producto').innerHTML = Object.entries(PRODUCTOS).map(([k,v])=>`<option value="${k}">${v.nombre}</option>`).join('');
+
+$('#cultivo').addEventListener('change', e=>{
+  const k = e.target.value, c = CULTIVOS[k];
+  S.siembra.cultivo = k;
+  S.siembra.modoObj = c.modo; S.siembra.objetivo = c.obj; S.siembra.pg = c.pg;
+  S.siembra.pureza = c.pu; S.siembra.logro = c.logro; S.siembra.pms = c.pms; S.siembra.pres = c.pres;
+  S.prof.obj = (PROF_TEMP[k]||PROF_TEMP.otro)[0];
+  if(c.semBolsa) S.siembra.semBolsa = c.semBolsa;
+  if(c.kgBolsa) S.siembra.kgBolsa = c.kgBolsa;
+  guardar(); pintarTodo();
+});
+$('#producto').addEventListener('change', e=>{ S.fert.producto = e.target.value; guardar(); pintarTodo(); });
+
+$('#maqSel').addEventListener('change', e=>{ S.maqId = e.target.value; guardar(); pintarTodo(); });
+
+seg('#segObj', null, v=>{
+  if(v===S.siembra.modoObj) return;
+  const val = n(S.siembra.objetivo);
+  S.siembra.objetivo = v==='m2' ? val/10000 : val*10000;
+  S.siembra.modoObj = v;
+});
+seg('#segBolsa', null, v=>{ S.siembra.pres = v; });
+seg('#segPrueba', null, v=>{ S.prueba.modo = v; });
+seg('#segLargo', null, v=>{ S.prueba.largo = +v; });
+seg('#segFert', null, v=>{ S.fert.modo = v; });
+seg('#segNut', null, v=>{ S.fert.nutriente = v; });
+seg('#segLinea', null, v=>{ S.fert.linea = +v; });
+seg('#segF2', null, v=>{ S.fert2.activo = +v; });
+seg('#segFert2', null, v=>{ S.fert2.modo = v; });
+seg('#segNut2', null, v=>{ S.fert2.nutriente = v; });
+seg('#segLinea2', null, v=>{ S.fert2.linea = +v; });
+seg('#segFpProd', null, v=>{ S.fert.fpProd = +v; });
+$('#gProducto').innerHTML = Object.entries(PRODUCTOS).map(([k,v])=>`<option value="${k}">${v.nombre}</option>`).join('');
+$('#gProducto').addEventListener('change', e=>{ S.fert2.producto = e.target.value; guardar(); pintarTodo(); });
+
+$('#btnAddConteo').addEventListener('click', ()=>{ S.prueba.conteos.push(''); guardar(); pintarListaConteos(); pintarPrueba(); });
+
+$('#btnCopiar').addEventListener('click', async ()=>{
+  const r = calcSiembra(), s = S.siembra;
+  const txt = [
+    'Lote '+(S.lote.nombre||'sin nombre')+' — '+f(n(S.lote.ha),1)+' ha',
+    (CULTIVOS[s.cultivo]||{}).nombre+' · '+(r.m?r.m.nombre:'')+' a '+f(n(r.m&&r.m.dist),1)+' cm',
+    'Semillas/ha: '+f(r.semHa,0),
+    'Valor cultural: '+f(r.vc*100,1)+' % (PG '+f(n(s.pg),0)+' % · pureza '+f(n(s.pureza),0)+' %)',
+    'Semillas por metro: '+f(r.semM,1)+'  |  '+f(r.gMetro,2)+' g/m',
+    'Una semilla cada '+f(r.distSem,1)+' cm',
+    'En 10 m tienen que haber '+f(r.semM*10,0)+' semillas',
+    'Kg/ha: '+f(r.kgHa,1)+'  |  Total: '+f(r.kgTot,0)+' kg',
+    'Bolsas: '+r.bolsasTxt
+  ].join('\n');
+  try{ await navigator.clipboard.writeText(txt); $('#btnCopiar').textContent='Copiado'; setTimeout(()=>$('#btnCopiar').textContent='Copiar resumen',1600); }
+  catch(e){ avisar(txt); }
+});
+
+/* ---------------- recuento de plantas ---------------- */
+function pintarRecuento(){
+  const r = calcSiembra(), rc = S.recuento;
+  const largo = n(rc.largo);
+  const vals = String(rc.plantas||'').split(/[\s;]+/).map(n).filter(v=>isFinite(v)&&v>=0);
+  const objHa = S.siembra.modoObj==='m2' ? n(S.siembra.objetivo)*10000 : n(S.siembra.objetivo);
+  let prom=NaN, cv=NaN, plM=NaN, plHa=NaN, logro=NaN, vsObj=NaN, base=NaN, dePrueba=false;
+  if(vals.length && largo>0){
+    prom = vals.reduce((a,b)=>a+b,0)/vals.length;
+    if(vals.length>1 && prom>0){ const va=vals.reduce((a,b)=>a+Math.pow(b-prom,2),0)/(vals.length-1); cv=Math.sqrt(va)/prom*100; }
+    plM = prom/largo;
+    plHa = plM*metrosPorHa(r.m);
+    const semReal = (R.prueba && isFinite(R.prueba.semMReal)) ? R.prueba.semMReal*metrosPorHa(r.m) : NaN;
+    dePrueba = isFinite(semReal);
+    base = dePrueba ? semReal : r.semHa;
+    logro = plHa/(base*r.pg)*100;
+    vsObj = (plHa-objHa)/objHa*100;
+  }
+  setT('rcPlHa', isFinite(plHa)?f(plHa,0):'—');
+  setT('rcLogro', isFinite(logro)?f(logro,0)+' %':'—');
+  setT('rcPlM', isFinite(plM)?f(plM,2):'—');
+  setT('rcVsObj', isFinite(vsObj)?(vsObj>0?'+':'')+f(vsObj,1)+' %':'—');
+  setT('rcCV', isFinite(cv)?f(cv,1)+' %':'—');
+  setT('rcBase', isFinite(base)?f(base,0)+(dePrueba?' (de la prueba)':' (de la dosis)'):'—');
+
+  const av=[];
+  if(vals.length && vals.length<4) av.push({t:'', m:'Contá en al menos 4 o 5 lugares distintos para que el dato represente al lote.'});
+  if(isFinite(logro) && logro>100) av.push({t:'bad', m:'El logro da más de 100 %: no puede haber más plantas que semillas viables. Revisá el conteo, los metros o el poder germinativo.'});
+  else if(isFinite(logro)){
+    const cargado = n(S.siembra.logro);
+    if(Math.abs(logro-cargado) <= 3) av.push({t:'ok', m:'El logro real ('+f(logro,0)+' %) coincide con el que cargaste ('+f(cargado,0)+' %).'});
+    else av.push({t:'', m:'Cargaste '+f(cargado,0)+' % de logro y en el lote dio '+f(logro,0)+' %. Para lotes parecidos, usá '+f(logro,0)+' % la próxima vez.'});
+  }
+  if(isFinite(vsObj)){
+    if(Math.abs(vsObj)<=10) av.push({t:'ok', m:'Estás a '+(vsObj>0?'+':'')+f(vsObj,1)+' % del objetivo de plantas.'});
+    else if(vsObj<-10) av.push({t:'bad', m:'Quedaste '+f(Math.abs(vsObj),1)+' % abajo del objetivo. Consultalo con el ingeniero antes de decidir nada.'});
+    else av.push({t:'', m:'Quedaste '+f(vsObj,1)+' % arriba del objetivo.'});
+  }
+  if(isFinite(cv) && cv>20) av.push({t:'', m:'Mucha diferencia entre lugares (CV '+f(cv,0)+' %). Mirá si hay un cuerpo o una zona del lote que sembró distinto.'});
+  R.recuento = {largo, prom, plM, plHa, logro, vsObj, cv, dePrueba};
+  flags('flagsRecuento', av);
+}
+
+/* ---------------- registros por lote ---------------- */
+function numList(txt){ return String(txt||'').split(/[\s;]+/).map(n).filter(v=>isFinite(v)); }
+function snapshot(){
+  pintarTodo();
+  const m = maq(), s = S.siembra, C = CULTIVOS[s.cultivo]||CULTIVOS.otro, r = R.siembra;
+  const pz = R.prueba||{}, sg = R.sing||{}, f1 = R.fert1||{}, f2 = R.fert2, fp = R.fertPrueba||{}, rc = R.recuento||{}, tr = R.trabajo||{};
+  const t = {uN:(f1.uN||0)+((f2&&f2.uN)||0), uP:(f1.uP||0)+((f2&&f2.uP)||0), uS:(f1.uS||0)+((f2&&f2.uS)||0)};
+  return {
+    id: uid(), fecha: new Date().toISOString(),
+    lote: (S.lote.nombre||'').trim(), ha: n(S.lote.ha),
+    cultivo: C.nombre, maquina: m?m.nombre:'', cuerpos: n(m&&m.cuerpos), dist: n(m&&m.dist), ancho: ancho(m), vel: n(m&&m.vel),
+    objetivo: n(s.objetivo), objUnidad: s.modoObj==='m2'?'pl/m²':'pl/ha',
+    pg: n(s.pg), pureza: n(s.pureza), logro: n(s.logro), pms: n(s.pms),
+    semHa: r.semHa, semM: r.semM, distSem: r.distSem, kgHa: r.kgHa, kgTot: r.kgTot, bolsas: r.bolsas,
+    pruebaModo: {conteo:'Conteo', peso:'Peso', dist:'Distancia'}[pz.modo]||'', pruebaLargo: pz.largo, semMReal: pz.semMReal, desvio: pz.desvio, cvCuerpos: pz.cv,
+    acept: sg.pA, fallas: sg.pF, dup: sg.pD, prec: sg.prec,
+    f1Prod: f1.producto, f1KgHa: f1.kgHa, f1Tn: f1.tn, f1Bolsones: f1.bolsones,
+    f2Prod: f2?f2.producto:'', f2KgHa: f2?f2.kgHa:NaN, f2Tn: f2?f2.tn:NaN, f2Bolsones: f2?f2.bolsones:NaN,
+    uN: t.uN, uP: t.uP, uS: t.uS,
+    fpProd: fp.producto, fpKgHaReal: fp.kgHaReal, fpDesvio: fp.desvio,
+    plHa: rc.plHa, logroReal: rc.logro, vsObj: rc.vsObj,
+    haDia: tr.haDia, dias: tr.dias,
+    profObj: (R.prof||{}).obj, profProm: (R.prof||{}).prom, profDentro: (R.prof||{}).dentro, profCV: (R.prof||{}).cv,
+    tempUlt: (R.temp||{}).ult, tempProm3: (R.temp||{}).prom3, tempSeguidos: (R.temp&&R.temp.N)?R.temp.seguidos:NaN, tempRec: (R.temp||{}).tRec,
+    crudos: {
+      prueba: (S.prueba.modo==='dist') ? [] : S.prueba.conteos.map(n).filter(v=>isFinite(v)),
+      pruebaUnidad: S.prueba.modo==='peso' ? 'g' : 'semillas',
+      espaciamientos: numList(S.prueba.espaciamientos),
+      fert: numList(S.fert.fpGramos), fertLargo: n(S.fert.fpLargo),
+      recuento: numList(S.recuento.plantas), recuentoLargo: n(S.recuento.largo),
+      profundidad: numList(S.prof.lecturas), temperatura: numList(S.temp.lecturas)
+    }
+  };
+}
+function claveLote(x){ return String(x||'').trim().toLowerCase(); }
+function fechaCorta(iso){ const d=new Date(iso); const z=v=>String(v).padStart(2,'0'); return z(d.getDate())+'/'+z(d.getMonth()+1)+'/'+d.getFullYear()+' '+z(d.getHours())+':'+z(d.getMinutes()); }
+
+function pintarLotes(){
+  const r = R.siembra || calcSiembra(), m = maq();
+  const tiene = (ok)=> ok ? 'cargada' : '—';
+  $('#resumenActual').innerHTML = [
+    ['Lote', (S.lote.nombre||'').trim() || 'sin nombre (ponelo arriba)'],
+    ['Superficie', isFinite(n(S.lote.ha))?f(n(S.lote.ha),1)+' ha':'—'],
+    ['Cultivo', (CULTIVOS[S.siembra.cultivo]||{}).nombre||'—'],
+    ['Máquina', m?m.nombre:'—'],
+    ['Prueba de siembra', tiene(R.prueba && isFinite(R.prueba.semMReal))],
+    ['Prueba de fertilizante', tiene(R.fertPrueba && isFinite(R.fertPrueba.kgHaReal))],
+    ['Profundidad', tiene(R.prof && R.prof.N>0)],
+    ['Temperatura del suelo', tiene(R.temp && R.temp.N>0)],
+    ['Recuento de plantas', tiene(R.recuento && isFinite(R.recuento.plHa))]
+  ].map(([k,v])=>`<div class="ln"><span>${k}</span><b style="font-family:inherit">${xmlEsc(v)}</b></div>`).join('');
+
+  const grupos = {};
+  (S.registros||[]).forEach(x=>{ const k=claveLote(x.lote); (grupos[k]=grupos[k]||{nombre:x.lote, regs:[]}).regs.push(x); });
+  const claves = Object.keys(grupos).sort((a,b)=>a.localeCompare(b,'es'));
+  if(!claves.length){ $('#listaLotes').innerHTML = '<p class="note">Todavía no guardaste ningún registro.</p>'; return; }
+  $('#listaLotes').innerHTML = claves.map(k=>{
+    const g = grupos[k];
+    g.regs.sort((a,b)=>b.fecha.localeCompare(a.fecha));
+    return `<div class="maq">
+      <div class="hd"><span class="nm">${xmlEsc(g.nombre)}</span><span class="maq-meta">${g.regs.length} registro${g.regs.length>1?'s':''}</span></div>
+      ${g.regs.map(x=>`<div class="ln" style="font-size:13px"><span>${fechaCorta(x.fecha)} · ${xmlEsc(x.cultivo)}${isFinite(x.desvio)?' · prueba '+(x.desvio>0?'+':'')+f(x.desvio,1)+' %':''}</span>
+        <button class="del" style="width:32px;height:32px" data-borrarreg="${x.id}" aria-label="Borrar registro">×</button></div>`).join('')}
+      <div class="btnrow"><button class="act ghost mini" data-excellote="${xmlEsc(k)}">Excel de este lote</button><button class="act ghost mini" data-borrarlote="${xmlEsc(k)}">Borrar lote</button></div>
+    </div>`;
+  }).join('');
+  $('#listaLotes').querySelectorAll('[data-borrarreg]').forEach(b=>b.addEventListener('click',async e=>{
+    const id = e.currentTarget.dataset.borrarreg;
+    const x = S.registros.find(r=>r.id===id);
+    if(!(await preguntar('¿Borrar el registro del '+(x?fechaCorta(x.fecha):'')+'? No se puede recuperar.'))) return;
+    S.registros = S.registros.filter(r=>r.id!==id); guardar(); pintarLotes();
+  }));
+  $('#listaLotes').querySelectorAll('[data-borrarlote]').forEach(b=>b.addEventListener('click',async e=>{
+    const k = e.currentTarget.dataset.borrarlote;
+    const regs = S.registros.filter(r=>claveLote(r.lote)===k);
+    if(!regs.length) return;
+    if(!(await preguntar('¿Borrar el lote "'+regs[0].lote+'" con sus '+regs.length+' registro'+(regs.length>1?'s':'')+'? No se puede recuperar. Si lo necesitás, exportá el Excel antes.', 'Borrar lote'))) return;
+    S.registros = S.registros.filter(r=>claveLote(r.lote)!==k); guardar(); pintarLotes();
+  }));
+  $('#listaLotes').querySelectorAll('[data-excellote]').forEach(b=>b.addEventListener('click',e=>{
+    const k = e.currentTarget.dataset.excellote;
+    const regs = S.registros.filter(x=>claveLote(x.lote)===k);
+    exportarExcel(regs, 'Lote_'+regs[0].lote);
+  }));
+}
+
+/* Al cambiar de lote se limpian las mediciones del anterior, para que no se mezclen */
+function hayMediciones(){
+  return S.prueba.conteos.some(v=>String(v).trim()!=='') || String(S.prueba.espaciamientos||'').trim()!=='' ||
+         String(S.prueba.largoDist||'').trim()!=='' || String(S.fert.fpGramos||'').trim()!=='' || String(S.recuento.plantas||'').trim()!=='' ||
+         String(S.prof.lecturas||'').trim()!=='' || String(S.temp.lecturas||'').trim()!=='';
+}
+function limpiarMediciones(){
+  S.prueba.conteos = ['','','','']; S.prueba.espaciamientos=''; S.prueba.largoDist='';
+  S.fert.fpGramos=''; S.recuento.plantas=''; S.prof.lecturas=''; S.temp.lecturas='';
+}
+if(S.lote.ultimo===undefined) S.lote.ultimo = claveLote(S.lote.nombre);
+$('#loteNombre').addEventListener('change', ()=>{
+  const nuevo = claveLote(S.lote.nombre);
+  if(nuevo !== S.lote.ultimo){
+    const habia = hayMediciones();
+    S.lote.ultimo = nuevo;
+    if(habia){
+      limpiarMediciones(); guardar(); pintarTodo();
+      avisar('Cambiaste de lote: borré las mediciones del lote anterior (pruebas y recuento) para que no se mezclen. Lo que guardaste sigue en la pestaña Lotes.');
+    }else guardar();
+  }
+});
+
+$('#btnGuardarReg').addEventListener('click', ()=>{
+  if(!(S.lote.nombre||'').trim()){ avisar('Poné el nombre del lote arriba de todo antes de guardar.'); return; }
+  if(!isFinite(n(S.lote.ha))){ avisar('Cargá las hectáreas del lote antes de guardar.'); return; }
+  const reg = snapshot();
+  S.registros = S.registros || [];
+  S.registros.push(reg); guardar(); pintarLotes();
+  setT('regStamp', 'Guardado '+fechaCorta(reg.fecha)+' en el lote '+reg.lote+'.');
+});
+$('#btnExcelTodos').addEventListener('click', ()=>{
+  if(!(S.registros||[]).length){ avisar('Todavía no hay registros guardados.'); return; }
+  exportarExcel(S.registros, 'Todos_los_lotes');
+});
+
+/* ---------------- Excel (.xlsx) sin librerías, funciona sin señal ---------------- */
+const CRC_T = (()=>{ const t=new Uint32Array(256); for(let i=0;i<256;i++){ let c=i; for(let k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[i]=c>>>0; } return t; })();
+function crc32(b){ let c=0xFFFFFFFF; for(let i=0;i<b.length;i++) c=CRC_T[(c^b[i])&0xFF]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+function zipStore(files){
+  const enc=new TextEncoder(), partes=[], central=[]; let off=0;
+  const d0=new Date();
+  const dosT=((d0.getHours()<<11)|(d0.getMinutes()<<5)|Math.floor(d0.getSeconds()/2))&0xFFFF;
+  const dosD=(((d0.getFullYear()-1980)<<9)|((d0.getMonth()+1)<<5)|d0.getDate())&0xFFFF;
+  files.forEach(fl=>{
+    const nb=enc.encode(fl.name), d=(typeof fl.data==='string')?enc.encode(fl.data):fl.data, crc=crc32(d);
+    const lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint16(8,0,true);
+    lh.setUint16(10,dosT,true); lh.setUint16(12,dosD,true); lh.setUint32(14,crc,true);
+    lh.setUint32(18,d.length,true); lh.setUint32(22,d.length,true); lh.setUint16(26,nb.length,true); lh.setUint16(28,0,true);
+    partes.push(new Uint8Array(lh.buffer), nb, d);
+    const ch=new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint16(10,0,true);
+    ch.setUint16(12,dosT,true); ch.setUint16(14,dosD,true); ch.setUint32(16,crc,true);
+    ch.setUint32(20,d.length,true); ch.setUint32(24,d.length,true); ch.setUint16(28,nb.length,true);
+    ch.setUint16(30,0,true); ch.setUint16(32,0,true); ch.setUint16(34,0,true); ch.setUint16(36,0,true); ch.setUint32(38,0,true); ch.setUint32(42,off,true);
+    central.push(new Uint8Array(ch.buffer), nb);
+    off += 30+nb.length+d.length;
+  });
+  const cSize=central.reduce((a,b)=>a+b.length,0);
+  const end=new DataView(new ArrayBuffer(22));
+  end.setUint32(0,0x06054b50,true); end.setUint16(8,files.length,true); end.setUint16(10,files.length,true);
+  end.setUint32(12,cSize,true); end.setUint32(16,off,true);
+  const all=[...partes,...central,new Uint8Array(end.buffer)];
+  const out=new Uint8Array(all.reduce((a,b)=>a+b.length,0)); let q=0; all.forEach(a=>{out.set(a,q); q+=a.length;}); return out;
+}
+function xmlEsc(s){ return String(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function colL(i){ let s=''; i++; while(i>0){ const r=(i-1)%26; s=String.fromCharCode(65+r)+s; i=Math.floor((i-1)/26); } return s; }
+function numXML(v){ let s=v.toFixed(8); if(s.indexOf('.')>=0) s=s.replace(/0+$/,'').replace(/\.$/,''); return s; }
+function serialExcel(iso){ const d=new Date(iso); return (d.getTime()-d.getTimezoneOffset()*60000)/86400000+25569; }
+const XF={txt:6, int:2, d1:3, d2:4, fecha:5};
+function hojaXML(hj){
+  const cols=hj.cols.map((c,i)=>`<col min="${i+1}" max="${i+1}" width="${c.w||12}" customWidth="1"/>`).join('');
+  let filas=`<row r="1" ht="32" customHeight="1">`+hj.cols.map((c,i)=>`<c r="${colL(i)}1" t="inlineStr" s="1"><is><t>${xmlEsc(c.h)}</t></is></c>`).join('')+`</row>`;
+  hj.rows.forEach((row,ri)=>{
+    const rn=ri+2;
+    filas+=`<row r="${rn}">`+row.map((v,ci)=>{
+      const ref=colL(ci)+rn, fmt=hj.cols[ci].fmt||'txt';
+      if(v===null||v===undefined||v===''||(typeof v==='number'&&!isFinite(v))) return '';
+      if(fmt==='fecha') return `<c r="${ref}" s="${XF.fecha}"><v>${numXML(serialExcel(v))}</v></c>`;
+      if(fmt==='txt'||typeof v!=='number') return `<c r="${ref}" t="inlineStr" s="${XF.txt}"><is><t xml:space="preserve">${xmlEsc(v)}</t></is></c>`;
+      return `<c r="${ref}" s="${XF[fmt]}"><v>${numXML(v)}</v></c>`;
+    }).join('')+`</row>`;
+  });
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
+    `<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">`+
+    `<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>`+
+    `<sheetFormatPr defaultRowHeight="15"/><cols>${cols}</cols><sheetData>${filas}</sheetData></worksheet>`;
+}
+function construirXLSX(hojas){
+  const ns='http://schemas.openxmlformats.org';
+  const styles=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="${ns}/spreadsheetml/2006/main">`+
+    `<numFmts count="4"><numFmt numFmtId="164" formatCode="#,##0"/><numFmt numFmtId="165" formatCode="#,##0.0"/><numFmt numFmtId="166" formatCode="#,##0.00"/><numFmt numFmtId="167" formatCode="dd/mm/yyyy hh:mm"/></numFmts>`+
+    `<fonts count="2"><font><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><name val="Calibri"/><family val="2"/></font></fonts>`+
+    `<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFEDEDED"/><bgColor indexed="64"/></patternFill></fill></fills>`+
+    `<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left/><right/><top/><bottom style="thin"><color rgb="FF808080"/></bottom><diagonal/></border></borders>`+
+    `<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>`+
+    `<cellXfs count="7">`+
+      `<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>`+
+      `<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment wrapText="1" vertical="center"/></xf>`+
+      `<xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>`+
+      `<xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>`+
+      `<xf numFmtId="166" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>`+
+      `<xf numFmtId="167" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>`+
+      `<xf numFmtId="49" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>`+
+    `</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
+  const wb=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="${ns}/spreadsheetml/2006/main" xmlns:r="${ns}/officeDocument/2006/relationships"><sheets>`+
+    hojas.map((hj,i)=>`<sheet name="${xmlEsc(hj.nombre)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')+`</sheets></workbook>`;
+  const wbRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${ns}/package/2006/relationships">`+
+    hojas.map((hj,i)=>`<Relationship Id="rId${i+1}" Type="${ns}/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')+
+    `<Relationship Id="rId${hojas.length+1}" Type="${ns}/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
+  const ct=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="${ns}/package/2006/content-types">`+
+    `<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>`+
+    `<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>`+
+    hojas.map((hj,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')+
+    `<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`;
+  const rels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${ns}/package/2006/relationships"><Relationship Id="rId1" Type="${ns}/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
+  const files=[{name:'[Content_Types].xml',data:ct},{name:'_rels/.rels',data:rels},{name:'xl/workbook.xml',data:wb},{name:'xl/_rels/workbook.xml.rels',data:wbRels},{name:'xl/styles.xml',data:styles}];
+  hojas.forEach((hj,i)=>files.push({name:`xl/worksheets/sheet${i+1}.xml`,data:hojaXML(hj)}));
+  return zipStore(files);
+}
+
+const COLS_REG = [
+  ['Fecha','fecha','fecha',16],['Lote','lote','txt',16],['Ha','ha','d1',8],['Cultivo','cultivo','txt',18],['Máquina','maquina','txt',20],
+  ['Cuerpos','cuerpos','int',8],['Entre hileras (cm)','dist','d1',9],['Ancho de labor (m)','ancho','d2',9],['Velocidad (km/h)','vel','d1',9],
+  ['Objetivo','objetivo','int',10],['Unidad objetivo','objUnidad','txt',8],['PG (%)','pg','d1',7],['Pureza (%)','pureza','d1',8],['Logro cargado (%)','logro','d1',9],['PMS (g)','pms','d1',8],
+  ['Semillas/ha','semHa','int',11],['Semillas por metro','semM','d1',9],['cm entre semillas','distSem','d1',9],['Semilla kg/ha','kgHa','d1',9],['Semilla kg lote','kgTot','int',10],['Bolsas','bolsas','d1',8],
+  ['Prueba: método','pruebaModo','txt',9],['Prueba: metros','pruebaLargo','d1',8],['Prueba: semillas/m reales','semMReal','d1',10],['Prueba: desvío (%)','desvio','d1',9],['Prueba: CV cuerpos (%)','cvCuerpos','d1',9],
+  ['Aceptables (%)','acept','d1',9],['Fallas (%)','fallas','d1',8],['Duplicados (%)','dup','d1',9],['Precisión (%)','prec','d1',9],
+  ['Fertilizante 1','f1Prod','txt',18],['Fert. 1 kg/ha','f1KgHa','d1',9],['Fert. 1 t lote','f1Tn','d2',9],['Fert. 1 bolsones','f1Bolsones','d1',9],
+  ['Fertilizante 2','f2Prod','txt',18],['Fert. 2 kg/ha','f2KgHa','d1',9],['Fert. 2 t lote','f2Tn','d2',9],['Fert. 2 bolsones','f2Bolsones','d1',9],
+  ['N total (kg/ha)','uN','d1',9],['P₂O₅ total (kg/ha)','uP','d1',9],['S total (kg/ha)','uS','d1',9],
+  ['Prueba fert.: producto','fpProd','int',9],['Prueba fert.: kg/ha reales','fpKgHaReal','d1',10],['Prueba fert.: desvío (%)','fpDesvio','d1',9],
+  ['Plantas/ha nacidas','plHa','int',11],['Logro real (%)','logroReal','d1',9],['Plantas vs objetivo (%)','vsObj','d1',10],
+  ['Ha por día','haDia','d1',8],['Días para el lote','dias','d1',8],
+  ['Prof. objetivo (cm)','profObj','d1',9],['Prof. promedio (cm)','profProm','d1',9],['Prof. dentro de tolerancia (%)','profDentro','d1',10],['Prof. CV (%)','profCV','d1',8],
+  ['Temp. suelo última (°C)','tempUlt','d1',9],['Temp. prom. 3 días (°C)','tempProm3','d1',9],['Días seguidos en lo recomendado','tempSeguidos','int',10],['Temp. recomendada (°C)','tempRec','d1',9]
+];
+function construirExcelRegistros(regs){
+  regs = regs.slice().sort((a,b)=> a.lote.localeCompare(b.lote,'es') || a.fecha.localeCompare(b.fecha));
+  const hoja1 = {nombre:'Registros', cols: COLS_REG.map(([h,,fmt,w])=>({h,fmt,w})), rows: regs.map(x=>COLS_REG.map(([,k,fmt])=>{
+      const v = x[k];
+      if(fmt==='txt') return v===undefined||v===null ? '' : String(v);
+      if(fmt==='fecha') return v;
+      return (typeof v==='number') ? v : NaN;
+    }))};
+  const filas2 = [];
+  regs.forEach(x=>{
+    const c = x.crudos||{};
+    const add = (medicion, arr, unidad)=> (arr||[]).forEach((v,i)=>filas2.push([x.fecha, x.lote, medicion, i+1, v, unidad]));
+    add('Prueba de siembra ('+f(x.pruebaLargo,0)+' m, por cuerpo)', c.prueba, c.pruebaUnidad);
+    add('Espaciamiento entre semillas', c.espaciamientos, 'cm');
+    add('Prueba de fertilizante ('+f(c.fertLargo,0)+' m, por bajada)', c.fert, 'g');
+    add('Recuento de plantas ('+f(c.recuentoLargo,0)+' m, por lugar)', c.recuento, 'plantas');
+    add('Profundidad de siembra', c.profundidad, 'cm');
+    add('Temperatura del suelo (una por día)', c.temperatura, '°C');
+  });
+  const hoja2 = {nombre:'Mediciones', cols:[{h:'Fecha',fmt:'fecha',w:16},{h:'Lote',fmt:'txt',w:16},{h:'Medición',fmt:'txt',w:38},{h:'N.º',fmt:'int',w:6},{h:'Valor',fmt:'d2',w:10},{h:'Unidad',fmt:'txt',w:10}], rows: filas2};
+  return construirXLSX([hoja1, hoja2]);
+}
+async function exportarExcel(regs, base){
+  const bytes = construirExcelRegistros(regs);
+  const hoy = new Date(), z=v=>String(v).padStart(2,'0');
+  const nombre = (base.replace(/[^\wÁÉÍÓÚáéíóúÑñ-]+/g,'_')+'_'+hoy.getFullYear()+z(hoy.getMonth()+1)+z(hoy.getDate())+'.xlsx');
+  const tipo = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  try{
+    const file = new File([bytes], nombre, {type:tipo});
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:nombre}); setT('notaDescarga','Excel listo: '+nombre); return; }
+  }catch(e){ if(e && e.name==='AbortError') return; }
+  try{
+    const url = URL.createObjectURL(new Blob([bytes],{type:tipo}));
+    const a = document.createElement('a'); a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 5000);
+    setT('notaDescarga','Descargado: '+nombre+'. Si no aparece, usá la versión instalada de la app.');
+  }catch(e){ setT('notaDescarga','No se pudo descargar desde acá. En la versión instalada funciona.'); }
+}
+
+/* ---------------- navegación ---------------- */
+document.querySelectorAll('nav button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-current','false'));
+    b.setAttribute('aria-current','true');
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+    $('#tab-'+b.dataset.tab).classList.add('on');
+    if(b.dataset.tab==='lotes') pintarLotes();
+    window.scrollTo({top:0});
+  });
+});
+
+/* ---------------- pintar todo ---------------- */
+function pintarTodo(){
+  $('#loteNombre').value = S.lote.nombre;
+  $('#loteHa').value = S.lote.ha;
+  $('#cultivo').value = S.siembra.cultivo;
+  $('#objetivo').value = S.siembra.objetivo;
+  $('#pg').value = S.siembra.pg;
+  $('#pureza').value = S.siembra.pureza;
+  $('#espaciamientos').value = S.prueba.espaciamientos || '';
+  $('#logro').value = S.siembra.logro;
+  $('#pms').value = S.siembra.pms;
+  $('#semBolsa').value = S.siembra.semBolsa;
+  $('#kgBolsa').value = S.siembra.kgBolsa;
+  $('#largo').value = S.prueba.largo;
+  $('#espacios').value = S.prueba.espacios;
+  $('#largoDist').value = S.prueba.largoDist;
+  $('#producto').value = S.fert.producto;
+  $('#kgFert').value = S.fert.kgFert;
+  $('#unidades').value = S.fert.unidades;
+  $('#bolson').value = S.fert.bolson;
+  $('#cN').value = S.fert.cN; $('#cP').value = S.fert.cP; $('#cS').value = S.fert.cS;
+  $('#hechas').value = S.trabajo.hechas;
+  $('#fpLargo').value = (S.fert.fpLargo===undefined?50:S.fert.fpLargo);
+  $('#fpGramos').value = S.fert.fpGramos||'';
+  $('#jornada').value = S.trabajo.jornada;
+
+  pintarSeg('#segObj', S.siembra.modoObj);
+  pintarSeg('#segBolsa', S.siembra.pres);
+  pintarSeg('#segPrueba', S.prueba.modo);
+  pintarSeg('#segLargo', S.prueba.largo);
+  pintarSeg('#segFert', S.fert.modo);
+  pintarSeg('#segNut', S.fert.nutriente);
+  pintarSeg('#segLinea', S.fert.linea);
+  pintarSeg('#segF2', S.fert2.activo?1:0);
+  pintarSeg('#segFert2', S.fert2.modo);
+  pintarSeg('#segNut2', S.fert2.nutriente);
+  pintarSeg('#segLinea2', S.fert2.linea);
+  pintarSeg('#segFpProd', n(S.fert.fpProd)===2?2:1);
+  $('#gProducto').value = S.fert2.producto;
+  $('#gKgFert').value = S.fert2.kgFert; $('#gUnidades').value = S.fert2.unidades; $('#gBolson').value = S.fert2.bolson;
+  $('#gN').value = S.fert2.cN; $('#gP').value = S.fert2.cP; $('#gS').value = S.fert2.cS;
+  $('#wrapF2').style.display = S.fert2.activo ? 'block':'none';
+  $('#wrapGKg').style.display = S.fert2.modo==='producto' ? 'block':'none';
+  $('#wrapGNut').style.display = S.fert2.modo==='nutriente' ? 'block':'none';
+  $('#wrapGCustom').style.display = S.fert2.producto==='custom' ? 'grid':'none';
+  $('#rcLargo').value = S.recuento.largo; $('#rcPlantas').value = S.recuento.plantas||'';
+  $('#prObj').value = S.prof.obj; $('#prLecturas').value = S.prof.lecturas||''; $('#tpLecturas').value = S.temp.lecturas||'';
+
+  $('#objetivo').setAttribute('aria-label', S.siembra.modoObj==='m2'?'plantas por m2':'plantas por ha');
+  $('#wrapSemBolsa').style.display = S.siembra.pres==='unidades' ? 'block':'none';
+  $('#wrapKgBolsa').style.display  = S.siembra.pres==='kilos' ? 'block':'none';
+  $('#modoConteo').style.display = (S.prueba.modo==='conteo'||S.prueba.modo==='peso') ? 'block':'none';
+  $('#modoDist').style.display   = S.prueba.modo==='dist' ? 'block':'none';
+  $('#wrapKgFert').style.display = S.fert.modo==='producto' ? 'block':'none';
+  $('#wrapNut').style.display    = S.fert.modo==='nutriente' ? 'block':'none';
+  $('#wrapCustom').style.display = S.fert.producto==='custom' ? 'grid':'none';
+
+  pintarMaquinas();
+  pintarListaConteos();
+  pintarListaEquipos();
+  pintarSiembra();
+  pintarLotes();
+}
+
+/* inputs simples */
+[['#loteNombre',v=>S.lote.nombre=v],['#loteHa',v=>S.lote.ha=v],
+ ['#objetivo',v=>S.siembra.objetivo=v],['#pg',v=>S.siembra.pg=v],['#pureza',v=>S.siembra.pureza=v],['#logro',v=>S.siembra.logro=v],
+ ['#espaciamientos',v=>S.prueba.espaciamientos=v],
+ ['#pms',v=>S.siembra.pms=v],['#semBolsa',v=>S.siembra.semBolsa=v],['#kgBolsa',v=>S.siembra.kgBolsa=v],
+ ['#largo',v=>S.prueba.largo=v],['#espacios',v=>S.prueba.espacios=v],['#largoDist',v=>S.prueba.largoDist=v],
+ ['#kgFert',v=>S.fert.kgFert=v],['#unidades',v=>S.fert.unidades=v],['#bolson',v=>S.fert.bolson=v],
+ ['#cN',v=>S.fert.cN=v],['#cP',v=>S.fert.cP=v],['#cS',v=>S.fert.cS=v],
+ ['#hechas',v=>S.trabajo.hechas=v],
+ ['#gKgFert',v=>S.fert2.kgFert=v],['#gUnidades',v=>S.fert2.unidades=v],['#gBolson',v=>S.fert2.bolson=v],
+ ['#gN',v=>S.fert2.cN=v],['#gP',v=>S.fert2.cP=v],['#gS',v=>S.fert2.cS=v],
+ ['#prObj',v=>S.prof.obj=v],['#prLecturas',v=>S.prof.lecturas=v],['#tpLecturas',v=>S.temp.lecturas=v],
+ ['#rcLargo',v=>S.recuento.largo=v],['#rcPlantas',v=>S.recuento.plantas=v],['#fpLargo',v=>S.fert.fpLargo=v],['#fpGramos',v=>S.fert.fpGramos=v],['#jornada',v=>S.trabajo.jornada=v]
+].forEach(([sel,set])=>{
+  $(sel).addEventListener('input', e=>{ set(e.target.value); guardar(); pintarSiembra(); });
+});
+
+pintarTodo();
+avisoStorage();
+</script>
+
+<script>
+if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+</script>
+</body>
+</html>
