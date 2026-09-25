@@ -1,12 +1,12 @@
 {
-  "name": "Cuentas de campo",
-  "short_name": "Campo",
+  "name": "SembraApp",
+  "short_name": "SembraApp",
   "description": "Regulación y control de siembra, fertilización y capacidad de trabajo.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#2F5E36",
+  "background_color": "#FAF9F5",
   "theme_color": "#2F5E36",
   "lang": "es-AR",
   "icons": [
