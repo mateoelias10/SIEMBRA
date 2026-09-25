@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -16,6 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
+  color-scheme:light;
   --bg:#FFFFFF;            /* página */
   --card:#2F5E36;          /* bloques, el verde del logo */
   --tint:#FAF9F5;          /* recuadros de resultados dentro de los bloques */
@@ -38,18 +40,6 @@
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0F1410; --card:#1E3423; --tint:#141C16; --paper:#18201A; --ink:#E9ECE3; --muted:#9BA394;
-    --onbg:#E9ECE3; --onbg2:#9BA394; --oncard:#E9ECE3; --oncard2:#B9C7B2; --ontint:#E9ECE3; --ontint2:#9BA394;
-    --line:#2A3A2D; --linecard:rgba(255,255,255,.18); --seed:#D99A4E; --teal:#5FC8B6; --warn:#E5A356; --ok:#8CC97F;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0F1410; --card:#1E3423; --tint:#141C16; --paper:#18201A; --ink:#E9ECE3; --muted:#9BA394;
-  --onbg:#E9ECE3; --onbg2:#9BA394; --oncard:#E9ECE3; --oncard2:#B9C7B2; --ontint:#E9ECE3; --ontint2:#9BA394;
-  --line:#2A3A2D; --linecard:rgba(255,255,255,.18); --seed:#D99A4E; --teal:#5FC8B6; --warn:#E5A356; --ok:#8CC97F;
 }
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}

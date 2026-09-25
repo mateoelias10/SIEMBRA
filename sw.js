@@ -1,6 +1,6 @@
 /* Cuentas de campo — copia local para trabajar sin señal.
    Al actualizar la app, subí el nuevo index.html y cambiá este número de versión. */
-const VERSION = 'sembraapp-v1';
+const VERSION = 'sembraapp-v2';
 const ARCHIVOS = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
