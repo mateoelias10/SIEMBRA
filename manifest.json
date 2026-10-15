@@ -1,12 +1,12 @@
 {
-  "name": "SembraApp",
-  "short_name": "SembraApp",
-  "description": "Regulación y control de siembra, fertilización y capacidad de trabajo.",
+  "name": "Control de siembra",
+  "short_name": "Control",
+  "description": "Control de semilla y profundidad a campo, lote por lote.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FAF9F5",
+  "background_color": "#FFFFFF",
   "theme_color": "#2F5E36",
   "lang": "es-AR",
   "icons": [
