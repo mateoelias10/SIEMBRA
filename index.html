@@ -1,21 +1,19 @@
-<!DOCTYPE html>
-<html lang="es-AR">
+<!doctype html>
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#FFFFFF">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2F5E36">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Control">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Control de Siembra</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
 :root{
   color-scheme:light;
   --bg:#FFFFFF; --card:#2F5E36; --tint:#FAF9F5; --paper:#FFFFFF;
@@ -58,6 +56,9 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid 
 .ref .lbl{font-size:13px;color:var(--oncard2);margin-top:4px}
 .ref .sub{font-size:13px;color:var(--oncard2);margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.22)}
 
+.surco.cuatro{grid-template-columns:52px 1fr 1fr 62px}
+.cab.cuatro{grid-template-columns:52px 1fr 1fr 62px}
+.surco .sn{text-align:center;padding-left:4px;padding-right:4px}
 .surco{display:grid;grid-template-columns:28px 1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
 .surco .n{font-size:13px;color:var(--muted);text-align:center}
 .surco .res{font-size:13px;font-weight:600;color:var(--seed);min-width:52px;text-align:right;font-variant-numeric:tabular-nums}
@@ -89,6 +90,7 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid 
 .veredicto.ok{background:var(--ok)}
 .veredicto.med{background:var(--seed)}
 .veredicto.bad{background:var(--bad)}
+.veredicto.neutro{background:var(--card);color:var(--oncard)}
 .veredicto .d{display:block;font-weight:400;font-size:13px;margin-top:4px;opacity:.92}
 
 button.act{font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--card);color:var(--paper);border:0;border-radius:6px;padding:11px 14px;width:100%}
@@ -99,6 +101,14 @@ button.borrar.armado{color:var(--bad);border-color:var(--bad);font-weight:600}
 .solapas button{border:0;border-right:1px solid var(--line);background:transparent;color:var(--muted);font:inherit;font-size:11.5px;font-weight:600;letter-spacing:.04em;padding:9px 2px;cursor:pointer}
 .solapas button:last-child{border-right:0}
 .solapas button[aria-pressed="true"]{background:var(--card);color:var(--oncard)}
+.solapas.chicas{grid-template-columns:repeat(4,1fr);margin:18px 0 0;border-color:var(--line);
+  position:sticky;top:var(--barra,84px);z-index:9;background:var(--paper);border-radius:6px}
+.solapas.chicas button{font-size:10px;letter-spacing:0;padding:11px 0;color:var(--muted);white-space:nowrap}
+.solapas.chicas button[aria-pressed="true"]{background:var(--tint);color:var(--ink);box-shadow:inset 0 -3px 0 var(--card)}
+.solapas.chicas button .pt{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--card);
+  margin-left:3px;vertical-align:middle}
+.sub-h{border-top:0;padding-top:0;margin-top:16px}
+.sub-h{font-size:16px;font-weight:700;margin:22px 0 0;padding-top:16px;border-top:2px solid var(--card)}
 .hd-title{font-size:19px;font-weight:700;letter-spacing:-0.02em;margin:16px 0 2px}
 .hd-sub{font-size:13px;color:var(--muted);margin:0 0 4px}
 .aviso{background:var(--tint);border-left:3px solid var(--seed);border-radius:0 6px 6px 0;padding:10px 12px;font-size:13.5px;margin-top:12px}
@@ -111,175 +121,353 @@ button.borrar.armado{color:var(--bad);border-color:var(--bad);font-weight:600}
 .cuentas .c i{color:var(--muted);font-style:normal}
 .cuentas .c b{color:var(--seed)}
 .cuentas .p{margin-top:7px;padding-top:7px;border-top:1px solid var(--line)}
+
+textarea{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:12px;border-radius:8px;
+  border:1px solid var(--line);background:var(--card);color:var(--oncard);resize:vertical}
+textarea::placeholder{color:rgba(255,255,255,.5);opacity:1;font-style:italic}
+textarea[readonly]{background:var(--tint);color:var(--ink);border-color:var(--line);font-size:13px;line-height:1.45;white-space:pre}
+.med{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px;background:var(--tint)}
+.med .enc{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.med .tit{font-weight:700;font-size:14px}
+.med .seg{margin:0;flex:0 0 auto}
+.med .seg button{padding:7px 14px;font-size:13px}
+.med .pie{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;
+  padding-top:10px;border-top:1px solid var(--line);font-size:14px}
+.med .pie b{font-size:17px;font-variant-numeric:tabular-nums}
+.med .ok{color:var(--good)} .med .mal{color:var(--bad)}
+.med input.nota{font-size:13px;margin-top:0}
+.med .rotu{margin:10px 0 4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;padding:9px 14px;border-radius:999px;
+      border:1px solid var(--line);background:transparent;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--card);color:var(--oncard);border-color:var(--card)}
+.equis{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.eqt{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.eq{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;padding:3px 0;color:var(--muted)}
+.eq b{color:var(--ink);font-variant-numeric:tabular-nums}
+.ctrl .h span:last-child{white-space:nowrap}
+.ctrl .nm i{font-weight:400;font-style:italic;color:var(--muted)}
+
 </style>
 </head>
 <body>
-<div class="wrap">
 
   <header class="topbar">
     <div class="marca">SembraApp <span>· control de siembra</span></div>
-    <div class="row2">
-      <select id="campo" aria-label="Campo"></select>
-      <select id="lote" aria-label="Lote"></select>
-    </div>
     <nav class="solapas" id="solapas">
-      <button data-t="siembra" aria-pressed="true">SIEMBRA</button>
-      <button data-t="fert" aria-pressed="false">FERTILIZANTE</button>
+      <button data-t="control" aria-pressed="true">CONTROL</button>
+      <button data-t="maquinas" aria-pressed="false">MÁQUINAS</button>
       <button data-t="guardados" aria-pressed="false">GUARDADOS</button>
     </nav>
   </header>
 
-<section id="tabSiembra">
+<section id="tabControl">
 
-  <h1 class="hd-title">Control de semilla</h1>
-  <p class="hd-sub">Medí de semilla a semilla y contá las que hay en el tramo.</p>
-
-  <div class="ficha" id="ficha"></div>
+  <h1 class="hd-title">Control del lote</h1>
+  <p class="hd-sub">Lo que medís en el lote contra lo que pide la planilla.</p>
 
   <div class="block">
-    <h2>Objetivo del lote</h2>
-    <p class="note" style="margin:0 0 10px" id="objPlan">—</p>
+    <h2>El lote</h2>
     <div class="grid2">
-      <div class="field"><label for="objSem">Semillas/ha</label><input id="objSem" inputmode="decimal"></div>
-      <div class="field"><label for="objFert">Fertilizante kg/ha</label><input id="objFert" inputmode="decimal"></div>
+      <div class="field"><label for="fecha">Fecha</label><input id="fecha" type="date"></div>
+      <div class="field"><label for="campo">Campo</label><input id="campo" placeholder=""></div>
     </div>
-    <p class="note" id="objNota" style="margin:0"></p>
-    <button class="borrar" id="borrarObj">Borrar lo que cargué a mano</button>
+    <p class="note" id="fechaNota" style="margin:-4px 0 14px"></p>
+    <div class="grid2">
+      <div class="field"><label for="lote">Lote</label><input id="lote" placeholder=""></div>
+      <div class="field"><label for="cultivo">Cultivo</label><input id="cultivo" placeholder=""></div>
+    </div>
+    <div class="field"><label for="contratista">Contratista</label><input id="contratista" placeholder=""></div>
+    <p class="note" id="cultNota" style="margin:0"></p>
   </div>
 
   <div class="block">
-    <div class="field">
-      <label>Distancia entre surcos</label>
-      <div class="seg" id="segDist">
-        <button data-v="52.5" aria-pressed="true">52,5</button>
-        <button data-v="70" aria-pressed="false">70</button>
-        <button data-v="otra" aria-pressed="false">otra</button>
+    <h2>Máquina</h2>
+    <div class="chips" id="chipsMaq"></div>
+    <p class="note" id="maqResumen" style="margin:10px 0 0"></p>
+  </div>
+
+
+  <nav class="solapas chicas" id="subs">
+    <button data-s="densidad" aria-pressed="true">DENSIDAD</button>
+    <button data-s="fert" aria-pressed="false">FERTILIZ.</button>
+    <button data-s="prof" aria-pressed="false">PROFUND.</button>
+    <button data-s="cierre" aria-pressed="false">CIERRE</button>
+  </nav>
+
+<div id="subDensidad">
+  <h2 class="sub-h">Semilla</h2>
+
+  <div class="block">
+    <div class="field" style="margin:0">
+      <label>¿Cómo la controlás?</label>
+      <div class="seg" id="segModoSem">
+        <button data-v="contando" aria-pressed="true">contando</button>
+        <button data-v="pesando" aria-pressed="false">pesando</button>
       </div>
     </div>
-    <div class="field" id="wrapDist" style="display:none">
-      <label for="distManual">Centímetros entre surcos</label>
-      <input id="distManual" inputmode="decimal" placeholder="42">
-    </div>
+    <p class="note" id="modoNota" style="margin:8px 0 0"></p>
   </div>
 
-  <div class="ref" id="refBox">
+<div id="semContando">
+  <div class="block">
+    <div class="field">
+      <label>¿En qué unidad lo controlás?</label>
+      <div class="seg" id="segUnidad">
+        <button data-v="ha" aria-pressed="true">semillas/ha</button>
+        <button data-v="ml" aria-pressed="false">sem/ml</button>
+      </div>
+    </div>
+    <div class="field" style="margin:0">
+      <label for="objSem" id="lblObjSem">Objetivo</label>
+      <input id="objSem" inputmode="decimal">
+    </div>
+    <p class="note" id="objNota" style="margin:8px 0 0"></p>
+  </div>
+
+  <div class="ref">
     <div class="big" id="refSem">—</div>
-    <div class="lbl">semillas en 10 metros</div>
+    <div class="lbl">semillas por cada metro que destapes</div>
     <div class="sub" id="refSub">—</div>
   </div>
 
   <div class="block">
     <h2>Lo que medís en cada surco</h2>
-    <div class="cab"><span></span><span>semillas</span><span>metros</span><span>mil/ha</span></div>
-    <div id="listaSurcos"></div>
-    <button class="act ghost" id="btnAdd" style="margin-top:4px">Agregar surco</button>
-    <p class="note">Contás las semillas que destapaste y la app resta una sola: 6 semillas dejan 5 espacios. Al cargar las semillas, el casillero de metros te sugiere en gris cuánto tendría que medir ese tramo.</p>
-    <div id="cuentas"></div>
-    <button class="borrar" id="borrarSem">Borrar las mediciones de semilla</button>
+    <div class="cab cuatro"><span>surco</span><span>semillas</span><span>metros</span><span id="cabUni">sem/ha</span></div>
+    <div id="listaSem"></div>
+    <button class="act ghost" id="btnAddSem" style="margin-top:4px">Agregar surco</button>
+    <p class="note">Destapá el largo que quieras en cada surco y anotá los metros al lado de las semillas. La app resta una semilla, porque medís de semilla a semilla.</p>
+    <div id="cuentasSem"></div>
+    <button class="borrar" id="borrarSem">Borrar las semillas contadas</button>
   </div>
 
   <div class="block">
     <div class="readout">
       <div class="hero">
-        <div><div class="v" id="oLograda">—</div><div class="k">mil semillas/ha logradas</div></div>
-        <div><div class="v" id="oDesvio">—</div><div class="k">contra el objetivo</div></div>
+        <div><div class="v" id="semLograda">—</div><div class="k" id="semLogradaK">logradas</div></div>
+        <div><div class="v" id="semDesvio">—</div><div class="k">contra el objetivo</div></div>
       </div>
       <div class="lines">
-        <div class="ln"><span>Objetivo de la planilla</span><b id="oObj">—</b></div>
-        <div class="ln"><span>Surcos medidos</span><b id="oN">—</b></div>
-        <div class="ln"><span>Mínimo / máximo entre surcos</span><b id="oMinMax">—</b></div>
-        <div class="ln"><span>Diferencia entre surcos</span><b id="oCV">—</b></div>
-        <div class="ln"><span>Una semilla cada</span><b id="oCm">—</b></div>
-        <div class="ln"><span>Semillas por metro</span><b id="oSemM">—</b></div>
+        <div class="ln"><span>Objetivo</span><b id="semObjLn">—</b></div>
+        <div class="ln"><span>Surcos medidos</span><b id="semN">—</b></div>
+        <div class="ln"><span>Mínimo / máximo entre surcos</span><b id="semMinMax">—</b></div>
+        <div class="ln"><span>Diferencia entre surcos</span><b id="semCV">—</b></div>
       </div>
-      <div id="veredicto"></div>
-      <div id="avisos"></div>
+      <div id="semVeredicto"></div>
+      <div class="equis" id="semEquiv"></div>
+      <div id="semAvisos"></div>
     </div>
+  </div>
+</div>
+
+<div id="semPesando" hidden>
+  <div class="block">
+    <div class="field" style="margin:0">
+      <label for="objSemKg">Objetivo kg/ha</label>
+      <input id="objSemKg" inputmode="decimal" placeholder="">
+    </div>
+    <p class="note" style="margin:8px 0 0">La siembra a chorrillo se pesa igual que el fertilizante.</p>
+  </div>
+
+  <div class="block" id="spPrec">
+    <div class="grid2">
+      <div class="field"><label for="spTara">Bolsa vacía (g)</label><input id="spTara" inputmode="decimal" placeholder=""></div>
+      <div class="field"><label for="spMetros">Metros de la tirada</label><input id="spMetros" inputmode="decimal" placeholder=""></div>
+    </div>
+    <p class="note" style="margin:0">Colgás la bolsa en una bajada, tirás los metros marcados y pesás. En gramos.</p>
+  </div>
+
+  <div class="block" id="spAir" hidden>
+    <div class="grid2">
+      <div class="field"><label for="spVueltas">Vueltas que diste</label><input id="spVueltas" inputmode="decimal" placeholder=""></div>
+      <div class="field"><label for="spM2">Equivalen a (m²)</label><input id="spM2" inputmode="decimal" placeholder=""></div>
+    </div>
+    <div class="field" style="margin:0 0 14px">
+      <label for="spTaraKg">Bolsas vacías (kg)</label><input id="spTaraKg" inputmode="decimal" placeholder="">
+    </div>
+    <p class="note" id="spNota" style="margin:0"></p>
+  </div>
+
+  <div class="ref">
+    <div class="big" id="spRef">—</div>
+    <div class="lbl" id="spRefLbl">lo que te tiene que marcar la balanza</div>
+    <div class="sub" id="spRefSub">—</div>
   </div>
 
   <div class="block">
-    <h2>Profundidad, surco por surco</h2>
+    <h2>Mediciones</h2>
+    <div id="spLista"></div>
+    <button class="act ghost" id="spAdd" style="margin-top:4px">Nueva medición</button>
+    <button class="borrar" id="spBorrar">Borrar todas las mediciones</button>
+  </div>
+
+  <div class="block">
+    <div class="readout">
+      <div class="hero">
+        <div><div class="v" id="spLograda">—</div><div class="k">kg/ha promedio total</div></div>
+        <div><div class="v" id="spDesvio">—</div><div class="k">contra el objetivo</div></div>
+      </div>
+      <div class="lines" id="spLineas"></div>
+      <div id="spVeredicto"></div>
+      <div id="spAvisos"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+<div id="subFert" hidden>
+  <h2 class="sub-h">Fertilizante</h2>
+
+  <div class="block">
+    <div class="field" style="margin:0">
+      <label for="objFert">Objetivo kg/ha</label>
+      <input id="objFert" inputmode="decimal">
+    </div>
+    <p class="note" id="fertNota" style="margin:8px 0 0"></p>
+  </div>
+
+  <div class="block" id="blqFertPrec">
+    <div class="grid2">
+      <div class="field"><label for="fTara">Bolsa vacía (g)</label><input id="fTara" inputmode="decimal" placeholder=""></div>
+      <div class="field"><label for="fMetros">Metros de la tirada</label><input id="fMetros" inputmode="decimal" placeholder=""></div>
+    </div>
+    <p class="note" style="margin:0">Colgás la bolsa en una bajada, tirás los metros marcados y pesás. En gramos.</p>
+  </div>
+
+  <div class="block" id="blqFertAir" hidden>
+    <div class="grid2">
+      <div class="field"><label for="aVueltas">Vueltas que diste</label><input id="aVueltas" inputmode="decimal" placeholder=""></div>
+      <div class="field"><label for="aM2">Equivalen a (m²)</label><input id="aM2" inputmode="decimal" placeholder=""></div>
+    </div>
+    <div class="field" style="margin:0 0 14px">
+      <label for="aTara">Bolsas vacías (kg)</label><input id="aTara" inputmode="decimal" placeholder="">
+    </div>
+    <p class="note" id="aNota" style="margin:0"></p>
+  </div>
+
+  <div class="ref">
+    <div class="big" id="refFert">—</div>
+    <div class="lbl" id="refFertLbl">lo que te tiene que marcar la balanza</div>
+    <div class="sub" id="refFertSub">—</div>
+  </div>
+
+  <div class="block">
+    <h2>Mediciones</h2>
+    <p class="note" style="margin:0 0 12px">Cada medición es una tanda de bajadas de un lado de la máquina. Si tocan algo y vuelven a medir, agregás otra y quedan todas anotadas.</p>
+    <div id="listaMeds"></div>
+    <button class="act ghost" id="btnAddMed" style="margin-top:4px">Nueva medición</button>
+    <button class="borrar" id="borrarMeds">Borrar todas las mediciones</button>
+  </div>
+
+  <div class="block">
+    <div class="readout">
+      <div class="hero">
+        <div><div class="v" id="fertLograda">—</div><div class="k">kg/ha promedio total</div></div>
+        <div><div class="v" id="fertDesvio">—</div><div class="k">contra el objetivo</div></div>
+      </div>
+      <div class="lines" id="fertLineas"></div>
+      <div id="fertVeredicto"></div>
+      <div id="fertAvisos"></div>
+    </div>
+  </div>
+
+</div>
+<div id="subProf" hidden>
+  <h2 class="sub-h">Profundidad</h2>
+
+  <div class="block">
     <div class="rng">
       <p class="q" id="rngPreg">—</p>
-      <div class="f"><span>va entre</span><input id="rngMin" inputmode="decimal" aria-label="Profundidad mínima del rango"><span>y</span><input id="rngMax" inputmode="decimal" aria-label="Profundidad máxima del rango"><span>cm</span></div>
+      <div class="f"><span>va entre</span><input id="rngMin" inputmode="decimal" aria-label="Profundidad mínima"><span>y</span><input id="rngMax" inputmode="decimal" aria-label="Profundidad máxima"><span>cm</span></div>
     </div>
-    <div class="cab2"><span></span><span>cm</span></div>
+    <p class="note" style="margin:0 0 12px">Destapá en varios lugares del lote y anotá a qué profundidad quedó la semilla. Lo que importa es que el promedio caiga adentro del rango.</p>
+    <div class="cab2"><span></span><span>centímetros</span><span></span></div>
     <div id="listaProf"></div>
-    <button class="act ghost" id="btnAddProf" style="margin-top:4px">Agregar surco</button>
-    <div class="lines" style="margin-top:12px">
+    <button class="act ghost" id="btnAddProf" style="margin-top:4px">Agregar medición</button>
+    <div class="lines" style="margin-top:14px">
       <div class="ln"><span>Promedio</span><b id="pProm">—</b></div>
       <div class="ln"><span>Mínima / máxima</span><b id="pMinMax">—</b></div>
-      <div class="ln"><span>Surcos medidos</span><b id="pN">—</b></div>
+      <div class="ln"><span>Mediciones</span><b id="pN">—</b></div>
     </div>
     <div id="profAviso"></div>
     <button class="borrar" id="borrarProf">Borrar las profundidades</button>
   </div>
 
+</div>
+<div id="subCierre" hidden>
+  <h2 class="sub-h">Cierre de pasada</h2>
+
+  <div class="block">
+    <p class="note" style="margin:0 0 12px">Medí el empalme entre el último surco de una pasada y el primero de la siguiente, en dos lugares distintos. Tiene que dar lo mismo que el resto de los surcos.</p>
+    <div class="cab2"><span></span><span>centímetros</span><span></span></div>
+    <div id="listaCierre"></div>
+    <div class="lines" style="margin-top:14px">
+      <div class="ln"><span>Promedio del empalme</span><b id="cProm">—</b></div>
+      <div class="ln"><span>Tendría que dar</span><b id="cObj">—</b></div>
+      <div class="ln"><span>Diferencia</span><b id="cDif">—</b></div>
+      <div class="ln"><span>Mediciones</span><b id="cN">—</b></div>
+    </div>
+    <div id="cierreVeredicto"></div>
+    <div id="cierreAvisos"></div>
+    <button class="borrar" id="borrarCierre">Borrar las mediciones</button>
+  </div>
+
+</div>
+  <h2 class="sub-h">Notas</h2>
+
+  <div class="block">
+    <textarea id="notas" rows="3" placeholder=""></textarea>
+    <p class="note" style="margin:8px 0 0">Lo que anotes acá sale tal cual en el mensaje.</p>
+  </div>
+
+  <div class="block">
+    <button class="act" id="btnMensaje">Armar mensaje</button>
+    <p class="note" id="msjStamp"></p>
+    <textarea id="mensaje" rows="14" readonly hidden></textarea>
+    <button class="act ghost" id="btnCopiar" style="margin-top:8px" hidden>Copiar el mensaje</button>
+  </div>
+
   <div class="block">
     <button class="act" id="btnGuardar">Guardar este control</button>
     <button class="act ghost" id="btnGuardarSig" style="margin-top:8px">Guardar y pasar al siguiente lote</button>
-    <button class="act ghost" id="btnLimpiar" style="margin-top:8px">Limpiar lo medido</button>
+    <button class="act ghost" id="btnLimpiar" style="margin-top:8px">Limpiar todo lo medido</button>
     <p class="note" id="guardaStamp"></p>
-    <button class="act ghost" id="btnCopiar" style="margin-top:8px">Copiar resumen</button>
-    <p class="note" id="copiaStamp"></p>
   </div>
 
 </section>
 
-<section id="tabFert" hidden>
+<section id="tabMaquinas" hidden>
 
-  <h1 class="hd-title">Control de fertilizante</h1>
-  <p class="hd-sub">Pesá lo que cae de cada surco en una tirada y la app lo pasa a kg/ha.</p>
-
-  <div class="ficha" id="fichaF"></div>
+  <h1 class="hd-title">Máquinas</h1>
+  <p class="hd-sub">Cargás una vez cada sembradora y después solo la elegís en el lote.</p>
 
   <div class="block">
-    <h2>La tirada</h2>
+    <h2 id="formTitulo">Nueva máquina</h2>
+    <div class="field"><label for="mNombre">Nombre</label><input id="mNombre" placeholder=""></div>
+    <div class="field">
+      <label>Tipo</label>
+      <div class="seg" id="segTipo">
+        <button data-v="precision" aria-pressed="true">precisión</button>
+        <button data-v="airdrill" aria-pressed="false">air drill</button>
+      </div>
+    </div>
     <div class="grid2">
-      <div class="field"><label for="fTara">Bolsa vacía (g)</label><input id="fTara" inputmode="decimal" placeholder="0"></div>
-      <div class="field"><label for="fMetros">Metros de la tirada</label><input id="fMetros" inputmode="decimal" placeholder="100"></div>
+      <div class="field"><label for="mSurcos">Cantidad de surcos</label><input id="mSurcos" inputmode="decimal" placeholder=""></div>
+      <div class="field"><label for="mDist">Distancia entre surcos (cm)</label><input id="mDist" inputmode="decimal" placeholder=""></div>
     </div>
-    <p class="note" style="margin:0">Pesá la bolsa vacía una sola vez: la app se la resta a todos los surcos. Los metros son del punto A al B que marcás con la camioneta.</p>
-    <button class="borrar" id="borrarTirada">Borrar la bolsa y los metros</button>
-  </div>
-
-  <div class="ref">
-    <div class="big" id="fRefG">—</div>
-    <div class="lbl">gramos que te tiene que marcar la balanza</div>
-    <div class="sub" id="fRefSub">—</div>
-  </div>
-
-  <div class="block">
-    <h2>Lo que marca la balanza en cada surco</h2>
-    <div class="cab"><span></span><span>gramos</span><span></span><span>kg/ha</span></div>
-    <div id="listaFert"></div>
-    <button class="act ghost" id="btnAddFert" style="margin-top:4px">Agregar surco</button>
-    <p class="note">Anotá el peso tal cual lo ves en la balanza, con la bolsa puesta. La resta de la tara la hace la app.</p>
-    <div id="cuentasF"></div>
-    <button class="borrar" id="borrarFert">Borrar las mediciones de fertilizante</button>
-  </div>
-
-  <div class="block">
-    <div class="readout">
-      <div class="hero">
-        <div><div class="v" id="fLograda">—</div><div class="k">kg/ha logrados</div></div>
-        <div><div class="v" id="fDesvio">—</div><div class="k">contra el objetivo</div></div>
-      </div>
-      <div class="lines">
-        <div class="ln"><span>Objetivo</span><b id="fObj">—</b></div>
-        <div class="ln"><span>Surcos medidos</span><b id="fN">—</b></div>
-        <div class="ln"><span>Mínimo / máximo entre surcos</span><b id="fMinMax">—</b></div>
-        <div class="ln"><span>Diferencia entre surcos</span><b id="fCV">—</b></div>
-      </div>
-      <div id="fVeredicto"></div>
-      <div id="fAvisos"></div>
+    <div class="grid2" id="wrapVueltas" hidden>
+      <div class="field"><label for="mVueltas">Vueltas de regulación</label><input id="mVueltas" inputmode="decimal" placeholder=""></div>
+      <div class="field"><label for="mM2">Equivalen a (m²)</label><input id="mM2" inputmode="decimal" placeholder=""></div>
     </div>
+    <p class="note" id="mNota" style="margin:0 0 12px"></p>
+    <button class="act" id="btnGuardarMaq">Guardar la máquina</button>
+    <button class="act ghost" id="btnCancelarMaq" style="margin-top:8px" hidden>Cancelar la edición</button>
+    <p class="note" id="maqStamp"></p>
   </div>
 
   <div class="block">
-    <button class="act" id="btnGuardarF">Guardar este control</button>
-    <button class="act ghost" id="btnGuardarFSig" style="margin-top:8px">Guardar y pasar al siguiente lote</button>
-    <p class="note" id="guardaStampF"></p>
+    <h2>Las que tenés cargadas</h2>
+    <div id="listaMaq"></div>
   </div>
 
 </section>
@@ -291,12 +479,10 @@ button.borrar.armado{color:var(--bad);border-color:var(--bad);font-weight:600}
 
   <div class="block">
     <div class="lines">
-      <div class="ln"><span>Controles de semilla</span><b id="gNSem">—</b></div>
-      <div class="ln"><span>Controles de fertilizante</span><b id="gNFert">—</b></div>
+      <div class="ln"><span>Controles guardados</span><b id="gN">—</b></div>
       <div class="ln"><span>Lotes distintos</span><b id="gNLotes">—</b></div>
+      <div class="ln"><span>Campos distintos</span><b id="gNCampos">—</b></div>
     </div>
-    <button class="act" id="btnExcel" style="margin-top:14px">Exportar todo a Excel</button>
-    <p class="note" id="excelStamp"></p>
   </div>
 
   <div class="block">
@@ -305,8 +491,6 @@ button.borrar.armado{color:var(--bad);border-color:var(--bad);font-weight:600}
   </div>
 
 </section>
-
-</div>
 
 <script>
 "use strict";
@@ -324,401 +508,1054 @@ function n(v){
 }
 function f(v,d=0){ return (isFinite(v)&&!isNaN(v)) ? nf(d).format(v) : '—'; }
 function setT(id,t){ const e=document.getElementById(id); if(e) e.textContent=t; }
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function setH(id,t){ const e=document.getElementById(id); if(e) e.innerHTML=t; }
+function esc(s){ return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+/* número sin decimales si es redondo, con uno si no: así la cuenta escrita
+   coincide exactamente con lo que el usuario cargó en el casillero */
+function g1(v){ return isFinite(v) ? (Math.abs(v-Math.round(v))<1e-9 ? f(v,0) : f(v,1)) : '—'; }
+/* para el fertilizante: hasta 3 decimales pero sin ceros al pedo, así la cuenta
+   escrita dice exactamente el número que marcó la balanza */
+function gx(v){
+  if(!isFinite(v)) return '—';
+  let s = f(v,3);
+  if(s.indexOf(',')>=0) s = s.replace(/0+$/,'').replace(/,$/,'');
+  return s;
+}
 
-/* [encargado, campo, lote, cultivo, ha, híbrido, densidad, fert kg/ha] */
-const LOTES = [["TOTO","BUSSO","UNICO","SOJA",155,"DM 46i20 STS",63.3,60],["TOTO","EL INDIO","UNICO","SOJA",223,"DM 46i20 STS",63.3,60],["TOTO","EL ZORRITO","1","TRIGO",130,"DM CATALPA",150.49,70],["TOTO","EL ZORRITO","2","TRIGO",69.5,"DM PEHUEN",141.83,70],["TOTO","EL ZORRITO","7","SOJA",108,"DM 46i20 STS",63.3,70],["TOTO","EL ZORRITO","8","SOJA",56,"DM 46i20 STS",63.3,70],["TOTO","EL ZORRITO","9","SOJA",57,"DM 46i20 STS",63.3,70],["TOTO","EL ZORRITO","10","TRIGO",28,"DM PEHUEN",141.83,70],["TOTO","SAN GUILLERMO (Int Alv)","1","TRIGO",60,"DM CATALPA",150.49,90],["TOTO","SAN GUILLERMO (Int Alv)","2","TRIGO",65,"DM CATALPA",150.49,90],["TOTO","SAN GUILLERMO (Int Alv)","3","SOJA",124,"DM 46i20 STS",63.3,100],["TOTO","SAN GUILLERMO (Int Alv)","4","SOJA",109,"DM 46i20 STS",63.3,100],["TOTO","SAN GUILLERMO (Int Alv)","5","SOJA",95,"DM 46i20 STS",63.3,100],["TOTO","SAN GUILLERMO (Int Alv)","6","SOJA",67,"DM 46i20 STS",63.3,100],["TOTO","SAN GUILLERMO (Int Alv)","7","SOJA",58,"DM 46i20 STS",63.3,100],["TOTO","SAN GUILLERMO (Int Alv)","8","SOJA",38,"DM 46i20 STS",63.3,100],["TOTO","SAN GUILLERMO (Int Alv)","9","SOJA",60,"DM 46i20 STS",63.3,100],["TOTO","SAN GUILLERMO (Int Alv)","10","COBERTURA",18,"",76.45,0],["TOTO","SAN GUILLERMO (Int Alv)","10","SOJA",18,"DM 46i20 STS",63.3,100],["TOTO","SAN GUILLERMO (Int Alv)","11","COBERTURA",128,"",34.32,0],["TOTO","SAN GUILLERMO (Int Alv)","11","MAIZ",128,"NS 7765 Vip3",65000,0],["TOTO","SAN GUILLERMO (Int Alv)","12","TRIGO",80,"DM CATALPA",150.49,70],["TOTO","SAN GUILLERMO (Int Alv)","13","TRIGO",73,"DM CATALPA",150.49,90],["TOTO","SAN GUILLERMO (Int Alv)","LOTE LAGUNA","SOJA",35,"DM 46i20 STS",0,0],["DENIS","SAN JUAN","1","SOJA",85,"DM 46i20 STS",63.3,100],["DENIS","SAN JUAN","2","MAIZ",124,"NS 7765 Vip3",63064.52,90],["DENIS","SAN JUAN","3","SOJA",61,"DM 46i20 STS",63.3,100],["DENIS","SAN JUAN","4","MAIZ",60,"NS 7852 Vip3",63333.33,90],["DENIS","SAN JUAN","5","COBERTURA",21,"",34.32,0],["DENIS","SAN JUAN","5","MAIZ",21,"BRV 8380 PWUE",55000,0],["DENIS","SAN JUAN","6","SOJA",41,"DM 46i20 STS",63.3,100],["DENIS","SAN JUAN","7","MAIZ",23,"DK 72-72 TRE",75000,90],["DENIS","SAN JUAN","8","COBERTURA",27,"",34.32,0],["DENIS","SAN JUAN","8","MAIZ",35,"BRV 8380 PWUE",55000,0],["DENIS","SAN JUAN","9","COBERTURA",32,"",34.32,0],["DENIS","SAN JUAN","9","MAIZ",32,"NS 7765 Vip3",55000,0],["DENIS","SAN JUAN","10","COBERTURA",42,"",34.32,0],["DENIS","SAN JUAN","10","MAIZ",42,"NS 7765 Vip3",55000,0],["DENIS","SAN JUAN","11","MAIZ",78,"DK 72-72 TRE",68846.15,90],["DENIS","SAN JUAN","12","MAIZ",51,"NS 7765 Vip3",75000,90],["DENIS","SAN JUAN","13","COBERTURA",24,"",34.32,0],["DENIS","SAN JUAN","13","MAIZ",24,"BRV 8380 PWUE",55000,0],["DENIS","SAN JUAN","14","COBERTURA",53,"",34.32,0],["DENIS","SAN JUAN","14","MAIZ",53,"DK 72-72 TRE",55000,0],["DENIS","SAN JUAN","15","SOJA",38,"DM 46i20 STS",63.3,100],["DENIS","SAN JUAN","16","SOJA",85,"DM 46i20 STS",63.3,100],["DENIS","SAN JUAN","17","COBERTURA",39,"",34.32,0],["DENIS","SAN JUAN","17","MAIZ",39,"NS 7765 Vip3",55000,0],["DENIS","SAN JUAN","18","SOJA",38,"DM 46i20 STS",63.3,100],["DENIS","SAN JUAN","19","TRIGO",100,"DM CATALPA",150.49,90],["DENIS","SAN JUAN","20","COBERTURA",20,"",34.32,0],["DENIS","SAN JUAN","20","MAIZ",20,"NS 7765 Vip3",55000,0],["DENIS","SAN JUAN","21","SOJA",17,"DM 46i20 STS",63.3,100],["DENIS","SAN JUAN","22","COBERTURA",27,"",34.32,0],["DENIS","SAN JUAN","22","MAIZ",27,"BRV 8380 PWUE",55000,0],["DENIS","LOS RANQUELES","6","SOJA",73,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","10","MAIZ",62,"BRV 8380 PWUE",55000,0],["DENIS","LOS RANQUELES","11","MAIZ",61,"BRV 8380 PWUE",55000,0],["DENIS","LOS RANQUELES","12","MAIZ",60,"BRV 8380 PWUE",55000,0],["DENIS","LOS RANQUELES","13","MAIZ",63,"BRV 8380 PWUE",55000,0],["DENIS","LOS RANQUELES","14","SOJA",62,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","15","MAIZ",62,"BRV 8380 PWUE",55000,0],["DENIS","LOS RANQUELES","16","MAIZ",64,"NS 7765 Vip3",55000,0],["DENIS","LOS RANQUELES","17","MAIZ",61,"NS 7765 Vip3",55000,0],["DENIS","LOS RANQUELES","18","SOJA",50,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","20","MAIZ",34,"NS 7765 Vip3",55000,0],["DENIS","LOS RANQUELES","21","SOJA",31,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","22","SOJA",26,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","23","SOJA",56,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","24","MAIZ",61,"NS 7765 Vip3",55000,0],["DENIS","LOS RANQUELES","25","SOJA",61,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","26","SOJA",62,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","28","SOJA",45,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","29","SOJA",35,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","30","MAIZ",36,"NS 7765 Vip3",55000,0],["DENIS","LOS RANQUELES","31","MAIZ",17,"NS 7765 Vip3",55000,0],["DENIS","LOS RANQUELES","32","MAIZ",62,"NS 7765 Vip3",55000,0],["DENIS","LOS RANQUELES","33","SOJA",61,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","34","SOJA",60,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","35","SOJA",56,"DM 46i20 STS",63.3,60],["DENIS","LOS RANQUELES","17B","SOJA",37,"DM 46i20 STS",63.3,60],["DENIS","LAS MERCEDES","UNICO","SOJA",165,"DM 46i20 STS",63.3,60],["TOTO","LA ARMONIA","1","SOJA",119,"DM 46i20 STS",63.3,60],["TOTO","LA ARMONIA","5","SOJA",90,"DM 46i20 STS",63.3,60],["TOTO","LA ARMONIA","12","SOJA",116,"DM 46i20 STS",63.3,60],["DENIS","DON RODOLFO","1","SOJA",56,"DM 46i20 STS",61.04,50],["DENIS","DON RODOLFO","5","SOJA",78,"DM 46i20 STS",61.04,50],["DENIS","DON RODOLFO","13","SOJA",26,"DM 46i20 STS",61.04,50],["DENIS","LOS MOJONES","1","SOJA",76,"DM 46i20 STS",61.04,50],["DENIS","LOS MOJONES","3","SOJA",80,"DM 46i20 STS",61.04,50],["DENIS","SAN BENITO","1","MAIZ",93,"NS 7765 Vip3 ????",55000,0],["DENIS","SAN BENITO","2","MAIZ",58,"NS 7765 Vip3 ????",55000,0],["DENIS","SAN BENITO","3","SOJA",47,"DM 46i20 STS",63.3,50],["DENIS","SAN BENITO","7","SOJA",43,"DM 46i20 STS",63.3,50],["DENIS","SAN BENITO","10","MAIZ",111,"NS 7765 Vip3 ????",55000,0],["DENIS","SAN BENITO","12A","SOJA",42,"DM 46i20 STS",63.3,50],["DENIS","SAN BENITO","12B","SOJA",52,"DM 46i20 STS",63.3,50],["DENIS","SAN BENITO","12C","SOJA",66,"DM 46i20 STS",63.3,50],["DENIS","SAN BENITO","13","SOJA",67,"DM 46i20 STS",63.3,50],["DENIS","SAN BENITO","14","SOJA",135,"DM 46i20 STS",63.3,50],["DENIS","LA DORITA","1","GIRASOL",79,"NK 3979 CLHO",50000,50],["DENIS","LA DORITA","2","GIRASOL",39,"NK 3979 CLHO",50000,50],["DENIS","LA DORITA","3","GIRASOL",151,"NK 3979 CLHO",50000,50],["DENIS","LA DORITA","4","COBERTURA",54,"",49.8,0],["DENIS","LA DORITA","4","GIRASOL",24,"NK 3979 CLHO",50000,50],["DENIS","LA ZETA","29","SOJA",98,"DM 46i20 STS",63.3,60],["DENIS","LA ZETA","32","SOJA",170,"DM 46i20 STS",63.3,60],["TOTO","LAS BANDERITAS","UNICO","TRIGO",180,"DM PEHUEN",130.39,52],["TOTO","LOVERA DANIEL","UNICO","TRIGO",178,"DM PEHUEN",130.39,52],["TOTO","QUEVEDO","UNICO","TRIGO",210,"DM PEHUEN",141.83,52],["BRUNO","ASQUINI","1","TRIGO",23,"DM CATALPA",150.49,80],["BRUNO","ASQUINI","2","TRIGO",60,"DM CATALPA",150.49,80],["BRUNO","ASQUINI","3","TRIGO",35,"DM CATALPA",150.49,80],["BRUNO","ASQUINI","4","TRIGO",28,"DM CATALPA",150.49,60],["BRUNO","ASQUINI","5","SOJA",50,"DM 46i20 STS",61.04,60],["BRUNO","ASQUINI","6","TRIGO",25,"DM CATALPA",150.49,60],["BRUNO","ASQUINI","7","TRIGO",18,"DM CATALPA",150.49,60],["BRUNO","ASQUINI","8","TRIGO",25,"DM CATALPA",150.49,80],["BRUNO","ASQUINI","9","TRIGO",25,"DM CATALPA",150.49,60],["BRUNO","ASQUINI","10","TRIGO",23,"DM CATALPA",150.49,80],["BRUNO","ASQUINI","11","TRIGO",25,"DM CATALPA",150.49,80],["BRUNO","ASQUINI","12","TRIGO",25,"DM CATALPA",150.49,80],["BRUNO","ASQUINI","13","TRIGO",25,"DM CATALPA",150.49,80],["BRUNO","ASQUINI","14","TRIGO",100,"DM CATALPA",150.49,80],["BRUNO","EL MAITEN","1","SOJA",180,"DM 46i20 STS",61.04,70],["BRUNO","EL MAITEN","2","SOJA",85,"DM 46i20 STS",61.04,70],["BRUNO","EL MAITEN","3","SOJA",104,"DM 46i20 STS",61.04,70],["BRUNO","EL MAITEN","4","SOJA",50,"DM 46i20 STS",61.04,70],["BRUNO","EL MAITEN","5","SOJA",75,"DM 46i20 STS",61.04,70],["BRUNO","EL MAITEN","6","MAIZ",125,"NS 7765 Vip3",40000,0],["BRUNO","EX FILIPPINI","1","MAIZ",49,"NS 7765 Vip3",40000,0],["BRUNO","EX FILIPPINI","2","MAIZ",50,"NS 7765 Vip3",40000,0],["BRUNO","EX FILIPPINI","3","SOJA",55,"DM 46i20 STS",61.04,60],["BRUNO","EX FILIPPINI","4","SOJA",45,"DM 46i20 STS",61.04,60],["BRUNO","EX FILIPPINI","5","SOJA",55,"DM 46i20 STS",61.04,60],["BRUNO","EX FILIPPINI","6","MAIZ",34,"NS 7765 Vip3",40000,0],["BRUNO","EX FILIPPINI","7","MAIZ",33,"NS 7765 Vip3",40000,0],["BRUNO","EX FILIPPINI","8","SOJA",43,"DM 46i20 STS",61.04,60],["BRUNO","EX FILIPPINI","9","SOJA",55,"DM 46i20 STS",61.04,60],["BRUNO","HERNANDEZ","5","TRIGO",130,"DM PEHUEN",130.39,50],["BRUNO","HERNANDEZ","22","TRIGO",98.5,"DM PEHUEN",130.39,50],["BRUNO","HERNANDEZ","23","SOJA",97,"DM 46i20 STS",61.04,60],["BRUNO","HERNANDEZ","25","TRIGO",96,"BAG 750",139.63,70],["BRUNO","HERNANDEZ","26","TRIGO",100,"BAG 750",139.63,70],["BRUNO","HERNANDEZ","27","MAIZ",60,"NS 7765 Vip3",40000,0],["BRUNO","HERNANDEZ","4B","TRIGO",86,"DM PEHUEN",130.39,50],["BRUNO","HERNANDEZ","4C","TRIGO",90,"DM PEHUEN",130.39,50],["BRUNO","EL CHOLITO","UNICO","SOJA",97,"DM 46i20 STS",61.04,70],["BRUNO","LOS MANANTIALES","1","TRIGO",38,"DM PEHUEN",130.39,70],["BRUNO","LOS MANANTIALES","2","TRIGO",48,"DM PEHUEN",130.39,70],["BRUNO","LOS MANANTIALES","3","TRIGO",88.4,"DM PEHUEN",130.39,70],["BRUNO","LOS MANANTIALES","4","TRIGO",48.6,"DM PEHUEN",130.39,70],["BRUNO","LOS MANANTIALES","7","TRIGO",49,"DM PEHUEN",130.39,70],["TOTO","LA CHAPELLE","2","CEBADA",95,"ANDREIA",142.78,60],["TOTO","LA CHAPELLE","5","SOJA",138,"DM 46i20 STS",61.04,60],["TOTO","LA CHAPELLE","6","CEBADA",64,"ANDREIA",142.78,60],["TOTO","LA CHAPELLE","7","CEBADA",67,"ANDREIA",142.78,60],["TOTO","LA CHAPELLE","8","CEBADA",77,"ANDREIA",142.78,60],["TOTO","LA CHAPELLE","9","CEBADA",58,"ANDREIA",142.78,60],["TOTO","LA CHAPELLE","10","SOJA",25,"DM 46i20 STS",61.04,60],["TOTO","LA CHAPELLE","11","MAIZ",75,"NK 842 Vip3",38000,0],["TOTO","LA CHAPELLE","12","MAIZ",50,"NK 842 Vip3",38000,0],["TOTO","LA CHAPELLE","13","MAIZ",99,"NK 842 Vip3",38000,0],["TOTO","LA CHAPELLE","LOTE RUTA 1","CEBADA",50,"ANDREIA",142.78,60],["TOTO","LA CHAPELLE","LOTE RUTA 2","SOJA",50,"DM 46i20 STS",61.04,60],["TOTO","LA CHAPELLE","LOTE RUTA 3","SOJA",50,"DM 46i20 STS",61.04,60],["TOTO","LA CHAPELLE","LOTE RUTA 4","CEBADA",45,"ANDREIA",142.78,60],["TOTO","LA CHAPELLE","1 y 3","MAIZ",52,"NK 842 Vip3",38000,0],["TOTO","LA CHAPELLE","4 O","SOJA",73,"DM 46i20 STS",61.04,60],["TOTO","LA CHAPELLE","4 E","SOJA",71,"DM 46i20 STS",61.04,60],["TOTO","LA GUARIDA","1","CEBADA",58,"ANDREIA",142.78,60],["TOTO","LA GUARIDA","2","CEBADA",41,"ANDREIA",142.78,60],["TOTO","LA GUARIDA","3","SOJA",98,"DM 46i20 STS",61.04,70],["TOTO","LA GUARIDA","4","SOJA",98,"DM 46i20 STS",61.04,70],["TOTO","LA GUARIDA","5","SOJA",39,"DM 46i20 STS",61.04,70],["TOTO","LA GUARIDA","6","CEBADA",41,"ANDREIA",142.78,60],["BRUNO","SAN JOSE","1","MAIZ",81,"NK 842 Vip3",34000,0],["BRUNO","SAN JOSE","2","MAIZ",27.5,"NK 842 Vip3",34000,0],["BRUNO","SAN JOSE","3","MAIZ",142,"NK 842 Vip3",34000,0],["BRUNO","SAN JOSE","4","MAIZ",26.4,"NK 842 Vip3",34000,0],["BRUNO","SAN JOSE","5","MAIZ",16.5,"NK 842 Vip3",34000,0],["BRUNO","SAN JOSE","6","MAIZ",84,"NK 842 Vip3",34000,0],["BRUNO","SAN JOSE","7","MAIZ",39,"NK 842 Vip3",34000,0],["BRUNO","SAN JOSE","LOTE NORTE","MAIZ",197,"NK 842 Vip3",36000,0],["TOTO","DON OMAR EX DON RENE","1","SOJA",57,"DM 46i20 STS",61.04,50],["TOTO","DON OMAR EX DON RENE","2","SOJA",57,"DM 46i20 STS",61.04,50],["TOTO","DON OMAR EX DON RENE","3","SOJA",58.5,"DM 46i20 STS",61.04,50],["TOTO","DON OMAR EX DON RENE","4","SOJA",55.5,"DM 46i20 STS",61.04,50],["TOTO","DON OMAR EX DON RENE","5","SOJA",61,"DM 46i20 STS",61.04,50],["BRUNO","EL BELTRAN","UNICO","TRIGO",98,"DM PEHUEN",130.39,70],["TOTO","LOS CRIOLLOS","1","SOJA",30,"DM 46i20 STS",58.78,50],["TOTO","LOS CRIOLLOS","2","SOJA",50,"DM 46i20 STS",58.78,50],["BRUNO","LOS PINOS","UNICO","TRIGO",94,"DM CATALPA",150.49,60],["TOTO","LOS SAUCES","UNICO","TRIGO",94,"DM PEHUEN",130.39,80],["BRUNO","LA MERCED","1","SOJA",102,"DM 46i20 STS",61.04,50],["BRUNO","LA MERCED","2","MAIZ",40,"",38000,0],["BRUNO","LA MERCED","3","MAIZ",85,"",38000,0],["BRUNO","LA MERCED","10","MAIZ",86,"",38000,0],["BRUNO","SOL DE MAYO","6","SOJA",123,"DM 46i20 STS",61.04,50],["BRUNO","SOL DE MAYO","7","SOJA",124,"DM 46i20 STS",61.04,50],["BRUNO","SOL DE MAYO","9","GIRASOL",73,"NK 3979 CLHO",45000,50],["BRUNO","SOL DE MAYO","16","GIRASOL",22,"NK 3979 CLHO",45000,50],["BRUNO","SOL DE MAYO","18","SOJA",62,"DM 46i20 STS",61.04,50],["BRUNO","ALIGNANI","12","TRIGO",43,"DM PEHUEN",130.39,70],["BRUNO","DON JUAN","UNICO","SOJA",48,"DM 46i20 STS",58.78,50],["BRUNO","EL AMANECER","1","CEBADA",57,"ANDREIA",142.78,70],["BRUNO","EL AMANECER","2","TRIGO",54,"DM PEHUEN",130.39,70],["BRUNO","EL AMANECER","3","TRIGO",61.4,"DM PEHUEN",130.39,70],["BRUNO","EL AMANECER","4","TRIGO",34,"DM PEHUEN",130.39,70],["BRUNO","EL AMANECER","5","TRIGO",63,"DM PEHUEN",130.39,70],["BRUNO","EL AMANECER","6","TRIGO",64,"DM PEHUEN",130.39,70],["BRUNO","EL AMANECER","7","TRIGO",64,"DM PEHUEN",130.39,70],["BRUNO","EL PIOJO BLANCO","1","SOJA",100,"DM 46i20 STS",58.78,50],["BRUNO","EL PIOJO BLANCO","2","TRIGO",49,"DM PEHUEN",130.39,70],["BRUNO","EL PIOJO BLANCO","3","SOJA",100,"DM 46i20 STS",58.78,50],["BRUNO","EL PIOJO BLANCO","5","TRIGO",48,"DM PEHUEN",130.39,70],["BRUNO","EL PIOJO BLANCO","6","TRIGO",46,"DM PEHUEN",130.39,70],["BRUNO","EL PIOJO BLANCO","10","SOJA",100,"DM 46i20 STS",58.78,50],["BRUNO","LA MADRINA","UNICO","SOJA",217,"DM 46i20 STS",58.78,60],["BRUNO","ESPIGA DE ORO","1","MAIZ",58,"NS 7765 Vip3",38000,0],["BRUNO","ESPIGA DE ORO","2","MAIZ",47,"NS 7765 Vip3",38000,0],["BRUNO","ESPIGA DE ORO","3","MAIZ",53,"NS 7765 Vip3",38000,0],["BRUNO","ESPIGA DE ORO","4","MAIZ",55,"NS 7765 Vip3",38000,0],["BRUNO","ESPIGA DE ORO","5","MAIZ",52,"NS 7765 Vip3",38000,0],["BRUNO","ESPIGA DE ORO","6","MAIZ",40,"NS 7765 Vip3",38000,0],["BRUNO","ESPIGA DE ORO","7","MAIZ",64,"NS 7765 Vip3",38000,0],["BRUNO","ESPIGA DE ORO","8","MAIZ",102,"NS 7765 Vip3",38000,0],["DENIS","LA CACHI","1","SOJA",68,"DM 46i20 STS",58.78,50],["DENIS","LA CACHI","2","SOJA",90,"DM 46i20 STS",58.78,50],["DENIS","LA CACHI","3","SOJA",74,"DM 46i20 STS",58.78,50],["DENIS","LA CACHI","4","SOJA",79,"DM 46i20 STS",58.78,50],["DENIS","LA CACHI","5","SOJA",102,"DM 46i20 STS",58.78,50],["BRUNO","LA GALLI","UNICO","TRIGO",148,"DM PEHUEN",130.39,70],["DENIS","LA PROVIDENCIA","1","MAIZ",103,"NS 7765 Vip3",40000,0],["DENIS","LA PROVIDENCIA","2","SOJA",48,"DM 46i20 STS",61.04,70],["DENIS","LA PROVIDENCIA","3","SOJA",50,"DM 46i20 STS",61.04,70],["DENIS","LA PROVIDENCIA","4","SOJA",112,"DM 46i20 STS",61.04,70],["DENIS","LA PROVIDENCIA","5","SOJA",51,"DM 46i20 STS",61.04,70],["DENIS","LA PROVIDENCIA","7","MAIZ",33,"NS 7624 Vip3CL",40000,0],["DENIS","LA PROVIDENCIA","8","MAIZ",33,"NS 7624 Vip3CL",40000,0],["DENIS","LA PROVIDENCIA","10","TRIGO",23,"BAG 750",139.63,70],["DENIS","LA PROVIDENCIA","11","TRIGO",16.5,"BAG 750",139.63,70],["DENIS","LA PROVIDENCIA","12","MAIZ",47,"NS 7765 Vip3",40000,0],["DENIS","LA PROVIDENCIA","13","MAIZ",19,"NS 7765 Vip3",40000,0],["DENIS","LA PROVIDENCIA","14","MAIZ",59,"NS 7624 Vip3CL",40000,0],["DENIS","LA PROVIDENCIA","15","TRIGO",69,"BAG 750",139.63,70],["DENIS","LA PROVIDENCIA","16","TRIGO",69,"BAG 750",139.63,70],["DENIS","LA PROVIDENCIA","17","SOJA",59,"DM 46i20 STS",61.04,70],["DENIS","LA PROVIDENCIA","18","SOJA",105,"DM 46i20 STS",61.04,70],["DENIS","LA PROVIDENCIA","10B","TRIGO",20,"BAG 750",139.63,70],["DENIS","LA PROVIDENCIA","14B","TRIGO",100,"BAG 750",139.63,70],["DENIS","LA PROVIDENCIA","7B","TRIGO",29,"BAG 750",139.63,70],["GONZA","MAMANGEL","1","TRIGO",45,"DM PEHUEN",130.39,70],["GONZA","MAMANGEL","2","TRIGO",23,"DM PEHUEN",130.39,70],["GONZA","MAMANGEL","3","TRIGO",19,"DM PEHUEN",130.39,70],["GONZA","MAMANGEL","4","TRIGO",5,"DM PEHUEN",130.39,70],["GONZA","MAMANGEL","5","TRIGO",14,"DM PEHUEN",130.39,70],["GONZA","MAMANGEL","6","TRIGO",11.5,"DM PEHUEN",130.39,70],["GONZA","MAMANGEL","7","TRIGO",42,"DM PEHUEN",130.39,70],["GONZA","MAMANGEL","8","TRIGO",11,"DM PEHUEN",130.39,70],["GONZA","MAMANGEL","9","TRIGO",17,"DM PEHUEN",130.39,70],["GONZA","RECADO CHICO","1","TRIGO",164,"DM PEHUEN",130.39,70],["GONZA","RUCA PIRÉ","1","MAIZ",219.5,"NK 842 Vip3",34000,0],["GONZA","RUCA PIRÉ","2","SOJA",147,"DM 46i20 STS",58.78,60],["GONZA","RUCA PIRÉ","3","SOJA",77,"DM 46i20 STS",58.78,60],["GONZA","RUCA PIRÉ","4","GIRASOL",93,"NK 3979 CLHO",45000,50],["GONZA","RUCA PIRÉ","8","GIRASOL",88,"NK 3979 CLHO",45000,50],["GONZA","RUCA PIRÉ","10","SOJA",64,"DM 46i20 STS",58.78,60],["GONZA","RUCA PIRÉ","11","SOJA",197,"DM 46i20 STS",58.78,60],["GONZA","RUCA PIRÉ","12","SOJA",25,"DM 46i20 STS",58.78,60],["GONZA","RUCA PIRÉ","13","GIRASOL",50,"NK 3979 CLHO",45000,50],["GONZA","RUCA PIRÉ","16","GIRASOL",47.5,"NK 3979 CLHO",45000,50],["GONZA","EL BUEN PASTOR","1","MAIZ",52.5,"NS 7921 Vip3CL",34000,0],["GONZA","EL BUEN PASTOR","2","MAIZ",62,"NS 7921 Vip3CL",34000,0],["GONZA","EL BUEN PASTOR","3","MAIZ",54.5,"NS 7921 Vip3CL",34000,0],["GONZA","EL BUEN PASTOR","4","MAIZ",78,"NS 7921 Vip3CL",34000,0],["GONZA","EL BUEN PASTOR","5","SOJA",51.5,"DM 46i20 STS",58.78,70],["GONZA","EL BUEN PASTOR","6","SOJA",50,"DM 46i20 STS",58.78,70],["GONZA","EL BUEN PASTOR","7","SOJA",24,"DM 46i20 STS",58.78,70],["GONZA","EL BUEN PASTOR","8","SOJA",35,"DM 46i20 STS",58.78,70],["GONZA","EL BUEN PASTOR","9","SOJA",56,"DM 46i20 STS",58.78,70],["GONZA","JM","1","SOJA",158.5,"DM 46i20 STS",58.78,50],["GONZA","JM","2","GIRASOL",72,"SYN 3970 CL",45000,40],["GONZA","MAMA JULIA","3","TRIGO",45,"DM PEHUEN",130.39,70],["GONZA","MAMA JULIA","9","TRIGO",44,"DM PEHUEN",130.39,70],["GONZA","MAMA JULIA","11","TRIGO",84,"DM PEHUEN",130.39,70],["GONZA","MAMA JULIA","12","SOJA",50,"DM 46i20 STS",58.78,60],["GONZA","MAMA JULIA","13","SOJA",38,"DM 46i20 STS",58.78,60],["GONZA","MAMA JULIA","14","SOJA",47.5,"DM 46i20 STS",58.78,60],["GONZA","MAMA JULIA","15","SOJA",73,"DM 46i20 STS",58.78,60],["GONZA","MAMA JULIA","16","SOJA",72.5,"DM 46i20 STS",58.78,60],["GONZA","MAMA JULIA","17","MAIZ",83,"NK 842 Vip3",35000,0],["GONZA","MAMA JULIA","18","MAIZ",51,"NK 842 Vip3",35000,0],["GONZA","MAMA JULIA","19","SOJA",73,"DM 46i20 STS",58.78,60],["GONZA","MAMA JULIA","20","COBERTURA",62.5,"",49.8,0],["GONZA","MAMA JULIA","20","SOJA",62.5,"DM 46i20 STS",58.78,60],["GONZA","MAMA JULIA","21","MAIZ",71.5,"NK 842 Vip3",35000,0],["GONZA","DOÑA ANA","UNICO","MAIZ",260,"NS 7765 Vip3",35000,0],["GONZA","DOÑA ANA","UNICO","MAIZ",260,"NK 842 Vip3",35000,0],["GONZA","DON SANTIAGO","1","SOJA",83,"DM 46i20 STS",58.78,60],["GONZA","DON SANTIAGO","2","SOJA",66,"DM 46i20 STS",58.78,60],["GONZA","DON SANTIAGO","3","SOJA",77.5,"DM 46i20 STS",58.78,60],["GONZA","DON SANTIAGO","4","TRIGO",67,"DM PEHUEN",130.39,70],["GONZA","DON SANTIAGO","5","TRIGO",61,"DM PEHUEN",130.39,70],["GONZA","DON SANTIAGO","6","SOJA",56,"DM 46i20 STS",58.78,60],["GONZA","DON SANTIAGO","8","TRIGO",60,"DM PEHUEN",130.39,52],["GONZA","DON SANTIAGO","9","TRIGO",49,"DM PEHUEN",130.39,52],["GONZA","DON SANTIAGO","10","TRIGO",55,"DM PEHUEN",130.39,52],["GONZA","DON SANTIAGO","11","TRIGO",50,"DM PEHUEN",130.39,52],["GONZA","DON SANTIAGO","12","TRIGO",43,"DM PEHUEN",130.39,52],["GONZA","DON SANTIAGO","13","TRIGO",47.5,"DM PEHUEN",130.39,70],["GONZA","DON SANTIAGO","14","TRIGO",54,"DM PEHUEN",130.39,52],["GONZA","SAN JUAN BAUTISTA","1","SOJA",50,"DM 46i20 STS",61.04,60],["GONZA","SAN JUAN BAUTISTA","2","COBERTURA",19,"",49.8,0],["GONZA","SAN JUAN BAUTISTA","2","SOJA",19,"DM 46i20 STS",61.04,60],["GONZA","SAN JUAN BAUTISTA","3","SOJA",24.5,"DM 46i20 STS",61.04,60],["GONZA","SAN JUAN BAUTISTA","7","SOJA",101,"DM 46i20 STS",61.04,60],["GONZA","SAN JUAN BAUTISTA","8","SOJA",38,"DM 46i20 STS",61.04,60],["GONZA","SAN JUAN BAUTISTA","9","SOJA",37.5,"DM 46i20 STS",61.04,60],["GONZA","SAN JUAN BAUTISTA","10","SOJA",59,"DM 46i20 STS",61.04,60],["GONZA","LA ESPERANZA","1","SOJA",67,"DM 46i20 STS",58.78,50],["GONZA","LA ESPERANZA","2","SOJA",70,"DM 46i20 STS",58.78,50],["GONZA","LA ESPERANZA","3","SOJA",69,"DM 46i20 STS",58.78,50],["GONZA","LA ESPERANZA","4","SOJA",30,"DM 46i20 STS",58.78,50],["GONZA","LA ESPERANZA","5","SOJA",35,"DM 46i20 STS",58.78,50],["GONZA","LA ESPERANZA","6","SOJA",62,"DM 46i20 STS",58.78,50],["GONZA","LA ESPERANZA","7","SOJA",45,"DM 46i20 STS",58.78,50],["GONZA","LA ESPERANZA","8","TRIGO",23,"DM PEHUEN",130.39,70],["GONZA","LA ESPERANZA","9","TRIGO",38,"DM PEHUEN",130.39,70],["GONZA","LA ESPERANZA","10","TRIGO",35,"DM PEHUEN",130.39,70],["GONZA","LA ESPERANZA","11","TRIGO",21,"DM PEHUEN",130.39,70],["GONZA","LA ESPERANZA","12","TRIGO",14,"DM PEHUEN",130.39,70],["GONZA","LA ESPERANZA","13","SOJA",26,"DM 46i20 STS",58.78,50],["AGUS","GUANACO VIEJO","1","SOJA",34,"DM 46i20 STS",58.78,50],["AGUS","GUANACO VIEJO","2","SOJA",78,"DM 46i20 STS",58.78,50],["AGUS","GUANACO VIEJO","3","SOJA",50,"DM 46i20 STS",58.78,50],["AGUS","LA GABBA","1","SOJA",116.5,"DM 46i20 STS",58.78,70],["AGUS","LA GABBA","2","TRIGO",111,"DM PEHUEN",130.39,52],["AGUS","LA GABBA","3","TRIGO",113.5,"DM PEHUEN",130.39,52],["AGUS","LA GABBA","4","SOJA",115.5,"DM 46i20 STS",58.78,70],["AGUS","LA GABBA","5","SOJA",60.5,"DM 46i20 STS",58.78,70],["AGUS","LA GABBA","6","SOJA",60,"DM 46i20 STS",58.78,70],["AGUS","LA GABBA","7","SOJA",70,"DM 46i20 STS",58.78,70],["AGUS","LA GABBA","8","TRIGO",165.5,"DM PEHUEN",130.39,70],["AGUS","LA GABBA","9","TRIGO",74,"DM PEHUEN",130.39,70],["AGUS","LA GABBA","10","SOJA",78.5,"DM 46i20 STS",58.78,70],["AGUS","LA GABBA","4A","COBERTURA",25.5,"",49.8,0],["GONZA","11 DE ABRIL","UNICO","MAIZ",155,"BRV 8421 PWUE",35000,0],["AGUS","LA GALA","1","TRIGO",52,"DM PEHUEN",130.39,70],["AGUS","LA GALA","2","TRIGO",51,"DM PEHUEN",130.39,70],["AGUS","LA GALA","4","TRIGO",53,"DM PEHUEN",130.39,70],["AGUS","LA GALA","5","MAIZ",43,"",58.78,1],["AGUS","LA GALA","6","MAIZ",40,"",58.78,1],["AGUS","LA GALA","7","MAIZ",35,"",58.78,1],["AGUS","LA GALA","8","TRIGO",16,"DM PEHUEN",130.39,70],["AGUS","LA GALA","9","TRIGO",35,"DM PEHUEN",130.39,70],["AGUS","LA GALA","10","TRIGO",14,"DM PEHUEN",130.39,70],["AGUS","LA GALA","11","MAIZ",31,"",58.78,1],["AGUS","LA GALA","12","TRIGO",26,"DM PEHUEN",130.39,70],["AGUS","LA GALA","3A","MAIZ",26,"",58.78,1],["AGUS","LA GALA","3B","MAIZ",25,"",58.78,1],["GONZA","LA MARGARITA","1","MAIZ",92,"BRV 8421 PWUE",35000,0],["GONZA","LA MARGARITA","2","MAIZ",48,"BRV 8421 PWUE",35000,0],["AGUS","LA TIA TILDE","3","SOJA",87.5,"DM 46i20 STS",58.78,60],["AGUS","LA TIA TILDE","4","SOJA",130,"DM 46i20 STS",58.78,60],["AGUS","LA TIA TILDE","5","SOJA",48,"DM 46i20 STS",58.78,60],["AGUS","LA TIA TILDE","6","SOJA",20,"DM 46i20 STS",58.78,60],["AGUS","LA TIA TILDE","7","SOJA",19.5,"DM 46i20 STS",58.78,60],["AGUS","LA TIA TILDE","8","SOJA",49,"DM 46i20 STS",58.78,60],["AGUS","LA TIA TILDE","9","SOJA",19,"DM 46i20 STS",58.78,60],["AGUS","DON FELIPE","1","GIRASOL",97,"SYN 3970 CL",45000,40],["AGUS","DON FELIPE","2","MAIZ",15,"BRV 8421 PWUE",33000,0],["AGUS","DON FELIPE","3","MAIZ",37,"BRV 8421 PWUE",33000,0],["AGUS","DON FELIPE","4","MAIZ",37,"BRV 8421 PWUE",33000,0],["AGUS","DON FELIPE","5","MAIZ",77,"BRV 8421 PWUE",33000,0],["AGUS","DON FELIPE","6","MAIZ",15,"BRV 8421 PWUE",33000,0],["AGUS","DON FELIPE","7","MAIZ",42,"BRV 8421 PWUE",33000,0],["AGUS","DON FELIPE","8","MAIZ",39,"BRV 8421 PWUE",33000,0],["AGUS","DON FELIPE","9","MAIZ",22,"BRV 8421 PWUE",33000,0],["AGUS","DON FELIPE","10","GIRASOL",21,"SYN 3970 CL",45000,40],["AGUS","DON FELIPE","11","GIRASOL",82,"SYN 3970 CL",45000,40],["AGUS","DON FELIPE","12","GIRASOL",40,"SYN 3970 CL",45000,40],["AGUS","DON FELIPE","13","GIRASOL",26,"SYN 3970 CL",45000,40],["AGUS","DON FELIPE","14","GIRASOL",26,"SYN 3970 CL",45000,40],["AGUS","DON FELIPE","15","GIRASOL",78,"SYN 3970 CL",45000,40],["AGUS","DON FELIPE","16","MAIZ",79,"BRV 8421 PWUE",33000,0],["AGUS","LA FE","1","MAIZ",100,"NS 7921 Vip3CL",32000,0],["AGUS","LA FE","2","MAIZ",68,"NS 7921 Vip3CL",32000,0],["AGUS","LA FE","3","MAIZ",83,"NS 7921 Vip3CL",32000,0],["AGUS","LA FE","4","MAIZ",86,"NS 7921 Vip3CL",32000,0],["AGUS","LA FE","5","MAIZ",20,"NS 7921 Vip3CL",32000,0],["AGUS","LA FE","6","MAIZ",119,"NS 7921 Vip3CL",32000,0],["AGUS","LA FE","7","MAIZ",71,"NS 7921 Vip3CL",32000,0],["AGUS","LA FE","8","MAIZ",68,"NS 7921 Vip3CL",32000,0],["AGUS","LA PAZ","1","MAIZ",165,"NK 842 Vip3",32000,0],["AGUS","LA PAZ","2","MAIZ",139,"NK 842 Vip3",32000,0],["AGUS","LA PAZ","3","MAIZ",161,"NK 842 Vip3",32000,0],["AGUS","LA PAZ","4","MAIZ",114,"NK 842 Vip3",32000,0],["AGUS","LA SILVIA","1","MAIZ",40,"NS 7921 Vip3CL",32000,0],["AGUS","LA SILVIA","2","MAIZ",40,"NS 7921 Vip3CL",32000,0],["AGUS","LA SILVIA","3","MAIZ",39,"NK 842 Vip3",32000,0],["AGUS","LA SILVIA","4","MAIZ",75,"NK 842 Vip3",32000,0],["AGUS","LA SILVIA","5","MAIZ",75,"NK 842 Vip3",32000,0],["AGUS","LA SILVIA","6","MAIZ",40,"NK 842 Vip3",32000,0],["AGUS","LA SILVIA","7","MAIZ",40,"NK 842 Vip3",32000,0],["AGUS","LA SILVIA","8","MAIZ",44,"NK 842 Vip3",32000,0],["AGUS","LA SILVIA","9","MAIZ",57,"NK 842 Vip3",32000,0],["AGUS","LA SILVIA","10","MAIZ",57,"NS 7921 Vip3CL",32000,0],["AGUS","LA SILVIA","11","MAIZ",12.5,"NS 7921 Vip3CL",32000,0],["AGUS","LA TURCA","1","MAIZ",60,"",35000,0],["AGUS","LA TURCA","2","MAIZ",38,"",35000,0],["AGUS","LA TURCA","3","MAIZ",40,"",35000,0],["AGUS","LA TURCA","4","MAIZ",63,"",35000,0],["AGUS","LAS PALOMAS","1","GIRASOL",68,"NK 3979 CLHO",45000,60],["AGUS","LAS PALOMAS","2","GIRASOL",89,"NK 3979 CLHO",45000,60],["AGUS","LAS PALOMAS","3","GIRASOL",105.5,"NK 3979 CLHO",45000,60],["AGUS","LAS PALOMAS","4","SOJA",57,"DM 46i20 STS",58.78,70],["AGUS","LAS PALOMAS","5","GIRASOL",59,"NK 3979 CLHO",45000,60],["AGUS","LAS PALOMAS","6","GIRASOL",36,"NK 3979 CLHO",45000,60],["AGUS","LAS PALOMAS","7","COBERTURA",59,"",49.8,0],["AGUS","LAS PALOMAS","7","GIRASOL",59,"NK 3979 CLHO",45000,60],["AGUS","LAS PALOMAS","8","SOJA",22,"DM 46i20 STS",58.78,70],["AGUS","LAS PALOMAS","9","SOJA",19.5,"DM 46i20 STS",58.78,70],["AGUS","LAS PALOMAS","10","SOJA",36,"DM 46i20 STS",58.78,70],["AGUS","LAS PALOMAS","11","SOJA",36,"DM 46i20 STS",58.78,70],["AGUS","LOS DOS HERMANOS EX LAS CARCAVAS","1","SOJA",55,"DM 46i20 STS",58.78,70],["AGUS","LOS DOS HERMANOS EX LAS CARCAVAS","2","GIRASOL",91,"SYN 3970 CL",45000,60],["AGUS","LOS DOS HERMANOS EX LAS CARCAVAS","3","GIRASOL",60,"SYN 3970 CL",45000,60],["AGUS","LOS DOS HERMANOS EX LAS CARCAVAS","4","GIRASOL",56,"SYN 3970 CL",45000,60],["AGUS","LOS DOS HERMANOS EX LAS CARCAVAS","5","GIRASOL",90,"SYN 3970 CL",45000,60],["AGUS","LOS DOS HERMANOS EX LAS CARCAVAS","6","SOJA",64,"DM 46i20 STS",58.78,70],["MARIANO","LOS OVEROS","UNICO","TRIGO",260,"DM PEHUEN",130.39,52],["MARIANO","CHANCHERIA","1","SOJA",85,"DM 46i20 STS",61.04,50],["MARIANO","CHANCHERIA","2","SOJA",125,"DM 46i20 STS",61.04,50],["MARIANO","LA LOMITA","1","GIRASOL",22,"NK 3979 CLHO",45000,50],["MARIANO","LA LOMITA","2","GIRASOL",27,"NK 3979 CLHO",45000,50],["MARIANO","LA LOMITA","3","GIRASOL",24,"SYN 3970 CL",45000,50],["MARIANO","LA LOMITA","4","GIRASOL",20,"SYN 3970 CL",45000,50],["MARIANO","LA LOMITA","5","GIRASOL",43.5,"SYN 3970 CL",45000,50],["MARIANO","LA LOMITA","6","MAIZ",46,"NS 7765 Vip3",40000,0],["MARIANO","LA LOMITA","7","GIRASOL",49,"NK 3979 CLHO",45000,50],["MARIANO","LA LOMITA","8","MAIZ",24,"NS 7765 Vip3",40000,0],["MARIANO","LA LOMITA","9","GIRASOL",24,"SYN 3970 CL",45000,50],["MARIANO","LA LOMITA","10","GIRASOL",47,"SYN 3970 CL",45000,50],["MARIANO","LOS CHAÑARES","1","SOJA",40,"DM 46i20 STS",61.04,50],["MARIANO","LOS CHAÑARES","2","SOJA",23,"DM 46i20 STS",61.04,50],["MARIANO","LOS CHAÑARES","3","SOJA",13,"DM 46i20 STS",61.04,50],["MARIANO","LOS CHAÑARES","4","SOJA",29,"DM 46i20 STS",61.04,50],["MARIANO","LOS CHAÑARES","5","SOJA",23,"DM 46i20 STS",61.04,50],["MARIANO","LOS CHAÑARES","6","SOJA",150,"DM 46i20 STS",61.04,50],["MARIANO","LAS 4 M","UNICO","GIRASOL",390,"NK 3979 CLHO",45000,50],["MARIANO","LOS ANDES","1","SOJA",85,"DM 46i20 STS",61.04,50],["MARIANO","LOS ANDES","2","GIRASOL",105,"NK 3979 CLHO",45000,50],["MARIANO","LOS ANDES","3","GIRASOL",170,"NK 3979 CLHO",45000,50],["MARIANO","LOS ANDES","7","SOJA",39,"DM 46i20 STS",61.04,50],["MARIANO","LOS ANDES","8","SOJA",23,"DM 46i20 STS",61.04,50],["MARIANO","LOS ANDES","9","SOJA",120,"DM 46i20 STS",61.04,50],["MARIANO","LOS ANDES (YARA)","12","MAIZ",33,"NS 7765 Vip3",38000,0],["MARIANO","LOS ANDES (YARA)","13","MAIZ",48.5,"NS 7765 Vip3",38000,0],["MARIANO","LOS ANDES (YARA)","14","GIRASOL",86,"NK 3979 CLHO",45000,50],["MARIANO","LOS ANDES (YARA)","15","GIRASOL",96.5,"NK 3979 CLHO",45000,50]];
-const ENCARGADO = 'DENIS';
 
-/* Profundidad orientativa por cultivo, en cm: [mínima, máxima] */
-const PROF = {
-  GIRASOL:[3,5], MAIZ:[4,6], SOJA:[3,5], TRIGO:[2,4], CEBADA:[2,4], COBERTURA:[2,3], MANI:[5,7]
-};
+/* profundidades de referencia: solo sugerencia en gris, el rango real lo carga él */
+const PROF = { GIRASOL:[3,5], MAIZ:[4,6], SOJA:[3,5], TRIGO:[2,4], CEBADA:[2,4], COBERTURA:[2,3], MANI:[5,7] };
+/* en qué unidad se suele pedir cada cultivo: sugerencia, él la puede cambiar */
+const UNI_SUG = { GIRASOL:'ha', MAIZ:'ha', MANI:'ha', SOJA:'ml', TRIGO:'ml', CEBADA:'ml', COBERTURA:'ml' };
+
+/* El lote lo escribe él: campo, lote, cultivo y contratista.
+   El cultivo es texto libre ("SOJA PRIMERA"), así que para saber qué unidad
+   y qué profundidad sugerir buscamos el cultivo base adentro de lo que escribió. */
+const CULTIVOS = ['GIRASOL','MAIZ','SOJA','TRIGO','CEBADA','MANI','COBERTURA'];
+
+/* La fecha la elige él; por defecto, hoy. Al guardar se le pega la hora
+   actual, así dos controles del mismo día quedan en orden. */
+function hoyISO(){
+  const d=new Date(), p=x=>String(x).padStart(2,'0');
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+}
+function fechaControl(){
+  const f = /^\d{4}-\d{2}-\d{2}$/.test(S.fecha||'') ? S.fecha : hoyISO();
+  const [a,m,d] = f.split('-').map(Number);
+  const ahora = new Date();
+  return new Date(a, m-1, d, ahora.getHours(), ahora.getMinutes(), ahora.getSeconds()).toISOString();
+}
+
+const vacioSurcos = ()=>[{n:'',s:'',m:''},{n:'',s:'',m:''},{n:'',s:'',m:''},{n:'',s:'',m:''},{n:'',s:'',m:''}];
+const vacio5 = ()=>['','','','',''];
+const vacioProf = ()=>['','','','',''];
 
 const S = {
-  campo:'', lote:'', dist:52.5, distModo:'52.5',
-  surcos:[{m:'',s:''},{m:'',s:''},{m:'',s:''},{m:'',s:''},{m:'',s:''}],
-  profs:['','','','',''],
-  rangos:{},
-  obj:{},
-  fert:{tara:'', metros:'', surcos:['','','','','']},
-  tab:'siembra',
-  controles:[]
+  fecha:'', campo:'', lote:'', cultivo:'', contratista:'', notas:'',
+  maqId:'',
+  maquinas:[],
+  unidad:{},                 /* por cultivo: 'ha' | 'ml' */
+  obj:{},                    /* por lote: {ha, ml, fert} */
+  rangos:{},                 /* por cultivo: [min, max] */
+  surcos: vacioSurcos(),
+  profs: vacioProf(),
+  cierres: ['',''],
+  fert:{ tara:'', metros:'', taraKg:'', vueltas:'', m2:'', meds:[] },
+  controles:[],
+  tab:'control', sub:'densidad',
+  edit:''                    /* máquina que se está editando */
 };
-try{ const g=localStorage.getItem('control.siembra.v1'); if(g) Object.assign(S, JSON.parse(g)); }catch(e){}
-function guardar(){ try{ localStorage.setItem('control.siembra.v1', JSON.stringify(S)); }catch(e){} }
 
-const mios = LOTES;
-const campos = [...new Set(mios.map(l=>l[1]))].sort((a,b)=>a.localeCompare(b,'es'));
+try{ const g=localStorage.getItem('control.siembra.v2'); if(g) Object.assign(S, JSON.parse(g)); }catch(e){}
 
-function lotesDe(campo){ return mios.filter(l=>l[1]===campo); }
-function claveLote(l){ return l[2]+' · '+l[3]; }
-function actual(){
-  const ls = lotesDe(S.campo);
-  return ls.find(l=>claveLote(l)===S.lote) || ls[0] || null;
-}
+/* Lo guardado puede venir de una versión anterior, con otra forma.
+   Acá se acomoda a la forma de ahora para que nada quede sin calcular. */
+function normalizar(){
+  const txt = v => (v===null||v===undefined) ? '' : String(v);
+  if(!Array.isArray(S.maquinas)){
+    S.maquinas = [];
+  } else {
+    S.maquinas = S.maquinas.filter(m=>m && typeof m==='object').map(m=>({
+      id: txt(m.id) || ('m'+Math.random().toString(36).slice(2,8)),
+      nombre: txt(m.nombre) || 'Sin nombre',
+      tipo: m.tipo==='airdrill' ? 'airdrill' : 'precision',
+      surcos: txt(m.surcos), dist: txt(m.dist), vueltas: txt(m.vueltas), m2: txt(m.m2)
+    }));
+  }
+  if(!S.maquinas.some(m=>m.id===S.maqId)) S.maqId = S.maquinas.length ? S.maquinas[0].id : '';
 
-function pintarSelectores(){
-  $('#campo').innerHTML = campos.map(c=>`<option value="${esc(c)}" ${c===S.campo?'selected':''}>${esc(c)}</option>`).join('');
-  const ls = lotesDe(S.campo);
-  $('#lote').innerHTML = ls.map(l=>`<option value="${esc(claveLote(l))}" ${claveLote(l)===S.lote?'selected':''}>Lote ${esc(claveLote(l))}</option>`).join('');
-}
+  if(!Array.isArray(S.surcos) || !S.surcos.length) S.surcos = vacioSurcos();
+  else S.surcos = S.surcos.map((x,i) => (x && typeof x==='object')
+        ? {n: txt(x.n), s: txt(x.s), m: txt(x.m)} : {n:'', s: txt(x), m:''});
 
-function pintarFicha(){
-  const l = actual();
-  if(!l){ $('#ficha').innerHTML='<div class="s">Elegí un campo y un lote.</div>'; return; }
-  const om = objetivoMiles(), fe = fertObjetivo();
-  const mano = isFinite(aMiles(pisado(l).sem));
-  const manoF = isFinite(n(pisado(l).fert)) && n(pisado(l).fert)>0;
-  const obj = isFinite(om) ? f(om*1000,0)+' semillas/ha' : (l[6]>0 ? f(l[6],1)+' kg/ha' : 'sin objetivo');
-  $('#ficha').innerHTML =
-    `<div class="t">${esc(l[1])} · lote ${esc(l[2])}</div>`+
-    `<div class="s">${esc(l[3])}${l[5]?' · '+esc(l[5]):''} · ${f(l[4],0)} ha · encargado ${esc(l[0])}</div>`+
-    `<div class="s" style="margin-top:6px"><b style="color:var(--seed)">${obj}</b>${mano?' <i>(a mano)</i>':''}${isFinite(fe)?' · fertilizante '+f(fe,0)+' kg/ha'+(manoF?' <i>(a mano)</i>':''):''}</div>`;
-}
+  /* antes la profundidad era una lista de números sueltos; ahora cada una
+     lleva su número de surco, igual que la densidad */
+  if(!Array.isArray(S.profs) || !S.profs.length) S.profs = vacioProf();
+  else S.profs = S.profs.map(x => (x && typeof x==='object') ? txt(x.v) : txt(x));
+  /* el cierre son dos mediciones, una a cada lado del empalme */
+  if(!Array.isArray(S.cierres)) S.cierres = ['',''];
+  S.cierres = S.cierres.slice(0,2).map(txt);
+  while(S.cierres.length<2) S.cierres.push('');
 
-/* objetivo cargado a mano: pisa lo que dice la planilla, por si el Excel quedó viejo.
-   Se guarda por lote. Vacío = vale la planilla. */
-function claveFull(l){ return l[1]+'|'+l[2]+'|'+l[3]; }
-function pisado(l){ return (S.obj||{})[claveFull(l)] || {sem:'',fert:''}; }
-
-/* devuelve miles de semillas/ha. Acepta 50.000 o 50: si viene chico, lo toma como miles. */
-function aMiles(v){ const x=n(v); if(!isFinite(x)||x<=0) return NaN; return x>1000 ? x/1000 : x; }
-
-function objetivoPlanilla(){
-  const l = actual();
-  if(!l || l[6] <= 1000) return NaN;
-  return l[6]/1000;
-}
-function objetivoMiles(){
-  const l = actual();
-  if(!l) return NaN;
-  const m = aMiles(pisado(l).sem);
-  return isFinite(m) ? m : objetivoPlanilla();
-}
-function fertObjetivo(){
-  const l = actual();
-  if(!l) return NaN;
-  const x = n(pisado(l).fert);
-  if(isFinite(x) && x>0) return x;
-  return (isFinite(l[7]) && l[7]>0) ? l[7] : NaN;
-}
-
-function pintarObjetivo(){
-  const l = actual();
-  const sem=$('#objSem'), fer=$('#objFert');
-  if(!l){ setT('objPlan','Elegí un lote.'); setT('objNota',''); sem.value=fer.value=''; sem.disabled=fer.disabled=true; return; }
-  sem.disabled=fer.disabled=false;
-  const p = pisado(l);
-  if(sem.value!==String(p.sem)) sem.value=p.sem;
-  if(fer.value!==String(p.fert)) fer.value=p.fert;
-  const dicePl = l[6]>1000 ? f(l[6],0)+' semillas/ha' : (l[6]>0 ? f(l[6],1)+' kg/ha de semilla' : 'sin dato');
-  sem.placeholder = l[6]>1000 ? String(Math.round(l[6])) : '';
-  fer.placeholder = (isFinite(l[7])&&l[7]>0) ? String(Math.round(l[7])) : '';
-  setT('objPlan', `La planilla dice ${dicePl}${(isFinite(l[7])&&l[7]>0)?' y '+f(l[7],0)+' kg/ha de fertilizante':''}. Si quedó vieja, escribilo acá y mando lo tuyo.`);
-  const notas=[];
-  const m = aMiles(p.sem);
-  if(isFinite(m)) notas.push('Uso tu objetivo: '+f(m*1000,0)+' semillas/ha.');
-  else if(l[6]<=1000 && l[6]>0) notas.push('Este lote viene en kg/ha. Cargá las semillas/ha acá arriba para poder controlarlo contando.');
-  const x = n(p.fert);
-  if(isFinite(x)&&x>0) notas.push('Fertilizante: '+f(x,0)+' kg/ha (tuyo).');
-  setT('objNota', notas.join(' '));
-}
-
-function calc(){
-  const d = n(S.dist)/100;
-  const obj = objetivoMiles();
-  const factor = d>0 ? 10/d : NaN;
-  const vals = [];
-  S.surcos.forEach(s=>{
-    const m=n(s.m), sem=n(s.s);
-    if(isFinite(m)&&m>0&&isFinite(sem)&&sem>1&&d>0) vals.push(factor*(sem-1)/m);
-    else vals.push(NaN);
+  if(!S.fert || typeof S.fert!=='object') S.fert = {};
+  if(!S.semPeso || typeof S.semPeso!=='object') S.semPeso = {};
+  if(S.semModo!=='pesando') S.semModo='contando';
+  if(!S.semPeso || typeof S.semPeso!=='object') S.semPeso = {};
+  /* antes el fertilizante era una lista de pesos o un peso suelto; ahora son mediciones */
+  const F = S.fert;
+  if(!Array.isArray(F.meds)){
+    const viejas = [];
+    if(Array.isArray(F.surcos) && F.surcos.some(x=>txt(x).trim()!=='')) viejas.push({lado:'Izq', filas:F.surcos.map(txt), nota:''});
+    else if(txt(F.peso).trim()!=='') viejas.push({lado:'Izq', filas:[txt(F.peso)], nota:''});
+    F.meds = viejas;
+  }
+  delete F.surcos; delete F.peso;
+  /* la pesada de semilla y la de fertilizante tienen la misma forma */
+  [S.fert, S.semPeso].forEach(X=>{
+    ['tara','metros','taraKg','vueltas','m2'].forEach(k=>{ X[k] = txt(X[k]); });
+    if(!Array.isArray(X.meds)) X.meds = [];
+    X.meds = X.meds.filter(m=>m&&typeof m==='object').map(m=>({
+      id: txt(m.id) || ('d'+Math.random().toString(36).slice(2,8)),
+      lado: m.lado==='Derc' ? 'Derc' : 'Izq',
+      filas: Array.isArray(m.filas) && m.filas.length ? m.filas.map(txt) : ['','',''],
+      nota: txt(m.nota)
+    }));
   });
+
+  ['unidad','obj','rangos'].forEach(k=>{ if(!S[k] || typeof S[k]!=='object') S[k] = {}; });
+  if(!Array.isArray(S.controles)) S.controles = [];
+  ['fecha','campo','lote','cultivo','contratista','notas','maqId','edit'].forEach(k=>{ S[k]=txt(S[k]); });
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(S.fecha)) S.fecha = hoyISO();
+  if(!['densidad','fert','prof','cierre'].includes(S.sub)) S.sub = 'densidad';
+}
+normalizar();
+
+/* La versión anterior guardaba con otra clave y otra forma. Traemos sus
+   controles una sola vez para no perder lo que ya haya medido en el campo. */
+function traerViejos(){
+  if(S.migrado) return;
+  S.migrado = true;
+  let v = null;
+  try{ const g = localStorage.getItem('control.siembra.v1'); if(g) v = JSON.parse(g); }catch(e){ return; }
+  if(!v || !Array.isArray(v.controles) || !v.controles.length) return;
+  const num = x => (typeof x==='number' && isFinite(x)) ? x : NaN;
+  v.controles.forEach(c=>{
+    if(!c || typeof c!=='object') return;
+    const esFert = c.tipo==='Fertilizante' || c.tipo==='Soja fertilizante' ||
+                   (c.tipo==='Soja semilla' && c.metodo==='pesada');
+    const nuevo = {
+      id: 'v'+(c.id||Math.random().toString(36).slice(2,9)),
+      fecha: c.fecha, encargado:c.encargado, campo:c.campo, lote:c.lote,
+      cultivo:c.cultivo, ha:num(c.ha), hibrido:c.hibrido,
+      maquina:'(versión anterior)', tipoMaq:'', surcosMaq:NaN, dist:num(c.dist),
+      unidad: (c.tipo==='Soja semilla' && c.metodo==='contada') ? 'ml' : 'ha',
+      semObjetivo:NaN, semLograda:NaN, semDesvio:NaN, semN:num(c.nSurcos)||0,
+      semMin:NaN, semMax:NaN, semCV:NaN, semMl:NaN, semHa:NaN, plM2:NaN, cadaCm:NaN,
+      fertObjetivo:num(c.fert), fertLograda:num(c.fertLograda), fertDesvio:num(c.fertDesvio),
+      fertMetodo: esFert ? (isFinite(num(c.factor)) ? 'vueltas' : 'tirada') : '',
+      fertTara:num(c.tara), fertMetros:num(c.metrosTirada), fertVueltas:num(c.vueltas), fertM2:NaN,
+      profProm:num(c.profProm), profMin:num(c.profMin), profMax:num(c.profMax), profN:num(c.nProf)||0,
+      rangoMin:num(c.rangoMin), rangoMax:num(c.rangoMax),
+      cierreProm:NaN, cierreObj:NaN, cierreDif:NaN, cierreN:0,
+      detSem:[], detFert:[], detProf:[], detCierre:[]
+    };
+    /* semilla de girasol: venía en miles de semillas por hectárea */
+    if(isFinite(num(c.lograda))){ nuevo.semLograda = num(c.lograda)*1000; nuevo.semObjetivo = num(c.objetivo)*1000; nuevo.semDesvio = num(c.desvio); }
+    /* semilla de soja contada: venía en semillas por metro lineal */
+    if(isFinite(num(c.logradaSem))){ nuevo.semLograda = num(c.logradaSem); nuevo.semObjetivo = num(c.objetivoSem); nuevo.semDesvio = num(c.desvio); nuevo.semMl = num(c.logradaSem); }
+    /* semilla de soja pesada: iba contra kg/ha */
+    if(isFinite(num(c.logradaKg))){ nuevo.fertLograda = num(c.logradaKg); nuevo.fertObjetivo = num(c.objetivoKg); nuevo.fertDesvio = num(c.desvio); nuevo.fertMetodo = 'vueltas'; }
+    (c.surcos||[]).forEach(x=>{ if(x && isFinite(num(x.res))) nuevo.detSem.push({s:num(x.sem), m:num(x.m), ml:NaN, res:num(x.res)*1000}); });
+    (c.surcosS||[]).forEach(x=>{ if(x && isFinite(num(x.res))) nuevo.detSem.push({s:num(x.sem), m:num(x.m), ml:num(x.res), res:num(x.res)}); });
+    (c.surcosF||[]).forEach(x=>{ if(x && isFinite(num(x.res))) nuevo.detFert.push({peso:num(x.g), neto:num(x.neto), res:num(x.res)}); });
+    (c.profs||[]).forEach((x,i)=>{ const y=num(x); if(isFinite(y)) nuevo.detProf.push({nro:String(i+1), v:y}); });
+    S.controles.push(nuevo);
+  });
+  S.controles.sort((a,b)=>String(a.fecha||'').localeCompare(String(b.fecha||'')));
+}
+traerViejos();
+
+/* Guardar en el celular es lento. Si se hace en cada tecla, la app se traba.
+   Esperamos medio segundo sin que toque nada, y forzamos al salir o al minimizar. */
+let guardarT = null;
+function guardarYa(){
+  if(guardarT){ clearTimeout(guardarT); guardarT = null; }
+  try{ localStorage.setItem('control.siembra.v2', JSON.stringify(S)); }catch(e){}
+}
+function guardar(){
+  if(guardarT) clearTimeout(guardarT);
+  guardarT = setTimeout(guardarYa, 500);
+}
+window.addEventListener('pagehide', guardarYa);
+window.addEventListener('beforeunload', guardarYa);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') guardarYa(); });
+guardar();
+
+/* ---------------- lote y máquina ---------------- */
+
+function cultivo(){ return String(S.cultivo||'').trim(); }
+function baseCultivo(){
+  const c = cultivo().toUpperCase();
+  return CULTIVOS.find(k => c.indexOf(k)>=0) || '';
+}
+function claveCult(){ return baseCultivo() || cultivo().toUpperCase() || '—'; }
+function claveFull(){ return (S.campo||'')+'|'+(S.lote||'')+'|'+claveCult(); }
+function objGuardado(k){ return (S.obj[claveFull()]||{})[k]; }
+
+function maquina(){ return S.maquinas.find(m=>m.id===S.maqId) || S.maquinas[0] || null; }
+function esAir(){ const m=maquina(); return !!m && m.tipo==='airdrill'; }
+/* distancia entre surcos en metros */
+function dist(){ const m=maquina(); return m ? n(m.dist)/100 : NaN; }
+
+/* ---------------- semilla ---------------- */
+
+function unidad(){
+  const c = claveCult();
+  if(S.unidad[c]==='ha' || S.unidad[c]==='ml') return S.unidad[c];
+  return UNI_SUG[c] || 'ha';
+}
+const etiquetaUni = u => u==='ml' ? 'sem/ml' : 'semillas/ha';
+
+function objSemilla(){
+  const x = n(objGuardado(unidad()));
+  return (isFinite(x) && x>0) ? x : NaN;
+}
+function objFert(){
+  const x = n(objGuardado('fert'));
+  return (isFinite(x) && x>0) ? x : NaN;
+}
+
+function resumenDe(vals, obj){
   const ok = vals.filter(v=>isFinite(v));
   const prom = ok.length ? ok.reduce((a,b)=>a+b,0)/ok.length : NaN;
   let cv=NaN;
   if(ok.length>1 && prom>0){ const va=ok.reduce((a,b)=>a+(b-prom)**2,0)/(ok.length-1); cv=Math.sqrt(va)/prom*100; }
   const desvio = (isFinite(prom)&&isFinite(obj)&&obj>0) ? (prom-obj)/obj*100 : NaN;
-  /* referencia: cuántas semillas en 10 m para dar el objetivo */
-  const ref10 = (isFinite(obj)&&d>0) ? obj*d + 1 : NaN;
-  const cmEntre = (isFinite(obj)&&d>0) ? 1000/(obj*d) : NaN;
-  const cmReal = (isFinite(prom)&&d>0&&prom>0) ? 1000/(prom*d) : NaN;
-  /* semillas por metro de surco: prom (miles/ha) x 1000 x d / 10000 = prom*d/10 */
-  const semM = (isFinite(prom)&&d>0) ? prom*d/10 : NaN;
-  return {d,obj,factor,vals,ok,prom,cv,desvio,ref10,cmEntre,cmReal,semM,min:ok.length?Math.min(...ok):NaN,max:ok.length?Math.max(...ok):NaN};
+  return {vals, ok, prom, cv, desvio, obj,
+          min: ok.length?Math.min(...ok):NaN, max: ok.length?Math.max(...ok):NaN};
 }
 
-function pintarSurcos(){
-  $('#listaSurcos').innerHTML = S.surcos.map((s,i)=>
-    `<div class="surco">
-      <span class="n">${i+1}</span>
-      <input inputmode="decimal" data-s="${i}" value="${esc(s.s)}" placeholder="6" aria-label="Semillas surco ${i+1}">
-      <input inputmode="decimal" data-m="${i}" value="${esc(s.m)}" placeholder="1,90" aria-label="Metros surco ${i+1}">
-      <span class="res" data-r="${i}">—</span>
-    </div>
-    <div class="cta" data-cl="${i}"></div>`).join('');
-  $('#listaSurcos').querySelectorAll('[data-m]').forEach(el=>el.addEventListener('input',e=>{
-    S.surcos[+e.target.dataset.m].m = e.target.value; guardar(); pintarResultado();
-  }));
-  $('#listaSurcos').querySelectorAll('[data-s]').forEach(el=>el.addEventListener('input',e=>{
-    S.surcos[+e.target.dataset.s].s = e.target.value; guardar(); pintarResultado();
-  }));
-}
-
-function pintarResultado(){
-  const r = calc(), l = actual();
-  const porSemillas = isFinite(r.obj);
-
-  setT('refSem', isFinite(r.ref10) ? f(r.ref10,0) : '—');
-  setT('refSub', isFinite(r.cmEntre)
-    ? 'una semilla cada '+f(r.cmEntre,1)+' cm · a '+f(n(S.dist),1)+' cm entre surcos'
-    : (porSemillas ? 'elegí la distancia entre surcos' : 'cargá el objetivo del lote a mano'));
-
-  const cuentas=[];
-  r.vals.forEach((v,i)=>{
-    const e=$(`[data-r="${i}"]`); if(e) e.textContent = isFinite(v)?f(v,1):'—';
-    const sem=n(S.surcos[i].s), m=n(S.surcos[i].m);
-    /* sugerencia: cuánto tendría que medir el tramo para esas semillas */
-    const inp=$(`[data-m="${i}"]`);
-    if(inp){
-      const mEsp = (isFinite(sem)&&sem>1&&isFinite(r.obj)&&r.obj>0&&r.d>0) ? (sem-1)*10/(r.obj*r.d) : NaN;
-      inp.placeholder = isFinite(mEsp) ? f(mEsp,2) : '1,90';
-    }
-    /* la cuenta escrita, pegada debajo de su propia fila */
-    const cl = $(`[data-cl="${i}"]`);
-    const txt = isFinite(v) ? `(10 ÷ ${f(r.d,3)}) × ${f(sem-1,0)} ÷ ${f(m,2)} = <b>${f(v,1)}</b>` : '';
-    if(cl) cl.innerHTML = txt;
-    if(txt) cuentas.push(`<div class="c"><i>surco ${i+1}:</i> ${txt}</div>`);
+/* Semillas por metro lineal: (contadas − 1) ÷ metros, porque se mide de
+   semilla a semilla y N semillas dejan N−1 espacios.
+   De ahí sale todo lo demás:
+     semillas/ha  = sem/ml × 10.000 ÷ distancia entre surcos (en metros)
+     plantas/m²   = sem/ml ÷ distancia
+     una cada cm  = 100 ÷ sem/ml                                              */
+function calcSem(){
+  const d = dist(), u = unidad(), obj = objSemilla();
+  const ml = (S.surcos||[]).map(x=>{
+    const s=n(x.s), m=n(x.m);
+    if(!isFinite(s) || s<=1 || !isFinite(m) || m<=0) return NaN;
+    return (s-1)/m;
   });
-  const boxC = $('#cuentas');
-  if(cuentas.length>1){
-    const prom = `<div class="c p"><i>promedio de ${cuentas.length} surcos:</i> <b>${f(r.prom,1)} mil semillas/ha</b></div>`;
-    boxC.innerHTML = `<div class="cuentas"><div class="t">Todo junto, para mostrar</div>${cuentas.join('')}${prom}</div>`;
-  } else boxC.innerHTML='';
-
-  setT('oLograda', isFinite(r.prom)?f(r.prom,1):'—');
-  setT('oDesvio', isFinite(r.desvio)?(r.desvio>0?'+':'')+f(r.desvio,1)+' %':'—');
-  setT('oObj', isFinite(r.obj)?f(r.obj,1)+' mil/ha':(l?f(l[6],1)+' kg/ha':'—'));
-  setT('oN', r.ok.length?f(r.ok.length,0):'—');
-  setT('oMinMax', r.ok.length?f(r.min,1)+' / '+f(r.max,1):'—');
-  setT('oCV', isFinite(r.cv)?f(r.cv,1)+' %':'—');
-  setT('oCm', isFinite(r.cmReal)?f(r.cmReal,1)+' cm':'—');
-  setT('oSemM', isFinite(r.semM)?f(r.semM,2):'—');
-
-  const v = $('#veredicto');
-  if(isFinite(r.desvio)){
-    const a = Math.abs(r.desvio);
-    const corr = Math.abs(r.obj/r.prom-1)*100;
-    if(a<=5) v.innerHTML = `<div class="veredicto ok">Está bien, dentro del 5 %<span class="d">${(r.desvio>0?'+':'')+f(r.desvio,1)} % contra el objetivo</span></div>`;
-    else if(a<=10) v.innerHTML = `<div class="veredicto med">Tira ${r.desvio<0?'de menos':'de más'} ${f(a,1)} %<span class="d">Hay que ${r.desvio<0?'subir':'bajar'} la entrega un ${f(corr,1)} % y volver a medir</span></div>`;
-    else v.innerHTML = `<div class="veredicto bad">Tira ${r.desvio<0?'de menos':'de más'} ${f(a,1)} %<span class="d">Parar y regular: ${r.desvio<0?'subir':'bajar'} la entrega un ${f(corr,1)} %</span></div>`;
-  } else v.innerHTML='';
-
-  const av=[];
-  if(l && !isFinite(r.obj)) av.push('Este lote no tiene objetivo en semillas por hectárea: la planilla lo trae en kg/ha. Cargalo a mano arriba, en «Objetivo del lote», y te comparo contra eso.');
-  if(r.ok.length && r.ok.length<3) av.push('Medí al menos 3 surcos para que el número represente a la máquina.');
-  if(isFinite(r.cv) && r.cv>10) av.push('Los surcos tiran muy distinto entre sí ('+f(r.cv,0)+' %). Mirá placas, vacío y mangueras antes de corregir la dosis.');
-  $('#avisos').innerHTML = av.map(t=>`<div class="aviso">${t}</div>`).join('');
+  const aUnidad = v => (u==='ml') ? v : ((d>0) ? v*10000/d : NaN);
+  const r = resumenDe(ml.map(aUnidad), obj);
+  r.ml = ml;
+  const okMl = ml.filter(v=>isFinite(v));
+  r.promMl = okMl.length ? okMl.reduce((a,b)=>a+b,0)/okMl.length : NaN;
+  r.d = d; r.u = u;
+  r.semHa  = (isFinite(r.promMl)&&d>0) ? r.promMl*10000/d : NaN;
+  r.plM2   = (isFinite(r.promMl)&&d>0) ? r.promMl/d : NaN;
+  r.cadaCm = (isFinite(r.promMl)&&r.promMl>0) ? 100/r.promMl : NaN;
+  /* cuántas semillas contar por metro para dar el objetivo */
+  r.objMl = isFinite(obj) ? (u==='ml' ? obj : ((d>0) ? obj*d/10000 : NaN)) : NaN;
+  r.porMetro = isFinite(r.objMl) ? r.objMl + 1 : NaN;
+  return r;
 }
+
+/* ---------------- fertilizante ---------------- */
+
+/* Cada medición es una tanda de bajadas de un lado de la máquina.
+   Precisión: se pesa en gramos sobre una tirada de metros.
+     kg/ha = (10 ÷ distancia) × (gramos − bolsa) ÷ metros
+   Air drill: se dan las vueltas de regulación, que equivalen a una superficie
+   conocida, y se pesa en kilos.
+     kg/ha = (kilos − bolsas) × 10.000 ÷ m² de esas vueltas
+   Con 89 vueltas = 1.000 m² queda el ×10 de siempre.
+   Un renglón que no sea un número (por ejemplo "bolsa cerrada") se anota
+   tal cual y no entra en el promedio.                                        */
+
+/* Las dos pesadas —la de semilla a chorrillo y la de fertilizante— usan
+   exactamente la misma cuenta. Cambia solo de dónde salen los datos. */
+function factorDe(src){
+  if(esAir()){
+    const m = maquina();
+    const m2 = n(src.m2 || (m?m.m2:''));
+    return (isFinite(m2) && m2>0) ? {f:10000/m2, m2, unidad:'kg'} : {f:NaN, m2, unidad:'kg'};
+  }
+  const d = dist(), metros = n(src.metros || 100);
+  const ok = d>0 && isFinite(metros) && metros>0;
+  return {f: ok ? 10/(d*metros) : NaN, d, metros, unidad:'g'};
+}
+function taraDe(src){
+  const t = n(esAir() ? src.taraKg : src.tara);
+  return isFinite(t) ? t : 0;
+}
+function factorFert(){ return factorDe(S.fert); }
+function taraFert(){ return taraDe(S.fert); }
+function modoSem(){ return S.semModo==='pesando' ? 'pesando' : 'contando'; }
+function objSemKg(){ const x=n(objGuardado('semkg')); return (isFinite(x)&&x>0)?x:NaN; }
+
+/* una medición: devuelve el valor de cada bajada, el promedio y el veredicto */
+function calcMed(med, src, obj){
+  src = src || S.fert;
+  obj = (obj===undefined) ? objFert() : obj;
+  const {f:factor} = factorDe(src);
+  const tara = taraDe(src);
+  const vals = (med.filas||[]).map(x=>{
+    const br = n(x);
+    if(!isFinite(br) || !isFinite(factor)) return NaN;
+    const neto = br - tara;
+    return (neto>0) ? neto*factor : NaN;
+  });
+  const ok = vals.filter(v=>isFinite(v));
+  const prom = ok.length ? ok.reduce((a,b)=>a+b,0)/ok.length : NaN;
+  const desvio = (isFinite(prom)&&isFinite(obj)&&obj>0) ? (prom-obj)/obj*100 : NaN;
+  return {vals, ok, prom, desvio, tara, factor, obj};
+}
+
+/* El promedio total es el de la última medición buena de cada lado:
+   regulan la izquierda hasta que da, miden la derecha, y promedian las dos. */
+function calcPesada(src, obj){
+  const aire = esAir();
+  const meds = (src.meds||[]).map(m=>Object.assign({}, m, {r: calcMed(m, src, obj), lado: aire ? '' : m.lado}));
+  /* Vale la ÚLTIMA medición de cada lado: es la que quedó después de regular.
+     No se descarta ninguna por tolerancia; la tolerancia la pone él. */
+  const buenas = [];
+  if(aire){
+    const ult = meds.filter(m=>isFinite(m.r.prom)).pop();
+    if(ult) buenas.push(ult);
+  } else {
+    ['Izq','Derc'].forEach(lado=>{
+      const ult = meds.filter(m=>m.lado===lado && isFinite(m.r.prom)).pop();
+      if(ult) buenas.push(ult);
+    });
+  }
+  const val = buenas.length ? buenas.reduce((a,m)=>a+m.r.prom,0)/buenas.length : NaN;
+  const desvio = (isFinite(val)&&isFinite(obj)&&obj>0) ? (val-obj)/obj*100 : NaN;
+  const {f:factor, m2, metros, unidad:uni} = factorDe(src);
+  const tara = taraDe(src);
+  const netoRef = (isFinite(obj)&&isFinite(factor)&&factor>0) ? obj/factor : NaN;
+  return {meds, buenas, val, obj, desvio, factor, tara, m2, metros, uni,
+          aire, netoRef, refBal: isFinite(netoRef) ? netoRef+tara : NaN};
+}
+function calcFert(){ return calcPesada(S.fert, objFert()); }
+function calcSemPeso(){ return calcPesada(S.semPeso, objSemKg()); }
+
+/* ---------------- profundidad y cierre ---------------- */
 
 function profVals(){ return (S.profs||[]).map(n).filter(v=>isFinite(v)&&v>=0); }
-
-function pintarFilasProf(){
-  $('#listaProf').innerHTML = (S.profs||[]).map((v,i)=>
-    `<div class="filaP">
-      <span class="n">${i+1}</span>
-      <input inputmode="decimal" data-p="${i}" value="${esc(v)}" placeholder="4" aria-label="Profundidad surco ${i+1}">
-      <button class="del" data-dp="${i}" aria-label="Quitar surco ${i+1}">×</button>
-    </div>`).join('');
-  $('#listaProf').querySelectorAll('[data-p]').forEach(el=>el.addEventListener('input',e=>{
-    S.profs[+e.target.dataset.p] = e.target.value; guardar(); pintarProf();
-  }));
-  $('#listaProf').querySelectorAll('[data-dp]').forEach(el=>el.addEventListener('click',e=>{
-    S.profs.splice(+e.currentTarget.dataset.dp,1); guardar(); pintarFilasProf(); pintarProf();
-  }));
-}
-
-/* el rango lo carga Mateo en el lote, después de consultarlo con el encargado.
-   PROF solo se usa como sugerencia en gris dentro de los casilleros. */
-function rangoGuardado(cult){
-  const r = (S.rangos||{})[cult];
+function rangoGuardado(c){
+  const r = (S.rangos||{})[c];
   if(!r) return null;
   const a=n(r[0]), b=n(r[1]);
   if(!isFinite(a)||!isFinite(b)||a<0||b<=0||b<a) return null;
   return [a,b];
 }
 
-function pintarRango(){
-  const l = actual();
-  const cult = l ? l[3] : '';
-  const sug = cult ? PROF[cult] : null;
-  setT('rngPreg', cult ? `¿A qué profundidad tiene que ir el ${cult}? Preguntale al encargado y cargalo acá.` : 'Elegí un lote.');
-  const r = (S.rangos||{})[cult] || ['',''];
-  const a=$('#rngMin'), b=$('#rngMax');
-  if(a.value !== String(r[0])) a.value = r[0];
-  if(b.value !== String(r[1])) b.value = r[1];
-  a.placeholder = sug ? String(sug[0]) : '';
-  b.placeholder = sug ? String(sug[1]) : '';
-  a.disabled = b.disabled = !cult;
-}
-
-function pintarProf(){
-  const l = actual();
-  const p = l ? rangoGuardado(l[3]) : null;
-  const vals = profVals();
-  setT('pN', vals.length?f(vals.length,0):'—');
+/* Cierre de pasada: el empalme entre la última línea de una pasada y la primera
+   de la siguiente tiene que medir lo mismo que la distancia entre surcos. */
+function calcCierre(){
+  const m = maquina();
+  const objCm = m ? n(m.dist) : NaN;
+  const vals = (S.cierres||[]).map(n).filter(v=>isFinite(v)&&v>0);
   const prom = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : NaN;
-  setT('pProm', isFinite(prom)?f(prom,1)+' cm':'—');
-  setT('pMinMax', vals.length?f(Math.min(...vals),1)+' / '+f(Math.max(...vals),1)+' cm':'—');
-  const box=$('#profAviso');
-  if(!vals.length){ box.innerHTML=''; return; }
-  if(!p){ box.innerHTML = '<div class="aviso">Cargá arriba el rango que te diga el encargado y te aviso si estás dentro.</div>'; return; }
-  const rg = `${f(p[0],1)}–${f(p[1],1)} cm`;
-  if(prom < p[0]) box.innerHTML = `<div class="aviso">Muy playa: ${f(prom,1)} cm contra ${rg}. Bajá las ruedas limitadoras.</div>`;
-  else if(prom > p[1]) box.innerHTML = `<div class="aviso">Muy honda: ${f(prom,1)} cm contra ${rg}. Subí las ruedas limitadoras.</div>`;
-  else box.innerHTML = `<div class="aviso">Dentro del rango: ${f(prom,1)} cm contra ${rg}.</div>`;
-  const fuera = vals.filter(v=>v<p[0]||v>p[1]).length;
-  if(fuera) box.innerHTML += `<div class="aviso">${fuera} de ${vals.length} surcos quedaron fuera del rango.</div>`;
+  const dif = (isFinite(prom)&&isFinite(objCm)) ? prom-objCm : NaN;
+  const pct = (isFinite(dif)&&objCm>0) ? dif/objCm*100 : NaN;
+  const surcos = m ? n(m.surcos) : NaN;
+  const ancho = (isFinite(surcos)&&surcos>0&&isFinite(objCm)) ? surcos*objCm/100 : NaN;
+  /* lo que se pierde o se pisa por pasada, en metros y en % del ancho de labor */
+  const porPasada = isFinite(dif) ? dif/100 : NaN;
+  const pctAncho = (isFinite(porPasada)&&isFinite(ancho)&&ancho>0) ? porPasada/ancho*100 : NaN;
+  return {objCm, vals, prom, dif, pct, surcos, ancho, porPasada, pctAncho};
 }
 
-/* ---------------- fertilizante ----------------
-   La cuenta es la misma forma que la de semilla, con el peso neto en lugar
-   de las semillas:  (10 ÷ distancia) × (balanza − bolsa vacía) ÷ metros.
-   Con el peso en gramos el resultado sale en kg/ha sin convertir nada:
-   un metro de surco ocupa d m² = d/10000 ha, y g/1000 kg sobre esa
-   superficie da 10·g/(m·d).  */
-/* gramos: sin decimales si es redondo, con uno si no, para que la cuenta
-   escrita coincida exactamente con lo que cargó en el casillero */
-function g1(v){ return isFinite(v) ? (Math.abs(v-Math.round(v))<1e-9 ? f(v,0) : f(v,1)) : '-'; }
 
-function calcFert(){
-  const d = n(S.dist)/100;
-  const metros = n(S.fert.metros || 100);
-  const tara = isFinite(n(S.fert.tara)) ? n(S.fert.tara) : 0;
-  const obj = fertObjetivo();
-  const factor = d>0 ? 10/d : NaN;
-  const vals = (S.fert.surcos||[]).map(g=>{
-    const br = n(g);
-    if(!isFinite(br) || !isFinite(metros) || metros<=0 || !(d>0)) return NaN;
-    const neto = br - tara;
-    if(!(neto>0)) return NaN;
-    return factor * neto / metros;
-  });
-  const ok = vals.filter(v=>isFinite(v));
-  const prom = ok.length ? ok.reduce((a,b)=>a+b,0)/ok.length : NaN;
-  let cv=NaN;
-  if(ok.length>1 && prom>0){ const va=ok.reduce((a,b)=>a+(b-prom)**2,0)/(ok.length-1); cv=Math.sqrt(va)/prom*100; }
-  const desvio = (isFinite(prom)&&isFinite(obj)&&obj>0) ? (prom-obj)/obj*100 : NaN;
-  /* lo que tendría que marcar la balanza para dar el objetivo */
-  const netoRef = (isFinite(obj)&&d>0&&isFinite(metros)&&metros>0) ? obj*d*metros/10 : NaN;
-  const refG = isFinite(netoRef) ? netoRef + tara : NaN;
-  return {d,metros,tara,obj,vals,ok,prom,cv,desvio,netoRef,refG,
-          min:ok.length?Math.min(...ok):NaN, max:ok.length?Math.max(...ok):NaN};
+/* ---------------- pintado ---------------- */
+
+function pintarLote(){
+  [['fecha','fecha'],['campo','campo'],['lote','lote'],['cultivo','cultivo'],['contratista','contratista'],['notas','notas']]
+    .forEach(([id,k])=>{ const e=$('#'+id); if(e && e.value!==String(S[k]||'')) e.value = S[k]||''; });
+  /* la fecha escrita con todas las letras: el casillero la muestra en el
+     formato del celular y eso se presta a confusión entre día y mes */
+  const DIAS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const fi = /^\d{4}-\d{2}-\d{2}$/.test(S.fecha||'') ? S.fecha : hoyISO();
+  const [fa,fm,fd] = fi.split('-').map(Number);
+  const dt = new Date(fa, fm-1, fd);
+  setT('fechaNota', DIAS[dt.getDay()]+' '+fd+' de '+MESES[fm-1]+' de '+fa+(fi===hoyISO()?' (hoy)':''));
+
+  const base = baseCultivo();
+  setT('cultNota', base
+    ? 'Lo tomo como '+base+': te sugiero la unidad y la profundidad de ese cultivo.'
+    : (cultivo() ? 'No reconozco el cultivo, así que no te sugiero unidad ni profundidad. Igual anda todo.' : ''));
 }
 
-function pintarFilasFert(){
-  $('#listaFert').innerHTML = (S.fert.surcos||[]).map((g,i)=>
-    `<div class="surco">
-      <span class="n">${i+1}</span>
-      <input inputmode="decimal" data-g="${i}" value="${esc(g)}" placeholder="300" aria-label="Gramos surco ${i+1}">
-      <span></span>
-      <span class="res" data-rf="${i}">—</span>
-    </div>
-    <div class="cta" data-cf="${i}"></div>`).join('');
-  $('#listaFert').querySelectorAll('[data-g]').forEach(el=>el.addEventListener('input',e=>{
-    S.fert.surcos[+e.target.dataset.g] = e.target.value; guardar(); pintarFert();
+function pintarChips(){
+  setH('chipsMaq', S.maquinas.map(m=>
+    `<button class="chip" data-mq="${esc(m.id)}" aria-pressed="${m.id===S.maqId}">${esc(m.nombre)}</button>`).join(''));
+  $('#chipsMaq').querySelectorAll('[data-mq]').forEach(b=>b.addEventListener('click',()=>{
+    S.maqId = b.dataset.mq; guardar(); pintarTodo();
   }));
+  const m = maquina();
+  if(!m){ setT('maqResumen','No tenés ninguna máquina cargada. Andá a la solapa MÁQUINAS y cargá una.'); return; }
+  const p=[];
+  p.push(m.tipo==='airdrill' ? 'Air drill' : 'Sembradora de precisión');
+  if(n(m.surcos)>0) p.push(f(n(m.surcos),0)+' surcos');
+  if(n(m.dist)>0) p.push('a '+f(n(m.dist),1)+' cm');
+  if(n(m.surcos)>0 && n(m.dist)>0) p.push(f(n(m.surcos)*n(m.dist)/100,2)+' m de ancho');
+  if(m.tipo==='airdrill' && n(m.vueltas)>0 && n(m.m2)>0) p.push(f(n(m.vueltas),0)+' vueltas = '+f(n(m.m2),0)+' m²');
+  setT('maqResumen', p.join(' · '));
 }
 
-function pintarFichaF(){
-  const l = actual();
-  if(!l){ $('#fichaF').innerHTML='<div class="s">Elegí un campo y un lote.</div>'; return; }
-  const fe = fertObjetivo();
-  const manoF = isFinite(n(pisado(l).fert)) && n(pisado(l).fert)>0;
-  $('#fichaF').innerHTML =
-    `<div class="t">${esc(l[1])} · lote ${esc(l[2])}</div>`+
-    `<div class="s">${esc(l[3])} · ${f(l[4],0)} ha · encargado ${esc(l[0])}</div>`+
-    `<div class="s" style="margin-top:6px"><b style="color:var(--seed)">${isFinite(fe)?f(fe,0)+' kg/ha':'sin objetivo de fertilizante'}</b>${manoF?' <i>(a mano)</i>':''}</div>`;
+function filaSurco(i,x,sug){
+  return `<div class="surco cuatro">
+    <input class="sn" inputmode="decimal" data-sn="${i}" value="${esc(x.n)}" placeholder="" aria-label="Número de surco">
+    <input inputmode="decimal" data-ss="${i}" value="${esc(x.s)}" placeholder="" aria-label="Semillas">
+    <input inputmode="decimal" data-sm="${i}" value="${esc(x.m)}" placeholder="" aria-label="Metros">
+    <span class="res" data-rs="${i}">—</span></div>
+  <div class="cta" data-cs="${i}"></div>`;
+}
+/* el número que muestra el renglón: el que escribió él, o el de orden */
+function nroSurco(i){ const v=String((S.surcos[i]||{}).n||'').trim(); return v || String(i+1); }
+
+function pintarFilas(){
+  setH('listaSem', (S.surcos||[]).map((x,i)=>filaSurco(i,x,'22')).join(''));
+  $('#listaSem').querySelectorAll('[data-sn]').forEach(e=>e.addEventListener('input',ev=>{
+    S.surcos[+ev.target.dataset.sn].n = ev.target.value; guardar(); pintarSem();
+  }));
+  $('#listaSem').querySelectorAll('[data-ss]').forEach(e=>e.addEventListener('input',ev=>{
+    S.surcos[+ev.target.dataset.ss].s = ev.target.value; guardar(); pintarSem();
+  }));
+  $('#listaSem').querySelectorAll('[data-sm]').forEach(e=>e.addEventListener('input',ev=>{
+    S.surcos[+ev.target.dataset.sm].m = ev.target.value; guardar(); pintarSem();
+  }));
+
+  const lista = (cont, arr, attr, ph, fijo, repintar) => {
+    $(cont).innerHTML = arr.map((v,i)=>
+      `<div class="filaP"><span class="n">${i+1}</span>
+        <input inputmode="decimal" data-${attr}="${i}" value="${esc(v)}" placeholder="">
+        ${fijo?'<span></span>':`<button class="del" data-d${attr}="${i}" aria-label="Quitar ${i+1}">×</button>`}</div>`).join('');
+    $(cont).querySelectorAll('['+'data-'+attr+']').forEach(e=>e.addEventListener('input',ev=>{
+      arr[+ev.target.dataset[attr]] = ev.target.value; guardar(); (repintar||pintarCierre)();
+    }));
+    $(cont).querySelectorAll('['+'data-d'+attr+']').forEach(b=>b.addEventListener('click',ev=>{
+      const i=+ev.currentTarget.dataset['d'+attr];
+      if(arr.length<=1) arr[0]=''; else arr.splice(i,1);
+      guardar(); pintarTodo();
+    }));
+  };
+  lista('#listaProf', S.profs, 'p', '4', false, pintarProf);
+  /* la sugerencia en gris del empalme es la distancia de la máquina elegida */
+  const mq = maquina();
+  lista('#listaCierre', S.cierres, 'ci', '', true, pintarCierre);
+}
+
+function veredictoEn(id, desvio, obj, prom, verbo){
+  const v=$('#'+id);
+  if(!isFinite(desvio)){ v.innerHTML=''; return; }
+  const a=Math.abs(desvio), corr=Math.abs(prom>0?(obj-prom)/prom*100:NaN);
+  if(a<0.05){ v.innerHTML = `<div class="veredicto neutro">Está dando el objetivo<span class="d">${f(prom,1)} contra ${f(obj,1)}</span></div>`; return; }
+  v.innerHTML = `<div class="veredicto neutro">Tira ${desvio<0?'de menos':'de más'} ${f(a,1)} %<span class="d">${
+    isFinite(corr) ? 'Para dar el objetivo hay que '+(desvio<0?'subir':'bajar')+' la entrega un '+f(corr,1)+' % y volver a '+verbo : ''
+  }</span></div>`;
+}
+
+function pintarSem(){
+  pintarSubs();
+  const modo = modoSem();
+  $('#segModoSem').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.v===modo)));
+  $('#semContando').hidden = modo==='pesando';
+  $('#semPesando').hidden = modo!=='pesando';
+  setT('modoNota', modo==='pesando'
+    ? 'A chorrillo se pesa, igual que el fertilizante, y se compara contra los kg/ha.'
+    : 'Contás las semillas de un tramo en cada surco.');
+  if(modo==='pesando') pintarSemPeso();
+
+  const r = calcSem(), u = r.u, dec = u==='ml' ? 1 : 0;
+
+  $('#segUnidad').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.v===u)));
+  setT('cabUni', u==='ml' ? 'sem/ml' : 'sem/ha');
+  setT('semLogradaK', (u==='ml' ? 'sem/ml' : 'semillas/ha')+' logradas');
+  setT('lblObjSem', 'Objetivo en '+etiquetaUni(u));
+
+  const io = $('#objSem');
+  const propio = objGuardado(u) || '';
+  if(io.value !== String(propio)) io.value = propio;
+  io.placeholder = '';
+  setT('objNota', 'Lo que tenés que dar en este lote, según la planilla de la oficina.');
+
+  setT('refSem', isFinite(r.porMetro) ? f(r.porMetro,0) : '—');
+  setT('refSub', isFinite(r.objMl)
+    ? 'para dar '+f(r.objMl,1)+' sem/ml · en 2 m serían '+f(r.objMl*2+1,0)+', en 3 m '+f(r.objMl*3+1,0)
+    : 'cargá el objetivo arriba');
+
+  const cu=[];
+  r.vals.forEach((v,i)=>{
+    const el=$(`[data-rs="${i}"]`); if(el) el.textContent = isFinite(v)?f(v,dec):'—';
+    const s=n(S.surcos[i].s), m=n(S.surcos[i].m);
+    const inp=$(`[data-ss="${i}"]`);
+    if(inp) inp.placeholder = '';
+    let txt='';
+    if(isFinite(v)){
+      txt = (u==='ml')
+        ? `(${f(s,0)} − 1) ÷ ${f(m,2)} = <b>${f(v,1)}</b>`
+        : `(10.000 ÷ ${f(r.d,3)}) × (${f(s,0)} − 1) ÷ ${f(m,2)} = <b>${f(v,0)}</b>`;
+    }
+    const cl=$(`[data-cs="${i}"]`); if(cl) cl.innerHTML = txt;
+    if(isFinite(v)) cu.push(`<div class="c">surco ${i+1}: <i>${txt.replace(/ = <b>.*/,'')} =</i> <b>${f(v,dec)}</b></div>`);
+  });
+  setH('cuentasSem', cu.length
+    ? `<div class="cuentas"><div class="t">Todo junto, para mostrar</div>${cu.join('')}<div class="c p">promedio de ${f(r.ok.length,0)} surcos: <b>${f(r.prom,dec)} ${etiquetaUni(u)}</b></div></div>` : '');
+
+  setT('semLograda', isFinite(r.prom)?f(r.prom,dec):'—');
+  setT('semDesvio', isFinite(r.desvio)?(r.desvio>0?'+':'')+f(r.desvio,1)+' %':'—');
+  setT('semObjLn', isFinite(r.obj)?f(r.obj,dec)+' '+etiquetaUni(u):'—');
+  setT('semN', r.ok.length?f(r.ok.length,0):'—');
+  setT('semMinMax', r.ok.length?f(r.min,dec)+' / '+f(r.max,dec):'—');
+  setT('semCV', isFinite(r.cv)?f(r.cv,1)+' %':'—');
+  veredictoEn('semVeredicto', r.desvio, r.obj, r.prom, 'contar');
+
+  const eq=[];
+  if(isFinite(r.promMl)){
+    eq.push(['sem/ml', f(r.promMl,1)]);
+    if(isFinite(r.semHa)) eq.push(['semillas/ha', f(r.semHa,0)]);
+    if(isFinite(r.plM2))  eq.push(['plantas/m²', f(r.plM2,1)]);
+    if(isFinite(r.cadaCm))eq.push(['una cada', f(r.cadaCm,1)+' cm']);
+  }
+  setH('semEquiv', eq.length
+    ? '<div class="eqt">Lo mismo, en otras unidades</div>'+eq.map(([k,v])=>`<div class="eq"><span>${k}</span><b>${v}</b></div>`).join('')
+    : '');
+
+  const av=[];
+  if(!(r.d>0) && u==='ha') av.push('Esta máquina no tiene cargada la distancia entre surcos. Sin eso no puedo pasar a semillas/ha: cargala en la solapa MÁQUINAS o controlá en sem/ml.');
+  if(!isFinite(r.obj)) av.push('Cargá el objetivo arriba y te comparo contra eso.');
+  if((S.surcos||[]).some(x=>n(x.s)>1 && !(n(x.m)>0))) av.push('Hay surcos con semillas pero sin metros. Cargá los metros que destapaste en cada uno.');
+  if(r.ok.length && r.ok.length<3) av.push('Medí al menos 3 surcos para que el número represente a la máquina.');
+  if(isFinite(r.cv) && r.cv>10) av.push('Los surcos tiran muy distinto entre sí ('+f(r.cv,0)+' %). Mirá las bajadas antes de corregir la dosis.');
+  setH('semAvisos', av.map(t=>`<div class="aviso">${t}</div>`).join(''));
+}
+
+/* Dibuja la estructura de las mediciones. Se llama solo cuando cambia la
+   estructura (agregar o borrar una medición o una bajada, cambiar de lado),
+   nunca al tipear: si no, se redibuja el casillero en el que estás escribiendo
+   y el celular se pone lerdo y pierde el foco. */
+function pintarMeds(){
+  const uni = esAir() ? 'kg' : 'g';
+  if(!(S.fert.meds||[]).length){
+    setH('listaMeds','<p class="note" style="margin:0">Todavía no cargaste ninguna medición. Tocá «Nueva medición».</p>');
+    return;
+  }
+  setH('listaMeds', S.fert.meds.map((m,i)=>{
+    const filas = (m.filas||[]).map((x,j)=>
+      `<div class="surco"><span class="n">${j+1}</span>
+        <input inputmode="decimal" data-mf="${i}-${j}" value="${esc(x)}" placeholder="" aria-label="Bajada ${j+1}">
+        <span></span><span class="res" data-rmf="${i}-${j}">—</span></div>
+      <div class="cta" data-cmf="${i}-${j}"></div>`).join('');
+    return `<div class="med">
+      <div class="enc">
+        <span class="tit">${ordinal(i+1)} medición</span>
+        ${esAir() ? '' : `<div class="seg" data-ml="${i}">
+          <button data-v="Izq"  aria-pressed="${m.lado==='Izq'}">Izq</button>
+          <button data-v="Derc" aria-pressed="${m.lado==='Derc'}">Derc</button>
+        </div>`}
+        <button class="del" data-mb="${i}" aria-label="Borrar medición">×</button>
+      </div>
+      <div class="cab"><span></span><span>${uni==='kg'?'kilos':'gramos'}</span><span></span><span>kg/ha</span></div>
+      ${filas}
+      <button class="act ghost" data-ma="${i}" style="margin-top:4px;padding:9px">Agregar bajada</button>
+      <label class="rotu" for="nf${i}">Nota</label><input class="nota" id="nf${i}" data-mn="${i}" value="${esc(m.nota)}" placeholder="">
+      <div class="pie"><span data-mc="${i}">Promedio</span><b data-mp="${i}">—</b></div>
+    </div>`;
+  }).join(''));
+
+  /* al tipear solo refrescamos los números, sin volver a dibujar nada */
+  $('#listaMeds').querySelectorAll('[data-mf]').forEach(e=>e.addEventListener('input',ev=>{
+    const [i,j] = ev.target.dataset.mf.split('-').map(Number);
+    S.fert.meds[i].filas[j] = ev.target.value;
+    guardar(); refrescarMeds(); pintarResumenFert();
+  }));
+  $('#listaMeds').querySelectorAll('[data-mn]').forEach(e=>e.addEventListener('input',ev=>{
+    S.fert.meds[+ev.target.dataset.mn].nota = ev.target.value; guardar();
+  }));
+  $('#listaMeds').querySelectorAll('[data-ml] button').forEach(b=>b.addEventListener('click',ev=>{
+    const i = +ev.currentTarget.parentNode.dataset.ml;
+    S.fert.meds[i].lado = ev.currentTarget.dataset.v;
+    guardar(); pintarMeds(); refrescarMeds(); pintarResumenFert();
+  }));
+  $('#listaMeds').querySelectorAll('[data-ma]').forEach(b=>b.addEventListener('click',ev=>{
+    S.fert.meds[+ev.currentTarget.dataset.ma].filas.push('');
+    guardar(); pintarMeds(); refrescarMeds(); pintarResumenFert();
+  }));
+  $('#listaMeds').querySelectorAll('[data-mb]').forEach(b=>b.addEventListener('click',ev=>{
+    dosToques(ev.currentTarget, '¿Borrar?', '×', ()=>{
+      S.fert.meds.splice(+ev.currentTarget.dataset.mb,1);
+      guardar(); pintarMeds(); refrescarMeds(); pintarResumenFert();
+    });
+  }));
+  refrescarMeds();
+}
+
+/* Solo números y cuentas escritas. No toca el HTML de los casilleros. */
+function refrescarMeds(){
+  const aire = esAir();
+  const {f:factor, d, metros, m2} = factorFert();
+  const tara = taraFert();
+  (S.fert.meds||[]).forEach((m,i)=>{
+    const r = calcMed(m);
+    (m.filas||[]).forEach((x,j)=>{
+      const v = r.vals[j], t = String(x||'').trim();
+      const el = $(`[data-rmf="${i}-${j}"]`);
+      if(el) el.textContent = isFinite(v) ? f(v,2) : (t && !isFinite(n(t)) ? t : '—');
+      const cl = $(`[data-cmf="${i}-${j}"]`);
+      if(cl){
+        const br = n(x);
+        cl.innerHTML = isFinite(v)
+          ? (aire
+              ? `(${gx(br)} − ${gx(tara)}) × ${gx(factor)} = <b>${f(v,2)}</b>`
+              : `(10 ÷ ${f(d,3)}) × (${gx(br)} − ${gx(tara)}) ÷ ${gx(metros)} = <b>${f(v,2)}</b>`)
+          : '';
+      }
+    });
+    const pc = $(`[data-mc="${i}"]`);
+    if(pc) pc.textContent = 'Promedio de '+f(r.ok.length,0);
+    const pb = $(`[data-mp="${i}"]`);
+    if(pb){
+      pb.textContent = isFinite(r.prom) ? f(r.prom,1)+' kg/ha' : '—';
+      pb.className = '';
+    }
+  });
+}
+
+/* el recuadro de abajo: promedio total, desvío, veredicto y avisos */
+function pintarResumenFert(){
+  pintarSubs();
+
+  const aire = esAir(), r = calcFert();
+  setT('fertLograda', isFinite(r.val)?f(r.val,1):'—');
+  setT('fertDesvio', isFinite(r.desvio)?(r.desvio>0?'+':'')+f(r.desvio,1)+' %':'—');
+  const lin = [`<div class="ln"><span>Objetivo</span><b>${isFinite(r.obj)?gx(r.obj)+' kg/ha':'—'}</b></div>`,
+               `<div class="ln"><span>Mediciones</span><b>${f(r.meds.length,0)}</b></div>`];
+  r.buenas.forEach(m=>lin.push(`<div class="ln"><span>${m.lado?esc(m.lado)+' que quedó':'La que quedó'}</span><b>${f(m.r.prom,1)} kg/ha</b></div>`));
+  setH('fertLineas', lin.join(''));
+  veredictoEn('fertVeredicto', r.desvio, r.obj, r.val, 'pesar');
+
+  const av=[];
+  if(!isFinite(r.obj)) av.push('Cargá el objetivo de fertilizante arriba.');
+  if(aire){
+    if(!isFinite(r.factor)) av.push('Cargá a cuántos m² equivalen las vueltas, en la solapa MÁQUINAS o acá arriba.');
+  } else {
+    if(!(dist()>0)) av.push('Esta máquina no tiene cargada la distancia entre surcos. Cargala en la solapa MÁQUINAS.');
+    if(String(S.fert.metros||'').trim()==='') av.push('No cargaste los metros de la tirada: estoy usando 100 m.');
+  }
+  const bajo = r.meds.some(m=>(m.filas||[]).some(x=>{const b=n(x); return isFinite(b)&&b>0&&b-r.tara<=0;}));
+  if(bajo) av.push('Hay pesos menores o iguales a la bolsa vacía. Acá va en '+(aire?'kilos, no en gramos':'gramos, no en kilos')+'.');
+  if(!aire && r.buenas.length===1) av.push('Te falta medir el otro lado de la máquina para sacar el promedio total.');
+  if(r.buenas.length) av.push('El promedio total toma la última medición de cada lado, que es la que quedó después de regular.');
+  setH('fertAvisos', av.map(t=>`<div class="aviso">${t}</div>`).join(''));
+}
+
+/* el recuadro verde: lo que tiene que marcar la balanza */
+function pintarRefFert(){
+  const aire = esAir(), r = calcFert(), m = maquina();
+  if(aire){
+    setT('aNota', isFinite(r.factor)
+      ? 'Con '+f(r.m2,0)+' m² el multiplicador es '+gx(r.factor)+': kilos netos × '+gx(r.factor)+' = kg/ha.'
+      : 'Cargá a cuántos m² equivalen las vueltas de esta máquina.');
+    setT('refFertLbl','kilos que te tiene que marcar la balanza');
+    setT('refFert', isFinite(r.refBal) ? gx(r.refBal) : '—');
+    setT('refFertSub', isFinite(r.netoRef)
+      ? gx(r.netoRef)+' kg netos'+(r.tara>0?' + '+gx(r.tara)+' kg de bolsas':'')+' · en '+f(r.m2,0)+' m²'
+      : 'cargá el objetivo y los m² de las vueltas');
+  } else {
+    setT('refFertLbl','gramos que te tiene que marcar la balanza');
+    setT('refFert', isFinite(r.refBal) ? gx(r.refBal) : '—');
+    setT('refFertSub', isFinite(r.netoRef)
+      ? gx(r.netoRef)+' g netos'+(r.tara>0?' + '+gx(r.tara)+' g de bolsa':'')+' · en '+gx(r.metros)+' m a '+f(n(m?m.dist:NaN),1)+' cm'
+      : 'cargá el objetivo y la distancia entre surcos');
+  }
 }
 
 function pintarFert(){
-  const r = calcFert(), l = actual();
-  pintarFichaF();
+  const aire = esAir(), r = calcFert();
+  $('#blqFertPrec').hidden = aire;
+  $('#blqFertAir').hidden = !aire;
 
-  setT('fRefG', isFinite(r.refG) ? g1(r.refG) : '—');
-  setT('fRefSub', isFinite(r.netoRef)
-    ? g1(r.netoRef)+' g netos'+(r.tara>0?' + '+g1(r.tara)+' g de bolsa':'')+' · en '+f(r.metros,0)+' m a '+f(n(S.dist),1)+' cm'
-    : 'cargá el objetivo de fertilizante y la distancia entre surcos');
+  const io=$('#objFert');
+  const propio = objGuardado('fert') || '';
+  if(io.value!==String(propio)) io.value = propio;
+  io.placeholder = '';
+  setT('fertNota', 'Lo que tenés que dar en este lote, según la planilla de la oficina.');
 
-  const cuentas=[];
-  r.vals.forEach((v,i)=>{
-    const el=$(`[data-rf="${i}"]`); if(el) el.textContent = isFinite(v)?f(v,1):'—';
-    const br=n(S.fert.surcos[i]);
-    const cl=$(`[data-cf="${i}"]`);
-    if(cl) cl.innerHTML = isFinite(v)
-      ? `(10 ÷ ${f(r.d,3)}) × (${g1(br)} − ${g1(r.tara)}) ÷ ${g1(r.metros)} = <b>${f(v,1)}</b>`
-      : '';
-    if(isFinite(v)) cuentas.push(`<div class="c">surco ${i+1}: <i>(10 ÷ ${f(r.d,3)}) × (${g1(br)} − ${g1(r.tara)}) ÷ ${g1(r.metros)} =</i> <b>${f(v,1)}</b></div>`);
-  });
-  $('#cuentasF').innerHTML = cuentas.length
-    ? `<div class="cuentas"><div class="t">Todo junto, para mostrar</div>${cuentas.join('')}<div class="c p">promedio de ${f(r.ok.length,0)} surcos: <b>${f(r.prom,1)} kg/ha</b></div></div>`
-    : '';
+  const m = maquina();
+  if(aire){
+    const pv=$('#aVueltas'), pm=$('#aM2'), pt=$('#aTara');
+    if(pv.value!==String(S.fert.vueltas||'')) pv.value = S.fert.vueltas||'';
+    if(pm.value!==String(S.fert.m2||''))      pm.value = S.fert.m2||'';
+    if(pt.value!==String(S.fert.taraKg||''))  pt.value = S.fert.taraKg||'';
+  } else {
+    const pt=$('#fTara'), pm=$('#fMetros');
+    if(pt.value!==String(S.fert.tara||''))   pt.value = S.fert.tara||'';
+    if(pm.value!==String(S.fert.metros||'')) pm.value = S.fert.metros||'';
+  }
 
-  setT('fLograda', isFinite(r.prom)?f(r.prom,1):'—');
-  setT('fDesvio', isFinite(r.desvio)?(r.desvio>0?'+':'')+f(r.desvio,1)+' %':'—');
-  setT('fObj', isFinite(r.obj)?f(r.obj,0)+' kg/ha':'—');
-  setT('fN', r.ok.length?f(r.ok.length,0):'—');
-  setT('fMinMax', r.ok.length?f(r.min,1)+' / '+f(r.max,1):'—');
-  setT('fCV', isFinite(r.cv)?f(r.cv,1)+' %':'—');
-
-  const v=$('#fVeredicto');
-  if(isFinite(r.desvio)){
-    const a=Math.abs(r.desvio), corr=Math.abs(r.obj>0?(r.obj-r.prom)/r.prom*100:NaN);
-    if(a<=5) v.innerHTML = `<div class="veredicto ok">Está tirando bien<span class="d">${f(a,1)} % de diferencia contra el objetivo</span></div>`;
-    else if(a<=10) v.innerHTML = `<div class="veredicto med">Tira ${r.desvio<0?'de menos':'de más'} ${f(a,1)} %<span class="d">Hay que ${r.desvio<0?'subir':'bajar'} la entrega un ${f(corr,1)} % y volver a pesar</span></div>`;
-    else v.innerHTML = `<div class="veredicto bad">Tira ${r.desvio<0?'de menos':'de más'} ${f(a,1)} %<span class="d">Parar y regular: ${r.desvio<0?'subir':'bajar'} la entrega un ${f(corr,1)} %</span></div>`;
-  } else v.innerHTML='';
-
-  const av=[];
-  if(!isFinite(r.metros)||r.metros<=0) av.push('Cargá los metros de la tirada, sin eso no hay cuenta.');
-  else if(String(S.fert.metros||'').trim()==='') av.push('No cargaste los metros de la tirada: estoy usando 100 m. Si tiraste otra distancia, escribila arriba.');
-  if(l && !isFinite(r.obj)) av.push('Este lote no tiene objetivo de fertilizante. Cargalo a mano en la solapa de siembra, en «Objetivo del lote».');
-  if(r.ok.length && r.ok.length<3) av.push('Pesá al menos 3 surcos para que el número represente a la máquina.');
-  if(isFinite(r.cv) && r.cv>10) av.push('Los surcos tiran muy distinto entre sí ('+f(r.cv,0)+' %). Mirá los cuerpos y las bajadas antes de corregir la dosis.');
-  const conTara = (S.fert.surcos||[]).some(g=>{ const b=n(g); return isFinite(b) && b>0 && b-r.tara<=0; });
-  if(conTara) av.push('Hay pesos menores o iguales a la bolsa vacía. Fijate que la tara esté bien cargada.');
-  $('#fAvisos').innerHTML = av.map(t=>`<div class="aviso">${t}</div>`).join('');
+  pintarRefFert();
+  pintarResumenFert();
+  pintarMeds();
 }
 
-/* ---- eventos ---- */
-$('#campo').addEventListener('change', e=>{
-  S.campo = e.target.value;
-  const ls = lotesDe(S.campo);
-  S.lote = ls.length ? claveLote(ls[0]) : '';
-  guardar(); pintarTodo();
-});
-$('#lote').addEventListener('change', e=>{ S.lote = e.target.value; guardar(); pintarTodo(); });
-$('#segDist').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
-  S.distModo = b.dataset.v;
-  if(b.dataset.v!=='otra') S.dist = parseFloat(b.dataset.v);
-  guardar(); pintarTodo();
-}));
-$('#distManual').addEventListener('input', e=>{ S.dist = e.target.value; guardar(); pintarResultado(); });
-[['objSem','sem'],['objFert','fert']].forEach(([id,k])=>$('#'+id).addEventListener('input', e=>{
-  const l = actual(); if(!l) return;
-  S.obj = S.obj || {};
-  const o = S.obj[claveFull(l)] || {sem:'',fert:''};
-  o[k] = e.target.value;
-  S.obj[claveFull(l)] = o;
-  guardar(); pintarFicha(); pintarObjetivo(); pintarResultado();
-}));
+/* ---------------- semilla pesada: la siembra a chorrillo ---------------- */
+/* Es la misma cuenta del fertilizante, con los datos de S.semPeso. */
 
-/* ---- solapas ---- */
-const TABS = {siembra:'#tabSiembra', fert:'#tabFert', guardados:'#tabGuardados'};
+function pintarMedsSem(){
+  const aire = esAir(), src = S.semPeso;
+  if(!(src.meds||[]).length){
+    setH('spLista','<p class="note" style="margin:0">Todavía no cargaste ninguna medición. Tocá «Nueva medición».</p>');
+    return;
+  }
+  setH('spLista', src.meds.map((m,i)=>{
+    const filas = (m.filas||[]).map((x,j)=>
+      `<div class="surco"><span class="n">${j+1}</span>
+        <input inputmode="decimal" data-sf="${i}-${j}" value="${esc(x)}" placeholder="" aria-label="Bajada ${j+1}">
+        <span></span><span class="res" data-rsf="${i}-${j}">—</span></div>
+      <div class="cta" data-csf="${i}-${j}"></div>`).join('');
+    return `<div class="med">
+      <div class="enc">
+        <span class="tit">${ordinal(i+1)} medición</span>
+        ${aire ? '' : `<div class="seg" data-sl="${i}">
+          <button data-v="Izq"  aria-pressed="${m.lado==='Izq'}">Izq</button>
+          <button data-v="Derc" aria-pressed="${m.lado==='Derc'}">Derc</button>
+        </div>`}
+        <button class="del" data-sb="${i}" aria-label="Borrar medición">×</button>
+      </div>
+      <div class="cab"><span></span><span>${aire?'kilos':'gramos'}</span><span></span><span>kg/ha</span></div>
+      ${filas}
+      <button class="act ghost" data-sa="${i}" style="margin-top:4px;padding:9px">Agregar bajada</button>
+      <label class="rotu" for="ns${i}">Nota</label><input class="nota" id="ns${i}" data-sn="${i}" value="${esc(m.nota)}" placeholder="">
+      <div class="pie"><span data-sc="${i}">Promedio</span><b data-sp="${i}">—</b></div>
+    </div>`;
+  }).join(''));
+
+  $('#spLista').querySelectorAll('[data-sf]').forEach(e=>e.addEventListener('input',ev=>{
+    const [i,j] = ev.target.dataset.sf.split('-').map(Number);
+    S.semPeso.meds[i].filas[j] = ev.target.value;
+    guardar(); refrescarMedsSem(); pintarResumenSemPeso();
+  }));
+  $('#spLista').querySelectorAll('[data-sn]').forEach(e=>e.addEventListener('input',ev=>{
+    S.semPeso.meds[+ev.target.dataset.sn].nota = ev.target.value; guardar();
+  }));
+  $('#spLista').querySelectorAll('[data-sl] button').forEach(b=>b.addEventListener('click',ev=>{
+    S.semPeso.meds[+ev.currentTarget.parentNode.dataset.sl].lado = ev.currentTarget.dataset.v;
+    guardar(); pintarMedsSem(); pintarResumenSemPeso();
+  }));
+  $('#spLista').querySelectorAll('[data-sa]').forEach(b=>b.addEventListener('click',ev=>{
+    S.semPeso.meds[+ev.currentTarget.dataset.sa].filas.push('');
+    guardar(); pintarMedsSem(); pintarResumenSemPeso();
+  }));
+  $('#spLista').querySelectorAll('[data-sb]').forEach(b=>b.addEventListener('click',ev=>{
+    dosToques(ev.currentTarget, '¿Borrar?', '×', ()=>{
+      S.semPeso.meds.splice(+ev.currentTarget.dataset.sb,1);
+      guardar(); pintarMedsSem(); pintarResumenSemPeso();
+    });
+  }));
+  refrescarMedsSem();
+}
+
+function refrescarMedsSem(){
+  const aire = esAir(), src = S.semPeso, obj = objSemKg();
+  const {f:factor, d, metros} = factorDe(src);
+  const tara = taraDe(src);
+  (src.meds||[]).forEach((m,i)=>{
+    const r = calcMed(m, src, obj);
+    (m.filas||[]).forEach((x,j)=>{
+      const v = r.vals[j], t = String(x||'').trim();
+      const el = $(`[data-rsf="${i}-${j}"]`);
+      if(el) el.textContent = isFinite(v) ? f(v,2) : (t && !isFinite(n(t)) ? t : '—');
+      const cl = $(`[data-csf="${i}-${j}"]`);
+      if(cl){
+        const br = n(x);
+        cl.innerHTML = isFinite(v)
+          ? (aire
+              ? `(${gx(br)} − ${gx(tara)}) × ${gx(factor)} = <b>${f(v,2)}</b>`
+              : `(10 ÷ ${f(d,3)}) × (${gx(br)} − ${gx(tara)}) ÷ ${gx(metros)} = <b>${f(v,2)}</b>`)
+          : '';
+      }
+    });
+    const pc = $(`[data-sc="${i}"]`);
+    if(pc) pc.textContent = 'Promedio de '+f(r.ok.length,0);
+    const pb = $(`[data-sp="${i}"]`);
+    if(pb){
+      pb.textContent = isFinite(r.prom) ? f(r.prom,1)+' kg/ha' : '—';
+      pb.className = '';
+    }
+  });
+}
+
+function pintarResumenSemPeso(){
+  const aire = esAir(), r = calcSemPeso();
+  setT('spLograda', isFinite(r.val)?f(r.val,1):'—');
+  setT('spDesvio', isFinite(r.desvio)?(r.desvio>0?'+':'')+f(r.desvio,1)+' %':'—');
+  const lin = [`<div class="ln"><span>Objetivo</span><b>${isFinite(r.obj)?gx(r.obj)+' kg/ha':'—'}</b></div>`,
+               `<div class="ln"><span>Mediciones</span><b>${f(r.meds.length,0)}</b></div>`];
+  r.buenas.forEach(m=>lin.push(`<div class="ln"><span>${m.lado?esc(m.lado)+' que quedó':'La que quedó'}</span><b>${f(m.r.prom,1)} kg/ha</b></div>`));
+  setH('spLineas', lin.join(''));
+  veredictoEn('spVeredicto', r.desvio, r.obj, r.val, 'pesar');
+
+  setT('spRefLbl', aire ? 'kilos que te tiene que marcar la balanza' : 'gramos que te tiene que marcar la balanza');
+  setT('spRef', isFinite(r.refBal) ? gx(r.refBal) : '—');
+  setT('spRefSub', isFinite(r.netoRef)
+    ? gx(r.netoRef)+(aire?' kg netos':' g netos')
+      +(r.tara>0 ? ' + '+gx(r.tara)+(aire?' kg de bolsas':' g de bolsa') : '')
+      +(aire ? ' · en '+f(r.m2,0)+' m²' : ' · en '+gx(r.metros)+' m')
+    : 'cargá el objetivo en kg/ha');
+  setT('spNota', aire
+    ? (isFinite(r.factor)
+        ? 'Con '+f(r.m2,0)+' m² el multiplicador es '+gx(r.factor)+': kilos netos × '+gx(r.factor)+' = kg/ha.'
+        : 'Cargá a cuántos m² equivalen las vueltas de esta máquina.')
+    : '');
+
+  const av=[];
+  if(!isFinite(r.obj)) av.push('Cargá el objetivo de semilla en kg/ha arriba.');
+  if(aire){
+    if(!isFinite(r.factor)) av.push('Cargá a cuántos m² equivalen las vueltas, acá arriba o en la solapa MÁQUINAS.');
+  } else {
+    if(!(dist()>0)) av.push('Esta máquina no tiene cargada la distancia entre surcos. Cargala en la solapa MÁQUINAS.');
+    if(String(S.semPeso.metros||'').trim()==='') av.push('No cargaste los metros de la tirada: estoy usando 100 m.');
+  }
+  const bajo = r.meds.some(m=>(m.filas||[]).some(x=>{const b=n(x); return isFinite(b)&&b>0&&b-r.tara<=0;}));
+  if(bajo) av.push('Hay pesos menores o iguales a la bolsa vacía. Acá va en '+(aire?'kilos, no en gramos':'gramos, no en kilos')+'.');
+  if(!aire && r.buenas.length===1) av.push('Te falta medir el otro lado de la máquina para sacar el promedio total.');
+  if(r.buenas.length) av.push('El promedio total toma la última medición de cada lado, que es la que quedó después de regular.');
+  setH('spAvisos', av.map(t=>`<div class="aviso">${t}</div>`).join(''));
+
+  pintarSubs();
+}
+
+function pintarSemPeso(){
+  const aire = esAir();
+  $('#spPrec').hidden = aire;
+  $('#spAir').hidden = !aire;
+  const poner=(sel,v)=>{ const e=$(sel); if(e && e.value!==String(v||'')) e.value = v||''; };
+  poner('#objSemKg', objGuardado('semkg'));
+  poner('#spTara', S.semPeso.tara);
+  poner('#spMetros', S.semPeso.metros);
+  poner('#spVueltas', S.semPeso.vueltas);
+  poner('#spM2', S.semPeso.m2);
+  poner('#spTaraKg', S.semPeso.taraKg);
+  pintarMedsSem();
+  pintarResumenSemPeso();
+}
+
+function pintarProf(){
+  const c = claveCult();
+  const sug = PROF[baseCultivo()] || null;
+  setT('rngPreg', cultivo()
+    ? `¿A qué profundidad tiene que ir el ${cultivo()}? Preguntale al encargado y cargalo acá.`
+    : 'Escribí el cultivo arriba.');
+  const rr = (S.rangos||{})[c] || ['',''];
+  const a=$('#rngMin'), b=$('#rngMax');
+  if(a.value!==String(rr[0])) a.value = rr[0];
+  if(b.value!==String(rr[1])) b.value = rr[1];
+  a.placeholder = ''; b.placeholder = '';
+
+  const vals = profVals();
+  const prom = vals.length ? vals.reduce((x,y)=>x+y,0)/vals.length : NaN;
+  setT('pProm', vals.length?f(prom,1)+' cm':'—');
+  setT('pMinMax', vals.length?f(Math.min(...vals),1)+' / '+f(Math.max(...vals),1)+' cm':'—');
+  setT('pN', vals.length?f(vals.length,0):'—');
+
+  pintarSubs();
+  const p = rangoGuardado(c);
+  const box=$('#profAviso');
+  if(!vals.length){ box.innerHTML=''; return; }
+  if(!p){ box.innerHTML = '<div class="aviso">Cargá arriba el rango que te diga el encargado y lo comparo con el promedio.</div>'; return; }
+  const rg = `${f(p[0],1)}–${f(p[1],1)} cm`;
+  if(prom < p[0]) box.innerHTML = `<div class="aviso">${f(prom,1)} cm contra el rango de ${rg}: queda ${f(p[0]-prom,1)} cm más playa. Se corrige bajando las ruedas limitadoras.</div>`;
+  else if(prom > p[1]) box.innerHTML = `<div class="aviso">${f(prom,1)} cm contra el rango de ${rg}: queda ${f(prom-p[1],1)} cm más honda. Se corrige subiendo las ruedas limitadoras.</div>`;
+  else box.innerHTML = `<div class="aviso">${f(prom,1)} cm, dentro del rango de ${rg} que cargaste.</div>`;
+  const fuera = vals.filter(v=>v<p[0]||v>p[1]).length;
+  if(fuera) box.innerHTML += `<div class="aviso">${fuera} de ${vals.length} mediciones cayeron fuera de ese rango.</div>`;
+}
+
+function pintarCierre(){
+  pintarSubs();
+
+  const r = calcCierre();
+  setT('cProm', r.vals.length?f(r.prom,1)+' cm':'—');
+  setT('cObj', isFinite(r.objCm)?f(r.objCm,1)+' cm':'—');
+  setT('cDif', isFinite(r.dif)?(r.dif>0?'+':'')+f(r.dif,1)+' cm':'—');
+  setT('cN', r.vals.length?f(r.vals.length,0):'—');
+
+  const v=$('#cierreVeredicto');
+  if(!isFinite(r.dif)){ v.innerHTML=''; }
+  else {
+    const a=Math.abs(r.dif);
+    if(a<0.05) v.innerHTML = `<div class="veredicto neutro">El empalme da igual que el resto de los surcos<span class="d">${f(r.prom,1)} cm contra ${f(r.objCm,1)} cm de la máquina</span></div>`;
+    else if(r.dif>0) v.innerHTML = `<div class="veredicto neutro">${f(a,1)} cm de más en cada empalme<span class="d">Esa franja queda sin sembrar. Se achica con el marcador.</span></div>`;
+    else v.innerHTML = `<div class="veredicto neutro">${f(a,1)} cm de menos en cada empalme<span class="d">Ahí se siembra dos veces. Se alarga con el marcador.</span></div>`;
+  }
+
+  const av=[];
+  const m = maquina();
+  if(!isFinite(r.objCm)) av.push('Esta máquina no tiene cargada la distancia entre surcos. Cargala en la solapa MÁQUINAS.');
+  if(isFinite(r.pctAncho) && Math.abs(r.pctAncho)>0.1)
+    av.push('Sobre un ancho de labor de '+f(r.ancho,2)+' m, eso es '+f(Math.abs(r.pctAncho),2)+' % de la superficie en cada pasada: '+
+            (r.dif>0?'queda sin sembrar.':'se siembra dos veces.'));
+  if(m && !(n(m.surcos)>0)) av.push('Cargá la cantidad de surcos de la máquina para saber cuánto representa sobre la pasada.');
+  setH('cierreAvisos', av.map(t=>`<div class="aviso">${t}</div>`).join(''));
+}
+
+/* ---------------- máquinas ---------------- */
+
+function pintarMaquinas(){
+  if(!S.maquinas.length){ setH('listaMaq','<p class="note" style="margin:0">No tenés ninguna máquina cargada. Cargá una acá arriba.</p>'); return; }
+  setH('listaMaq', S.maquinas.map(m=>{
+    const p=[];
+    p.push(m.tipo==='airdrill'?'Air drill':'Precisión');
+    if(n(m.surcos)>0) p.push(f(n(m.surcos),0)+' surcos');
+    if(n(m.dist)>0) p.push(f(n(m.dist),1)+' cm');
+    if(m.tipo==='airdrill' && n(m.vueltas)>0 && n(m.m2)>0) p.push(f(n(m.vueltas),0)+' vueltas = '+f(n(m.m2),0)+' m²');
+    const falta=[];
+    if(!(n(m.dist)>0)) falta.push('distancia');
+    if(!(n(m.surcos)>0)) falta.push('surcos');
+    if(m.tipo==='airdrill' && !(n(m.m2)>0)) falta.push('m² de las vueltas');
+    return `<div class="ctrl">
+      <div class="h"><span class="nm">${esc(m.nombre)}${m.id===S.maqId?' <i>· en uso</i>':''}</span>
+        <span><button class="del" data-em="${esc(m.id)}" aria-label="Editar">✎</button>
+        <button class="del" data-bm="${esc(m.id)}" aria-label="Borrar">×</button></span></div>
+      <div class="dt">${p.join(' · ')}</div>
+      ${falta.length?`<div class="dt" style="color:var(--bad)">Falta cargar: ${falta.join(', ')}</div>`:''}
+    </div>`;}).join(''));
+  $('#listaMaq').querySelectorAll('[data-em]').forEach(b=>b.addEventListener('click',ev=>{
+    S.edit = ev.currentTarget.dataset.em; guardar(); pintarFormMaq(); window.scrollTo(0,0);
+  }));
+  $('#listaMaq').querySelectorAll('[data-bm]').forEach(b=>b.addEventListener('click',ev=>{
+    dosToques(ev.currentTarget, '¿Borrar?', '×', ()=>{
+      const id=ev.currentTarget.dataset.bm;
+      S.maquinas = S.maquinas.filter(x=>x.id!==id);
+      if(S.maqId===id) S.maqId = S.maquinas.length ? S.maquinas[0].id : '';
+      if(S.edit===id) S.edit='';
+      setT('maqStamp','Borrada.');
+      guardar(); pintarTodo();
+    });
+  }));
+}
+
+function pintarFormMaq(){
+  const ed = S.maquinas.find(m=>m.id===S.edit);
+  const t = $('#segTipo').querySelector('[aria-pressed="true"]');
+  const tipo = ed ? ed.tipo : (t ? t.dataset.v : 'precision');
+  setT('formTitulo', ed ? 'Editando '+ed.nombre : 'Nueva máquina');
+  $('#btnCancelarMaq').hidden = !ed;
+  $('#btnGuardarMaq').textContent = ed ? 'Guardar los cambios' : 'Guardar la máquina';
+  if(ed){
+    $('#mNombre').value = ed.nombre; $('#mSurcos').value = ed.surcos;
+    $('#mDist').value = ed.dist; $('#mVueltas').value = ed.vueltas; $('#mM2').value = ed.m2;
+  }
+  $('#segTipo').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.v===tipo)));
+  $('#wrapVueltas').hidden = tipo!=='airdrill';
+  setT('mNota', tipo==='airdrill'
+    ? 'Las vueltas de regulación y a cuántos m² equivalen te las da el manual o el contratista. Con 89 vueltas = 1.000 m², los kilos netos se multiplican por 10.'
+    : 'La distancia entre surcos se usa para pasar a semillas/ha, para el fertilizante y para el cierre de pasada.');
+  pintarMaquinas();
+}
+
+function pintarGuardados(){
+  const cs = S.controles||[];
+  setT('gN', f(cs.length,0));
+  setT('gNLotes', f(new Set(cs.map(c=>c.campo+'|'+c.lote)).size,0));
+  setT('gNCampos', f(new Set(cs.map(c=>c.campo)).size,0));
+  const box=$('#listaControles');
+  if(!cs.length){ box.innerHTML='<p class="note" style="margin:0">Todavía no guardaste ningún control.</p>'; return; }
+  box.innerHTML = cs.slice().reverse().map(c=>{
+    const p=[];
+    if(isFinite(c.semLograda)) p.push(f(c.semLograda, c.unidad==='ml'?1:0)+' '+(c.unidad==='ml'?'sem/ml':'sem/ha'));
+    if(isFinite(c.fertLograda)) p.push(f(c.fertLograda,1)+' kg/ha');
+    if(isFinite(c.profProm)) p.push('prof '+f(c.profProm,1)+' cm');
+    if(isFinite(c.cierreProm)) p.push('cierre '+f(c.cierreProm,1)+' cm');
+    return `<div class="ctrl">
+      <div class="h"><span class="nm">${esc(c.campo)} · lote ${esc(c.lote)}</span>
+        <button class="del" data-dc="${esc(c.id)}" aria-label="Borrar control">×</button></div>
+      <div class="dt">${fechaCorta(c.fecha)} · ${esc(c.cultivo)}${c.maquina?' · '+esc(c.maquina):''}</div>
+      ${p.length?`<div class="dt">${p.join(' · ')}</div>`:''}
+    </div>`;}).join('');
+  box.querySelectorAll('[data-dc]').forEach(b=>b.addEventListener('click',ev=>{
+    const id=ev.currentTarget.dataset.dc;
+    S.controles = S.controles.filter(x=>x.id!==id); guardar(); pintarGuardados();
+  }));
+}
+
+function pintarTodo(){
+  pintarLote();
+  pintarChips();
+  pintarFilas();
+  pintarSem();
+  pintarFert();
+  pintarProf();
+  pintarCierre();
+  pintarFormMaq();
+  pintarGuardados();
+  irSub(S.sub || 'densidad');
+  irA(S.tab || 'control');
+  medirBarra();
+}
+
+
+/* ---------------- solapas ---------------- */
+
+const TABS = {control:'#tabControl', maquinas:'#tabMaquinas', guardados:'#tabGuardados'};
+const SUBS = {densidad:'#subDensidad', fert:'#subFert', prof:'#subProf', cierre:'#subCierre'};
+
+/* Las cuatro cosas que se miden, cada una en su solapa, para no andar bajando.
+   El punto al lado del nombre avisa que esa parte ya tiene algo cargado. */
+function hayEn(s){
+  if(s==='densidad') return modoSem()==='pesando'
+      ? (S.semPeso.meds||[]).some(m=>(m.filas||[]).some(x=>String(x||'').trim()!==''))
+      : (S.surcos||[]).some(x=>String(x.s||'').trim()!=='');
+  if(s==='fert')     return (S.fert.meds||[]).some(m=>(m.filas||[]).some(x=>String(x||'').trim()!==''));
+  if(s==='prof')     return (S.profs||[]).some(x=>String(x||'').trim()!=='');
+  if(s==='cierre')   return (S.cierres||[]).some(x=>String(x||'').trim()!=='');
+  return false;
+}
+/* la barra de solapas queda pegada abajo del encabezado, así cambiás de
+   sección sin volver a subir. Hay que saber cuánto mide el encabezado. */
+function medirBarra(){
+  const t = document.querySelector('.topbar');
+  if(t) document.documentElement.style.setProperty('--barra', t.offsetHeight+'px');
+}
+window.addEventListener('resize', medirBarra);
+window.addEventListener('orientationchange', medirBarra);
+
+function irSub(s){
+  if(!SUBS[s]) s='densidad';
+  const cambio = S.sub!==s;
+  S.sub = s; guardar();
+  Object.entries(SUBS).forEach(([k,sel])=>{ const e=$(sel); if(e) e.hidden = (k!==s); });
+  /* al mostrar una solapa hay que repintarla: los números pueden haber cambiado
+     mientras estaba oculta */
+  const pint = {densidad:pintarSem, fert:pintarFert, prof:pintarProf, cierre:pintarCierre}[s];
+  if(pint) pint();
+  pintarSubs();
+  medirBarra();
+  if(cambio){
+    const subs = $('#subs'), t = document.querySelector('.topbar');
+    const alto = t ? t.offsetHeight : 84;
+    const y = subs.getBoundingClientRect().top + window.pageYOffset - alto - 8;
+    if(window.pageYOffset > y) window.scrollTo(0, Math.max(0,y));
+  }
+}
+function pintarSubs(){
+  const nombres = {densidad:'DENSIDAD', fert:'FERTILIZ.', prof:'PROFUND.', cierre:'CIERRE'};
+  $('#subs').querySelectorAll('button').forEach(b=>{
+    const k=b.dataset.s;
+    b.setAttribute('aria-pressed', String(k===S.sub));
+    b.innerHTML = nombres[k] + (hayEn(k) ? '<span class="pt"></span>' : '');
+  });
+}
+$('#subs').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>irSub(b.dataset.s)));
 function irA(t){
-  if(!TABS[t]) t='siembra';
-  const cambio = S.tab !== t;
+  if(!TABS[t]) t='control';
+  const cambio = S.tab!==t;
   S.tab = t; guardar();
   Object.entries(TABS).forEach(([k,sel])=>{ $(sel).hidden = (k!==t); });
   $('#solapas').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.t===t)));
@@ -726,381 +1563,354 @@ function irA(t){
 }
 $('#solapas').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>irA(b.dataset.t)));
 
-/* ---- fertilizante ---- */
-$('#fTara').addEventListener('input', e=>{ S.fert.tara = e.target.value; guardar(); pintarFert(); });
-$('#fMetros').addEventListener('input', e=>{ S.fert.metros = e.target.value; guardar(); pintarFert(); });
-$('#btnAddFert').addEventListener('click', ()=>{ S.fert.surcos.push(''); guardar(); pintarFilasFert(); pintarFert(); });
-
-/* borrar por sector */
-function borrarFertMed(){ S.fert.surcos = ['','','','','']; }
-function borrarTirada(){ S.fert.tara=''; S.fert.metros=''; }
-function borrarSemillas(){ S.surcos = [{m:'',s:''},{m:'',s:''},{m:'',s:''},{m:'',s:''},{m:'',s:''}]; }
-function borrarProfs(){ S.profs = ['','','','','']; }
-function borrarObjetivo(){ const l=actual(); if(l && S.obj) delete S.obj[claveFull(l)]; }
-
-/* limpiar lo medido para arrancar el lote siguiente de cero.
-   No toca el rango de profundidad ni los objetivos cargados a mano. */
-function limpiarMedido(){
-  borrarSemillas(); borrarProfs();
-  guardar(); pintarTodo();
-}
-
 /* confirmación en dos toques: confirm() no funciona dentro del visor */
 let armado = null;
 function desarmar(b){ if(!b) return; clearTimeout(b._t); b.textContent = b._orig; b.classList.remove('armado'); }
-function dosToques(btn, textoPregunta, textoOriginal, accion){
-  if(armado === btn){ desarmar(btn); armado = null; accion(); return; }
+function dosToques(btn, pregunta, original, accion){
+  if(armado===btn){ desarmar(btn); armado=null; accion(); return; }
   desarmar(armado);
-  armado = btn; btn._orig = textoOriginal;
-  btn.textContent = textoPregunta;
-  btn.classList.add('armado');
-  btn._t = setTimeout(()=>{ desarmar(btn); if(armado===btn) armado = null; }, 5000);
+  armado=btn; btn._orig=original;
+  btn.textContent=pregunta; btn.classList.add('armado');
+  btn._t=setTimeout(()=>{ desarmar(btn); if(armado===btn) armado=null; }, 5000);
 }
-
 function botonBorrar(id, texto, accion){
-  $('#'+id).addEventListener('click', e=>{
-    dosToques(e.currentTarget, 'Tocá de nuevo para borrar', texto, ()=>{
-      accion(); guardar(); pintarTodo();
-    });
+  const b=$('#'+id); if(!b) return;
+  b.addEventListener('click', ev=>{
+    dosToques(ev.currentTarget, 'Tocá de nuevo para borrar', texto, ()=>{ accion(); guardar(); pintarTodo(); });
   });
 }
-botonBorrar('borrarObj',  'Borrar lo que cargué a mano',     borrarObjetivo);
-botonBorrar('borrarSem',  'Borrar las mediciones de semilla', borrarSemillas);
-botonBorrar('borrarProf', 'Borrar las profundidades',         borrarProfs);
-botonBorrar('borrarFert',   'Borrar las mediciones de fertilizante', borrarFertMed);
-botonBorrar('borrarTirada', 'Borrar la bolsa y los metros',          borrarTirada);
 
-$('#btnLimpiar').addEventListener('click', e=>{
-  dosToques(e.currentTarget, 'Tocá de nuevo para borrar', 'Limpiar lo medido', ()=>{
-    limpiarMedido();
-    setT('guardaStamp','Listo, quedó todo en cero.');
-  });
+/* ---------------- lote ---------------- */
+
+$('#fecha').addEventListener('input', e=>{ S.fecha = e.target.value; guardar(); pintarLote(); });
+$('#campo').addEventListener('input', e=>{ S.campo = e.target.value; guardar(); pintarSem(); pintarFert(); });
+$('#lote').addEventListener('input',  e=>{ S.lote  = e.target.value; guardar(); pintarSem(); pintarFert(); });
+$('#cultivo').addEventListener('input', e=>{ S.cultivo = e.target.value; guardar(); pintarTodo(); });
+$('#contratista').addEventListener('input', e=>{ S.contratista = e.target.value; guardar(); });
+$('#notas').addEventListener('input', e=>{ S.notas = e.target.value; guardar(); });
+
+/* ---------------- semilla ---------------- */
+
+$('#segUnidad').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+  S.unidad[claveCult()] = b.dataset.v;
+  guardar(); pintarSem();
+}));
+$('#objSem').addEventListener('input', e=>{
+  const k = claveFull();
+  S.obj[k] = S.obj[k] || {};
+  S.obj[k][unidad()] = e.target.value;
+  guardar(); pintarSem();
 });
+$('#segModoSem').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+  S.semModo = b.dataset.v; guardar(); pintarSem();
+}));
+$('#objSemKg').addEventListener('input', e=>{
+  const k = claveFull(); S.obj[k] = S.obj[k] || {}; S.obj[k].semkg = e.target.value;
+  guardar(); refrescarMedsSem(); pintarResumenSemPeso();
+});
+[['spTara','tara'],['spMetros','metros'],['spVueltas','vueltas'],['spM2','m2'],['spTaraKg','taraKg']]
+  .forEach(([id,k])=>$('#'+id).addEventListener('input', e=>{
+    S.semPeso[k] = e.target.value; guardar(); refrescarMedsSem(); pintarResumenSemPeso();
+  }));
+$('#spAdd').addEventListener('click', ()=>{
+  const ult = (S.semPeso.meds||[])[S.semPeso.meds.length-1];
+  S.semPeso.meds.push({id:'d'+Math.random().toString(36).slice(2,8),
+                       lado: ult ? ult.lado : 'Izq', filas:['','',''], nota:''});
+  guardar(); pintarSemPeso();
+});
+
+$('#btnAddSem').addEventListener('click', ()=>{ S.surcos.push({n:'',s:'',m:''}); guardar(); pintarFilas(); pintarSem(); });
+
+/* ---------------- fertilizante ---------------- */
+
+$('#objFert').addEventListener('input', e=>{
+  const k = claveFull();
+  S.obj[k] = S.obj[k] || {};
+  S.obj[k].fert = e.target.value;
+  guardar(); refrescarMeds(); pintarResumenFert(); pintarRefFert();
+});
+[['fTara','tara'],['fMetros','metros'],['aVueltas','vueltas'],['aM2','m2'],['aTara','taraKg']]
+  .forEach(([id,k])=>$('#'+id).addEventListener('input', e=>{
+    S.fert[k]=e.target.value; guardar(); refrescarMeds(); pintarResumenFert(); pintarRefFert();
+  }));
+$('#btnAddMed').addEventListener('click', ()=>{
+  const ult = (S.fert.meds||[])[S.fert.meds.length-1];
+  S.fert.meds.push({id:'d'+Math.random().toString(36).slice(2,8),
+                    lado: ult ? ult.lado : 'Izq', filas:['','',''], nota:''});
+  guardar(); pintarFert();
+});
+
+/* ---------------- profundidad y cierre ---------------- */
 
 ['rngMin','rngMax'].forEach((id,ix)=>$('#'+id).addEventListener('input', e=>{
-  const l = actual(); if(!l) return;
-  S.rangos = S.rangos || {};
-  const r = S.rangos[l[3]] || ['',''];
+  const c = claveCult();
+  const r = S.rangos[c] || ['',''];
   r[ix] = e.target.value;
-  S.rangos[l[3]] = r;
+  S.rangos[c] = r;
   guardar(); pintarProf();
 }));
-$('#btnAddProf').addEventListener('click', ()=>{ S.profs.push(''); guardar(); pintarFilasProf(); pintarProf(); });
-$('#btnAdd').addEventListener('click', ()=>{ S.surcos.push({m:'',s:''}); guardar(); pintarSurcos(); pintarResultado(); });
-$('#btnCopiar').addEventListener('click', async ()=>{
-  const r = calc(), l = actual();
-  if(!l) return;
-  const txt = [
-    'Control de siembra · '+l[1]+' lote '+l[2],
-    l[3]+(l[5]?' · '+l[5]:'')+' · '+f(l[4],0)+' ha',
-    'Objetivo: '+f(r.obj,1)+' mil/ha · a '+f(n(S.dist),1)+' cm',
-    'Logrado: '+f(r.prom,1)+' mil/ha en '+r.ok.length+' surcos',
-    'Desvío: '+(r.desvio>0?'+':'')+f(r.desvio,1)+' %',
-    'Referencia: '+f(r.ref10,0)+' semillas en 10 m'
-  ].join('\n');
-  try{ await navigator.clipboard.writeText(txt); setT('copiaStamp','Copiado.'); }
-  catch(e){ setT('copiaStamp',txt); }
+$('#btnAddProf').addEventListener('click', ()=>{ S.profs.push(''); guardar(); pintarFilas(); pintarProf(); });
+
+
+/* ---------------- borrar por sector ---------------- */
+
+function limpiarMedido(){
+  S.surcos = vacioSurcos();
+  S.profs = vacioProf();
+  S.cierres = ['',''];
+  S.fert.meds = [];
+  S.semPeso.meds = [];
+}
+botonBorrar('spBorrar',      'Borrar todas las mediciones',  ()=>{ S.semPeso.meds = []; });
+botonBorrar('borrarSem',     'Borrar las semillas contadas', ()=>{ S.surcos = vacioSurcos(); });
+botonBorrar('borrarMeds',    'Borrar todas las mediciones',  ()=>{ S.fert.meds = []; });
+botonBorrar('borrarProf',    'Borrar las profundidades',     ()=>{ S.profs = vacioProf(); });
+botonBorrar('borrarCierre',  'Borrar las mediciones',        ()=>{ S.cierres = ['','']; });
+botonBorrar('btnLimpiar',    'Limpiar todo lo medido',       ()=>{ limpiarMedido(); });
+
+/* ---------------- máquinas ---------------- */
+
+$('#segTipo').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+  $('#segTipo').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
+  $('#wrapVueltas').hidden = b.dataset.v!=='airdrill';
+  setT('mNota', b.dataset.v==='airdrill'
+    ? 'Las vueltas de regulación y a cuántos m² equivalen te las da el manual o el contratista. Con 89 vueltas = 1.000 m², los kilos netos se multiplican por 10.'
+    : 'La distancia entre surcos se usa para pasar a semillas/ha, para el fertilizante y para el cierre de pasada.');
+}));
+
+function limpiarFormMaq(){
+  ['mNombre','mSurcos','mDist','mVueltas','mM2'].forEach(id=>{ $('#'+id).value=''; });
+  S.edit='';
+}
+
+$('#btnCancelarMaq').addEventListener('click', ()=>{ limpiarFormMaq(); guardar(); pintarTodo(); setT('maqStamp',''); });
+
+$('#btnGuardarMaq').addEventListener('click', ()=>{
+  const nombre = $('#mNombre').value.trim();
+  if(!nombre){ setT('maqStamp','Ponele un nombre para reconocerla.'); return; }
+  const tipo = $('#segTipo').querySelector('[aria-pressed="true"]').dataset.v;
+  const datos = {
+    nombre, tipo,
+    surcos: $('#mSurcos').value.trim(),
+    dist:   $('#mDist').value.trim(),
+    vueltas: tipo==='airdrill' ? $('#mVueltas').value.trim() : '',
+    m2:      tipo==='airdrill' ? $('#mM2').value.trim() : ''
+  };
+  const ed = S.maquinas.find(m=>m.id===S.edit);
+  if(ed){
+    Object.assign(ed, datos);
+    setT('maqStamp','Guardé los cambios de '+nombre+'.');
+  } else {
+    const id = 'm'+Math.random().toString(36).slice(2,8);
+    S.maquinas.push(Object.assign({id}, datos));
+    S.maqId = id;
+    setT('maqStamp','Cargué '+nombre+' y la dejé en uso.');
+  }
+  limpiarFormMaq();
+  guardar(); pintarTodo();
 });
 
-/* ---------------- Excel (.xlsx) sin librerías, funciona sin señal ---------------- */
-const CRC_T = (()=>{ const t=new Uint32Array(256); for(let i=0;i<256;i++){ let c=i; for(let k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[i]=c>>>0; } return t; })();
-function crc32(b){ let c=0xFFFFFFFF; for(let i=0;i<b.length;i++) c=CRC_T[(c^b[i])&0xFF]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
-function zipStore(files){
-  const enc=new TextEncoder(), partes=[], central=[]; let off=0;
-  const d0=new Date();
-  const dosT=((d0.getHours()<<11)|(d0.getMinutes()<<5)|Math.floor(d0.getSeconds()/2))&0xFFFF;
-  const dosD=(((d0.getFullYear()-1980)<<9)|((d0.getMonth()+1)<<5)|d0.getDate())&0xFFFF;
-  files.forEach(fl=>{
-    const nb=enc.encode(fl.name), d=(typeof fl.data==='string')?enc.encode(fl.data):fl.data, crc=crc32(d);
-    const lh=new DataView(new ArrayBuffer(30));
-    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint16(8,0,true);
-    lh.setUint16(10,dosT,true); lh.setUint16(12,dosD,true); lh.setUint32(14,crc,true);
-    lh.setUint32(18,d.length,true); lh.setUint32(22,d.length,true); lh.setUint16(26,nb.length,true); lh.setUint16(28,0,true);
-    partes.push(new Uint8Array(lh.buffer), nb, d);
-    const ch=new DataView(new ArrayBuffer(46));
-    ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint16(10,0,true);
-    ch.setUint16(12,dosT,true); ch.setUint16(14,dosD,true); ch.setUint32(16,crc,true);
-    ch.setUint32(20,d.length,true); ch.setUint32(24,d.length,true); ch.setUint16(28,nb.length,true);
-    ch.setUint16(30,0,true); ch.setUint16(32,0,true); ch.setUint16(34,0,true); ch.setUint16(36,0,true); ch.setUint32(38,0,true); ch.setUint32(42,off,true);
-    central.push(new Uint8Array(ch.buffer), nb);
-    off += 30+nb.length+d.length;
-  });
-  const cSize=central.reduce((a,b)=>a+b.length,0);
-  const end=new DataView(new ArrayBuffer(22));
-  end.setUint32(0,0x06054b50,true); end.setUint16(8,files.length,true); end.setUint16(10,files.length,true);
-  end.setUint32(12,cSize,true); end.setUint32(16,off,true);
-  const all=[...partes,...central,new Uint8Array(end.buffer)];
-  const out=new Uint8Array(all.reduce((a,b)=>a+b.length,0)); let q=0; all.forEach(a=>{out.set(a,q); q+=a.length;}); return out;
-}
-function xmlEsc(s){ return String(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function colL(i){ let s=''; i++; while(i>0){ const r=(i-1)%26; s=String.fromCharCode(65+r)+s; i=Math.floor((i-1)/26); } return s; }
-function numXML(v){ let s=v.toFixed(8); if(s.indexOf('.')>=0) s=s.replace(/0+$/,'').replace(/\.$/,''); return s; }
-function serialExcel(iso){ const d=new Date(iso); return (d.getTime()-d.getTimezoneOffset()*60000)/86400000+25569; }
-const XF={txt:6, int:2, d1:3, d2:4, fecha:5};
-function hojaXML(hj){
-  const cols=hj.cols.map((c,i)=>`<col min="${i+1}" max="${i+1}" width="${c.w||12}" customWidth="1"/>`).join('');
-  let filas=`<row r="1" ht="32" customHeight="1">`+hj.cols.map((c,i)=>`<c r="${colL(i)}1" t="inlineStr" s="1"><is><t>${xmlEsc(c.h)}</t></is></c>`).join('')+`</row>`;
-  hj.rows.forEach((row,ri)=>{
-    const rn=ri+2;
-    filas+=`<row r="${rn}">`+row.map((v,ci)=>{
-      const ref=colL(ci)+rn, fmt=hj.cols[ci].fmt||'txt';
-      if(v===null||v===undefined||v===''||(typeof v==='number'&&!isFinite(v))) return '';
-      if(fmt==='fecha') return `<c r="${ref}" s="${XF.fecha}"><v>${numXML(serialExcel(v))}</v></c>`;
-      if(fmt==='txt'||typeof v!=='number') return `<c r="${ref}" t="inlineStr" s="${XF.txt}"><is><t xml:space="preserve">${xmlEsc(v)}</t></is></c>`;
-      return `<c r="${ref}" s="${XF[fmt]}"><v>${numXML(v)}</v></c>`;
-    }).join('')+`</row>`;
-  });
-  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
-    `<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">`+
-    `<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>`+
-    `<sheetFormatPr defaultRowHeight="15"/><cols>${cols}</cols><sheetData>${filas}</sheetData></worksheet>`;
-}
-function construirXLSX(hojas){
-  const ns='http://schemas.openxmlformats.org';
-  const styles=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="${ns}/spreadsheetml/2006/main">`+
-    `<numFmts count="4"><numFmt numFmtId="164" formatCode="#,##0"/><numFmt numFmtId="165" formatCode="#,##0.0"/><numFmt numFmtId="166" formatCode="#,##0.00"/><numFmt numFmtId="167" formatCode="dd/mm/yyyy hh:mm"/></numFmts>`+
-    `<fonts count="2"><font><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><name val="Calibri"/><family val="2"/></font></fonts>`+
-    `<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFEDEDED"/><bgColor indexed="64"/></patternFill></fill></fills>`+
-    `<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left/><right/><top/><bottom style="thin"><color rgb="FF808080"/></bottom><diagonal/></border></borders>`+
-    `<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>`+
-    `<cellXfs count="7">`+
-      `<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>`+
-      `<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment wrapText="1" vertical="center"/></xf>`+
-      `<xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>`+
-      `<xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>`+
-      `<xf numFmtId="166" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>`+
-      `<xf numFmtId="167" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>`+
-      `<xf numFmtId="49" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>`+
-    `</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
-  const wb=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="${ns}/spreadsheetml/2006/main" xmlns:r="${ns}/officeDocument/2006/relationships"><sheets>`+
-    hojas.map((hj,i)=>`<sheet name="${xmlEsc(hj.nombre)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')+`</sheets></workbook>`;
-  const wbRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${ns}/package/2006/relationships">`+
-    hojas.map((hj,i)=>`<Relationship Id="rId${i+1}" Type="${ns}/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')+
-    `<Relationship Id="rId${hojas.length+1}" Type="${ns}/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
-  const ct=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="${ns}/package/2006/content-types">`+
-    `<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>`+
-    `<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>`+
-    hojas.map((hj,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')+
-    `<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`;
-  const rels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${ns}/package/2006/relationships"><Relationship Id="rId1" Type="${ns}/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
-  const files=[{name:'[Content_Types].xml',data:ct},{name:'_rels/.rels',data:rels},{name:'xl/workbook.xml',data:wb},{name:'xl/_rels/workbook.xml.rels',data:wbRels},{name:'xl/styles.xml',data:styles}];
-  hojas.forEach((hj,i)=>files.push({name:`xl/worksheets/sheet${i+1}.xml`,data:hojaXML(hj)}));
-  return zipStore(files);
+/* ---------------- guardar controles ---------------- */
+
+function fechaCorta(iso){
+  const d = new Date(iso);
+  const p = x => String(x).padStart(2,'0');
+  return p(d.getDate())+'/'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());
 }
 
-async function exportarExcel(regs, base){
-  const bytes = construirExcelControles(regs);
-  const hoy = new Date(), z=v=>String(v).padStart(2,'0');
-  const nombre = (base.replace(/[^\wÁÉÍÓÚáéíóúÑñ-]+/g,'_')+'_'+hoy.getFullYear()+z(hoy.getMonth()+1)+z(hoy.getDate())+'.xlsx');
-  const tipo = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+/* ---------------- el mensaje para mandarle a Denis ---------------- */
+
+/* 1ra, 2da, 3ra, 4ta... como las escribe él */
+const ORD = ['','1ra','2da','3ra','4ta','5ta','6ta','7ma','8va','9na','10ma','11va','12va'];
+function ordinal(k){ return ORD[k] || (k+'ª'); }
+
+function fechaCortaDia(iso){
+  const d = new Date(iso||Date.now());
+  return d.getDate()+'/'+(d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2);
+}
+
+function armarMensaje(){
+  const m = maquina(), rs = calcSem(), rf = calcFert(), rc = calcCierre();
+  const u = rs.u, dec = u==='ml' ? 1 : 0;
+  const uni = u==='ml' ? 'pl/m' : 'sem/ha';
+  const L = [];
+
+  L.push('Fecha: '+fechaCortaDia(fechaControl()));
+  if(S.contratista) L.push('Contratista: '+S.contratista);
+  if(m) L.push('Máquina: '+m.nombre);
+  if(S.campo) L.push('CAMPO: '+S.campo);
+  if(S.lote)  L.push('LOTE: '+S.lote);
+  if(cultivo()) L.push('Cultivo: '+cultivo().toUpperCase());
+
+  /* ---- semilla: contada o pesada (chorrillo) ---- */
+  if(modoSem()==='pesando'){
+    const rp = calcSemPeso();
+    if(rp.meds.length){
+      L.push('', 'SEMILLA (a chorrillo, pesada):');
+      rp.meds.forEach((md,i)=>{
+        L.push('', ordinal(i+1)+' Medicion');
+        const partes = (md.filas||[]).map((x,j)=>{
+          const v = md.r.vals[j], t = String(x||'').trim();
+          if(isFinite(v)) return f(v,1);
+          return t ? t : null;
+        }).filter(x=>x!==null);
+        if(partes.length) L.push((md.lado ? md.lado+' = ' : '')+partes.join(' / '));
+        if(isFinite(md.r.prom)) L.push('Prom = '+f(md.r.prom,1)+' kg/ha');
+        if(md.nota) L.push(md.nota);
+      });
+      if(isFinite(rp.val)) L.push('', 'Promedio Total: '+f(rp.val,1)+' kg/ha');
+      if(isFinite(rp.obj)) L.push('Objetivo: '+gx(rp.obj)+' kg/ha');
+      if(isFinite(rp.desvio)) L.push('Desvio: '+(rp.desvio>0?'+':'')+f(rp.desvio,1)+' %');
+    }
+  } else if(rs.ok.length){
+    L.push('', 'SEMILLA:', '');
+    rs.vals.forEach((v,i)=>{ if(isFinite(v)) L.push('S'+nroSurco(i)+' = '+f(v,dec)); });
+    L.push('', 'Prom = '+f(rs.prom,dec)+' '+uni);
+    if(isFinite(rs.obj)) L.push('Objetivo: '+f(rs.obj,dec)+' '+uni);
+    if(isFinite(rs.desvio)) L.push('Desvio: '+(rs.desvio>0?'+':'')+f(rs.desvio,1)+' %');
+  }
+
+  /* ---- fertilizante ---- */
+  if(rf.meds.length){
+    L.push('', 'FERTILIZANTE:');
+    rf.meds.forEach((md,i)=>{
+      L.push('', ordinal(i+1)+' Medicion');
+      const partes = (md.filas||[]).map((x,j)=>{
+        const v = md.r.vals[j], t = String(x||'').trim();
+        if(isFinite(v)) return f(v,1);
+        return t ? t : null;
+      }).filter(x=>x!==null);
+      if(partes.length) L.push((md.lado ? md.lado+' = ' : '')+partes.join(' / '));
+      if(isFinite(md.r.prom)) L.push('Prom = '+f(md.r.prom,1)+' kg/ha');
+      if(md.nota) L.push(md.nota);
+    });
+    if(isFinite(rf.val)) L.push('', 'Promedio Total: '+f(rf.val,1)+' kg/ha');
+    if(isFinite(rf.obj)) L.push('Objetivo: '+gx(rf.obj)+' kg/ha');
+    if(isFinite(rf.desvio)) L.push('Desvio: '+(rf.desvio>0?'+':'')+f(rf.desvio,1)+' %');
+  }
+
+  /* ---- profundidad ---- */
+  const pv = profVals();
+  if(pv.length){
+    const prom = pv.reduce((a,b)=>a+b,0)/pv.length;
+    const rg = rangoGuardado(claveCult());
+    L.push('', 'PROFUNDIDAD: '+pv.map(v=>f(v,1)).join(' / '));
+    L.push('Prom = '+f(prom,1)+' cm'+(rg?' · tiene que estar entre '+f(rg[0],1)+' y '+f(rg[1],1)+' cm':''));
+  }
+
+  /* ---- cierre ---- */
+  if(rc.vals.length){
+    L.push('', 'Cierre de pasada: '+rc.vals.map(v=>f(v,0)+' cm').join(' / '));
+    if(isFinite(rc.objCm)) L.push('Tendría que dar '+f(rc.objCm,1)+' cm');
+    if(isFinite(rc.dif)) L.push('Diferencia: '+(rc.dif>0?'+':'')+f(rc.dif,1)+' cm');
+  }
+
+  if(S.notas) L.push('', S.notas);
+  return L.join('\n').replace(/\n{3,}/g,'\n\n').trim();
+}
+
+$('#btnMensaje').addEventListener('click', ()=>{
+  const t = armarMensaje();
+  const ta = $('#mensaje');
+  ta.value = t; ta.hidden = false;
+  ta.rows = Math.min(30, Math.max(8, t.split('\n').length+1));
+  $('#btnCopiar').hidden = false;
+  setT('msjStamp','Listo. Copialo y pegalo en WhatsApp.');
+});
+
+$('#btnCopiar').addEventListener('click', async ()=>{
+  const t = $('#mensaje').value;
+  if(!t){ setT('msjStamp','Armá el mensaje primero.'); return; }
   try{
-    const file = new File([bytes], nombre, {type:tipo});
-    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:nombre}); setT('excelStamp','Excel listo: '+nombre); return; }
-  }catch(e){ if(e && e.name==='AbortError') return; }
+    if(navigator.share){ await navigator.share({text:t}); setT('msjStamp','Compartido.'); return; }
+  }catch(e){ /* si cancela, seguimos con el portapapeles */ }
   try{
-    const url = URL.createObjectURL(new Blob([bytes],{type:tipo}));
-    const a = document.createElement('a'); a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url), 5000);
-    setT('excelStamp','Descargado: '+nombre+'. Si no aparece, usá la versión instalada de la app.');
-  }catch(e){ setT('excelStamp','No se pudo descargar desde acá. En la versión instalada funciona.'); }
-}
-
-
-/* ---------------- controles guardados ---------------- */
-function fechaCorta(iso){ const d=new Date(iso); const z=v=>String(v).padStart(2,'0');
-  return z(d.getDate())+'/'+z(d.getMonth()+1)+' '+z(d.getHours())+':'+z(d.getMinutes()); }
+    await navigator.clipboard.writeText(t);
+    setT('msjStamp','Copiado. Pegalo en WhatsApp.');
+  }catch(e){
+    const ta=$('#mensaje'); ta.removeAttribute('readonly'); ta.select();
+    let listo=false;
+    try{ listo=document.execCommand('copy'); }catch(e2){}
+    ta.setAttribute('readonly','');
+    setT('msjStamp', listo ? 'Copiado. Pegalo en WhatsApp.'
+                           : 'No pude copiarlo solo: mantené apretado el texto de arriba y copialo a mano.');
+  }
+});
 
 function snapshot(){
-  const r = calc(), l = actual();
-  if(!l) return null;
+  const m = maquina();
+  const rs = calcSem(), rf = calcFert(), rc = calcCierre();
   const pv = profVals();
-  const rg = rangoGuardado(l[3]);
-  const promP = pv.length ? pv.reduce((a,b)=>a+b,0)/pv.length : NaN;
+  const rg = rangoGuardado(claveCult());
   return {
     id: Math.random().toString(36).slice(2,9),
-    tipo: 'Semilla',
-    fecha: new Date().toISOString(),
-    encargado: l[0], campo: l[1], lote: l[2], cultivo: l[3], ha: l[4], hibrido: l[5],
-    objetivo: isFinite(r.obj) ? r.obj : NaN,
-    dist: n(S.dist),
-    lograda: r.prom, desvio: r.desvio, nSurcos: r.ok.length, semM: r.semM,
-    minS: r.min, maxS: r.max, cv: r.cv, cmReal: r.cmReal, ref10: r.ref10,
-    profProm: promP, profMin: pv.length?Math.min(...pv):NaN, profMax: pv.length?Math.max(...pv):NaN, nProf: pv.length,
+    fecha: fechaControl(),
+    campo:S.campo||'', lote:S.lote||'', cultivo:cultivo(),
+    contratista:S.contratista||'', notas:S.notas||'',
+    maquina: m?m.nombre:'', tipoMaq: m?(m.tipo==='airdrill'?'air drill':'precisión'):'',
+    surcosMaq: m?n(m.surcos):NaN, dist: m?n(m.dist):NaN,
+    unidad: rs.u,
+    semObjetivo: rs.obj, semLograda: rs.prom, semDesvio: rs.desvio, semN: rs.ok.length,
+    semMin: rs.min, semMax: rs.max, semCV: rs.cv,
+    semMl: rs.promMl, semHa: rs.semHa, plM2: rs.plM2, cadaCm: rs.cadaCm,
+    fertObjetivo: rf.obj, fertLograda: rf.val, fertDesvio: rf.desvio,
+    fertMetodo: rf.aire ? 'vueltas' : 'tirada',
+    fertTara: rf.tara,
+    fertMetros: rf.aire ? NaN : rf.metros,
+    fertVueltas: rf.aire ? n(S.fert.vueltas) : NaN,
+    fertM2: rf.aire ? rf.m2 : NaN,
+    fertMeds: rf.meds.length,
+    fertIzq: (rf.buenas.find(x=>x.lado==='Izq')||{r:{}}).r.prom,
+    fertDerc:(rf.buenas.find(x=>x.lado==='Derc')||{r:{}}).r.prom,
+    profProm: pv.length ? pv.reduce((a,b)=>a+b,0)/pv.length : NaN,
+    profMin: pv.length?Math.min(...pv):NaN, profMax: pv.length?Math.max(...pv):NaN, profN: pv.length,
     rangoMin: rg?rg[0]:NaN, rangoMax: rg?rg[1]:NaN,
-    objManual: isFinite(aMiles(pisado(l).sem)) ? 'sí' : '',
-    fert: fertObjetivo(),
-    surcos: S.surcos.map((s,i)=>({sem:n(s.s), m:n(s.m), res:r.vals[i]})).filter(x=>isFinite(x.res)),
-    profs: pv
+    cierreProm: rc.prom, cierreObj: rc.objCm, cierreDif: rc.dif, cierreN: rc.vals.length,
+    detSem: (S.surcos||[]).map((x,i)=>({nro:nroSurco(i), s:n(x.s), m:n(x.m), ml:rs.ml[i], res:rs.vals[i]})).filter(x=>isFinite(x.res)),
+    detFert: rf.meds.flatMap((md,i)=>(md.filas||[]).map((x,j)=>({
+        med:i+1, lado:md.lado, nota:md.nota, peso:n(x), texto:String(x||'').trim(),
+        neto:n(x)-rf.tara, res:md.r.vals[j]
+      })).filter(x=>isFinite(x.res) || (x.texto && !isFinite(n(x.texto))))),
+    detProf: pv.slice(),
+    detCierre: rc.vals.slice()
   };
 }
 
-function snapshotFert(){
-  const r = calcFert(), l = actual();
-  if(!l) return null;
-  return {
-    id: Math.random().toString(36).slice(2,9),
-    tipo: 'Fertilizante',
-    fecha: new Date().toISOString(),
-    encargado: l[0], campo: l[1], lote: l[2], cultivo: l[3], ha: l[4], hibrido: l[5],
-    fert: isFinite(r.obj) ? r.obj : NaN,
-    dist: n(S.dist),
-    tara: r.tara, metrosTirada: r.metros,
-    fertLograda: r.prom, fertDesvio: r.desvio, nSurcos: r.ok.length,
-    fertMin: r.min, fertMax: r.max, fertCV: r.cv, refG: r.refG,
-    surcosF: (S.fert.surcos||[]).map((g,i)=>({g:n(g), neto:n(g)-r.tara, res:r.vals[i]})).filter(x=>isFinite(x.res)),
-    surcos: [], profs: []
-  };
+function hayAlgo(c){
+  return !!c && (c.semN>0 || (c.detFert||[]).length>0 || c.profN>0 || c.cierreN>0);
 }
 
-function pintarGuardados(){
-  const cs = S.controles || [];
-  const sem = cs.filter(c=>c.tipo!=='Fertilizante').length;
-  setT('gNSem', f(sem,0));
-  setT('gNFert', f(cs.length-sem,0));
-  setT('gNLotes', f(new Set(cs.map(c=>c.campo+'|'+c.lote)).size,0));
-}
-
-function pintarControles(){
-  const box = $('#listaControles');
-  const cs = S.controles || [];
-  if(!cs.length){ box.innerHTML = '<p class="note" style="margin:0">Todavía no guardaste ningún control.</p>'; return; }
-  box.innerHTML = cs.slice().reverse().map(c=>{
-    const esF = c.tipo==='Fertilizante';
-    const dato = esF
-      ? (isFinite(c.fertLograda)?f(c.fertLograda,1)+' kg/ha':'—') + (isFinite(c.fertDesvio)?' · '+(c.fertDesvio>0?'+':'')+f(c.fertDesvio,1)+' %':'')
-      : (isFinite(c.lograda)?f(c.lograda,1)+' mil/ha':'—') + (isFinite(c.desvio)?' · '+(c.desvio>0?'+':'')+f(c.desvio,1)+' %':'')
-        + (isFinite(c.profProm)?' · prof '+f(c.profProm,1)+' cm':'');
-    return `<div class="ctrl">
-      <div class="h"><span class="nm">${esc(c.campo)} · lote ${esc(c.lote)}</span>
-        <button class="del" data-dc="${c.id}" aria-label="Borrar control">×</button></div>
-      <div class="dt">${esc(c.tipo||'Semilla')} · ${fechaCorta(c.fecha)} · ${esc(c.cultivo)} · ${dato}</div>
-    </div>`;}).join('');
-  box.querySelectorAll('[data-dc]').forEach(b=>b.addEventListener('click',e=>{
-    const id=e.currentTarget.dataset.dc;
-    S.controles = S.controles.filter(x=>x.id!==id); guardar(); pintarControles(); pintarGuardados();
-  }));
-}
-
-function guardarUno(hacer, stamp){
-  const c = hacer();
-  if(!c){ setT(stamp,'Elegí un lote primero.'); return null; }
-  if(!c.nSurcos){ setT(stamp,'Cargá al menos un surco antes de guardar.'); return null; }
-  S.controles = S.controles || [];
-  S.controles.push(c); guardar(); pintarControles(); pintarGuardados();
+function guardarControl(){
+  const c = snapshot();
+  if(!hayAlgo(c)){ setT('guardaStamp','Cargá alguna medición antes de guardar.'); return null; }
+  if(!c.campo && !c.lote){ setT('guardaStamp','Ponele el campo y el lote antes de guardar.'); return null; }
+  S.controles.push(c); guardar(); pintarGuardados();
   return c;
 }
-function guardarControl(){ return guardarUno(snapshot,'guardaStamp'); }
-
 $('#btnGuardar').addEventListener('click', ()=>{
   const c = guardarControl();
-  if(c) setT('guardaStamp', 'Guardado: '+c.campo+' lote '+c.lote+' a las '+fechaCorta(c.fecha).split(' ')[1]+'.');
+  if(c) setT('guardaStamp','Guardado: '+c.campo+' lote '+c.lote+' a las '+fechaCorta(c.fecha).split(' ')[1]+'.');
 });
-
 $('#btnGuardarSig').addEventListener('click', ()=>{
   const c = guardarControl();
   if(!c) return;
-  limpiarMedido();
-  setT('guardaStamp', 'Guardado '+c.campo+' lote '+c.lote+'. Todo en cero: elegí el lote siguiente.');
+  limpiarMedido(); guardar(); pintarTodo();
+  setT('guardaStamp','Guardado '+c.campo+' lote '+c.lote+'. Todo en cero: elegí el lote siguiente.');
 });
 
-$('#btnGuardarF').addEventListener('click', ()=>{
-  const c = guardarUno(snapshotFert,'guardaStampF');
-  if(c) setT('guardaStampF', 'Guardado: '+c.campo+' lote '+c.lote+' a las '+fechaCorta(c.fecha).split(' ')[1]+'.');
-});
+/* ---------------- arranque ---------------- */
 
-$('#btnGuardarFSig').addEventListener('click', ()=>{
-  const c = guardarUno(snapshotFert,'guardaStampF');
-  if(!c) return;
-  borrarFertMed(); guardar(); pintarTodo();
-  setT('guardaStampF', 'Guardado '+c.campo+' lote '+c.lote+'. Todo en cero: elegí el lote siguiente.');
-});
-
-/* Un renglón por control: el de semilla y el de fertilizante del mismo lote,
-   uno abajo del otro. Se ordena por campo y lote para que queden pegados,
-   y dentro del lote primero la semilla y después el fertilizante. */
-const COLS = [
-  ['Fecha','fecha','fecha',15],['Control','tipo','txt',12],
-  ['Encargado','encargado','txt',11],['Campo','campo','txt',20],['Lote','lote','txt',7],
-  ['Cultivo','cultivo','txt',11],['Híbrido','hibrido','txt',16],['Ha','ha','d1',7],
-  ['Entre surcos (cm)','dist','d1',10],
-  ['Objetivo (mil sem/ha)','objetivo','d1',11],['Objetivo cargado a mano','objManual','txt',10],
-  ['Lograda (mil sem/ha)','lograda','d1',11],['Desvío (%)','desvio','d1',9],
-  ['Profundidad promedio (cm)','profProm','d1',11],
-  ['Objetivo fert. (kg/ha)','fert','d1',11],
-  ['Fert. logrado (kg/ha)','fertLograda','d1',11],['Fert. desvío (%)','fertDesvio','d1',10]
-];
-
-function filasPorLote(cs){
-  const orden = c => [
-    String(c.campo||''), String(c.lote||''), String(c.cultivo||''),
-    c.tipo==='Fertilizante' ? '2' : '1', String(c.fecha||'')
-  ];
-  return cs.slice().sort((a,b)=>{
-    const x=orden(a), y=orden(b);
-    for(let i=0;i<x.length;i++){
-      const d = x[i].localeCompare(y[i],'es',{numeric:true});
-      if(d) return d;
-    }
-    return 0;
-  });
-}
-
-function construirExcelControles(cs){
-  cs = cs.slice().sort((a,b)=>a.fecha.localeCompare(b.fecha));
-  const hoja1 = {nombre:'Controles', cols: COLS.map(([h,,fmt,w])=>({h,fmt,w})),
-    rows: filasPorLote(cs).map(c=>COLS.map(([,k,fmt])=>{
-      const v=c[k];
-      if(fmt==='txt') return v===undefined||v===null?'':String(v);
-      if(fmt==='fecha') return v===null?'':v;
-      return (typeof v==='number')?v:NaN;
-    }))};
-  const filas=[];
-  cs.forEach(c=>{
-    (c.surcos||[]).forEach((s,i)=>filas.push([c.fecha,c.campo,c.lote,'Semilla',i+1,s.sem,s.m,s.res]));
-    (c.profs||[]).forEach((p,i)=>filas.push([c.fecha,c.campo,c.lote,'Profundidad',i+1,NaN,NaN,p]));
-    (c.surcosF||[]).forEach((s,i)=>filas.push([c.fecha,c.campo,c.lote,'Fertilizante',i+1,s.g,s.neto,s.res]));
-  });
-  const hoja2 = {nombre:'Surco por surco', cols:[
-    {h:'Fecha',fmt:'fecha',w:15},{h:'Campo',fmt:'txt',w:20},{h:'Lote',fmt:'txt',w:7},
-    {h:'Medición',fmt:'txt',w:13},{h:'Surco',fmt:'int',w:7},
-    {h:'Semillas / gramos',fmt:'d1',w:12},{h:'Metros / gramos netos',fmt:'d2',w:13},{h:'Resultado',fmt:'d2',w:10}], rows: filas};
-  return construirXLSX([hoja1,hoja2]);
-}
-
-$('#btnExcel').addEventListener('click', ()=>{
-  const cs = S.controles || [];
-  if(!cs.length){ setT('excelStamp','No hay controles guardados para exportar.'); return; }
-  exportarExcel(cs, 'Control_siembra');
-});
-
-function pintarTodo(){
-  if(!S.campo || !campos.includes(S.campo)) S.campo = campos[0];
-  const ls = lotesDe(S.campo);
-  if(!S.lote || !ls.some(l=>claveLote(l)===S.lote)) S.lote = ls.length?claveLote(ls[0]):'';
-  pintarSelectores();
-  pintarObjetivo();
-  pintarFicha();
-  $('#segDist').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.v===S.distModo)));
-  $('#wrapDist').style.display = S.distModo==='otra' ? 'block' : 'none';
-  $('#distManual').value = S.distModo==='otra' ? S.dist : '';
-  pintarSurcos();
-  pintarFilasProf();
-  pintarResultado();
-  pintarRango();
-  pintarProf();
-  $('#fTara').value = S.fert.tara;
-  $('#fMetros').value = S.fert.metros;
-  pintarFilasFert();
-  pintarFert();
-  pintarControles();
-  pintarGuardados();
-  irA(S.tab || 'siembra');
-}
+/* ---------------- arranque ---------------- */
 pintarTodo();
+
 </script>
 <script>
+/* La copia local para trabajar sin señal. Sin esto la app necesita datos
+   para abrir, que es justo lo que no hay en el lote. */
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
 }
 </script>
 </body>
